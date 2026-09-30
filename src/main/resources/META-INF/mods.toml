@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[52,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="akagane"
+version="1.0.0"
+displayName="Akagane"
+authors="Ricardo"
+description='''Zanpakuto original: Akagane (Oro Rojo).
+Shikai, Gyakuzan, Bankai Guren no Kiba y Guren Retsudan.'''
+
+[[dependencies.akagane]]
+    modId="forge"
+    mandatory=true
+    versionRange="[52,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.akagane]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.1,1.22)"
+    ordering="NONE"
+    side="BOTH"
