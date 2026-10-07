@@ -3,8 +3,6 @@
 La misma espada del mod de Skyrim (`skyrim/LudoKresshSword`), con el mismo modelo 3D y las mismas
 stats.
 
-![La espada renderizada por Minecraft](preview/minecraft-gui.png)
-
 ## Instalar
 
 1. Instala **Forge para Minecraft 1.21.1**.
@@ -52,7 +50,7 @@ Skyrim:
 ## Compilar
 
 GitHub compila el mod solo: cada cambio en esta carpeta ejecuta el workflow
-**Ludo Kressh Sword (Minecraft)**, que deja el `.jar` en `dist/` y una captura del juego en
-`preview/`. En tu PC: `gradlew build` (Java 21) genera `build/libs/ludokressh-1.0.0.jar`.
+**Ludo Kressh Sword (Minecraft)**, que deja el `.jar` en `dist/`. En tu PC: `gradlew build`
+(Java 21) genera `build/libs/ludokressh-1.0.0.jar`.
 
 `tools/export_obj.py` regenera el modelo OBJ a partir del `.nif` del mod de Skyrim.
