@@ -67,16 +67,33 @@ jobs:
 
       - name: Client smoke test (model + texture + screenshot)
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri > /dev/null
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri x11-apps imagemagick > /dev/null
+          mkdir -p run/config preview ci-out
+          printf 'earlyWindowControl = false\n' > run/config/fml.toml
+          Xvfb :99 -screen 0 1280x720x24 > /dev/null 2>&1 &
+          export DISPLAY=:99
+          sleep 2
           cp ci/CiPreview.java src/main/java/com/ricardo/ludokressh/
           rm -f run/screenshots/ludokressh_gui.png
-          xvfb-run -a -s "-screen 0 1280x720x24" timeout -k 30 900 ./gradlew runClient --no-daemon > client.log 2>&1 || echo "client exit $?"
+          ./gradlew runClient --no-daemon > client.log 2>&1 &
+          PID=$!
+          for i in $(seq 1 200); do
+            [ -f run/screenshots/ludokressh_gui.png ] && break
+            kill -0 $PID 2>/dev/null || break
+            sleep 5
+          done
+          sleep 8
+          xwd -root -display :99 | convert xwd:- ci-out/display.png || true
+          kill $PID 2>/dev/null || true; sleep 5; pkill -9 -f java || true
           rm src/main/java/com/ricardo/ludokressh/CiPreview.java
           LOG=run/logs/latest.log
-          grep -iE "ludokressh|missing texture|unable to load model|exception loading|failed to load model|OpenGL|GL_RENDERER" "$LOG" | head -80 || true
-          tail -40 client.log
-          mkdir -p preview
-          cp run/screenshots/ludokressh_gui.png preview/minecraft-gui.png
+          grep -iE "ludokressh|missing texture|unable to load model|exception loading|failed to load model|OpenGL|GL_RENDERER|Backend library" "$LOG" | head -60 || true
+          echo "=== last log lines"; tail -25 "$LOG" || true
+          if [ -f run/screenshots/ludokressh_gui.png ]; then
+            cp run/screenshots/ludokressh_gui.png preview/minecraft-gui.png
+          else
+            echo "::error::no in-game screenshot"; cp ci-out/display.png preview/ci-display.png || true; exit 1
+          fi
           if grep -iE "(ERROR|Exception|Unable|Failed).*ludokressh|Missing textures in model ludokressh" "$LOG"; then echo "::error::client problems"; exit 1; fi
 
       - name: Commit the jar and the preview to the branch
@@ -85,7 +102,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add dist/*.jar
-          [ -f preview/minecraft-gui.png ] && git add preview/minecraft-gui.png
+          git add preview/*.png 2>/dev/null || true
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "Build Ludo Kressh Sword jar for Minecraft [skip ci]"
-          for i in 1 2 3; do git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
+          for i in 1 2 3; do git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
