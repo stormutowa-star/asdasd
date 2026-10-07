@@ -482,13 +482,12 @@ def build():
             chain(head, 'ear%d%s' % (k, s), (sx * 4.8, yy, 2.0), (rx, sx * 0.35, 0),
                   [(3, 3, L, 0.05), (2, 2, int(L * 0.8), 0.06), (1, 1, int(L * 0.6), 0.0)])
         # colmillo exterior junto a la boca, apuntando hacia delante
-        # nace en la base de las orejas y corre por el borde de la boca hasta salir por delante
-        tk = M.part('tusk' + s, head, (sx * 6.6, 2.2, 1.0), (0.02, sx * 0.09, 0))
-        tk.cube(2, 2, 15, (0, 0, 7.5), 'tusk')
-        tk2 = M.part('tuskMid' + s, tk, (0, 0, 14.5), (0.10, 0, 0))
-        tk2.cube(2, 2, 9, (0, 0, 4.5), 'tusk')
-        tk3 = M.part('tuskTip' + s, tk2, (0, 0, 8.5), (0.30, 0, 0))
-        tk3.cube(1, 1, 7, (0, 0, 3.5), 'tusk')
+        # colmillo del color de los dientes: sale por la comisura de la boca, pegado a la base
+        # de la cresta/orejas, y apunta hacia delante y abajo
+        tk = M.part('tusk' + s, head, (sx * 5.4, 2.2, 6.0), (0.55, sx * 0.10, 0))
+        tk.cube(2, 2, 6, (0, 0, 3.0), 'tooth')
+        tk2 = M.part('tuskTip' + s, tk, (0, 0, 5.5), (0.20, 0, 0))
+        tk2.cube(1, 1, 5, (0, 0, 2.5), 'tooth')
     # dientes triangulares superiores
     for i in range(6):
         zz = 14.0 + i * 3.4
