@@ -118,7 +118,7 @@ def render_fx(sprites, air):
         air[no] = dict(frames=frames, loop=d['loop'], name='FX: ' + d['name'])
     # cut-ins estilo JUS (koma)
     names = [("GOD'S STRENGTH", 'Fuerza de los Dioses'), ('STORM CLEAVE', 'Hendidura de Tormenta'),
-             ('ROGUE KNIGHT', 'Juicio del Caballero Errante')]
+             ("ROGUE KNIGHT'S JUDGMENT", 'Juicio del Caballero Errante')]
     for i, (t, s) in enumerate(names):
         img, ax, ay, _ = fx.cutin(t, s)
         sprites.append(dict(group=6700, no=i, img=img, ax=ax, ay=ay))
@@ -164,6 +164,8 @@ def main():
     render_fx(sprites, air)
     print('sprites totales:', len(sprites))
     pal = PL.get()
+    # convencion SFF v1: el sprite 0,0 va primero y lleva la paleta del personaje
+    sprites.sort(key=lambda sp: 0 if (sp['group'], sp['no']) == (0, 0) else 1)
     MF.write_sff(os.path.join(OUT, NAME + '.sff'), sprites, pal)
     write_air(os.path.join(OUT, NAME + '.air'), air)
     S = sounds.build()

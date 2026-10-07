@@ -17,6 +17,8 @@ Warcry y God's Strength.
 
    (o simplemente "HornedBlade" en una linea nueva)
 3. Listo. Requiere MUGEN 1.0 o superior (no funciona en WinMUGEN).
+   Probado en combate real con Ikemen GO v1.0 (IA vs IA, espejo y
+   modo de poder infinito: sin errores ni avisos al cargar).
 
 ---------------------------------------------------------------------
  BOTONES
@@ -83,7 +85,7 @@ Warcry y God's Strength.
  SUPERS  (barra de poder de 3 niveles)
 ---------------------------------------------------------------------
  GOD'S STRENGTH  [1 barra] ... x + y   (o  abajo,abajo-adelante,adelante x2 + x)
-   Fuerza de los Dioses: aura roja, todo el daÃ±o x1.8 durante 12 s.
+   Fuerza de los Dioses: aura roja, todo el daño x1.8 durante 12 s.
    Las chispas y la onda de Great Cleave se vuelven rojas.
 
  HENDIDURA DE TORMENTA [1 barra] ... y + z  (o  abajo,abajo-adelante,adelante x2 + y)
@@ -106,7 +108,7 @@ Warcry y God's Strength.
  EXTRAS
 ---------------------------------------------------------------------
  - 2 intros (espada clavada / grito de guerra), 3 poses de victoria,
-   burla, derrota por tiempo, voces en espaÃ±ol.
+   burla, derrota por tiempo, voces en español.
  - IA incluida: la CPU usa combos, antiaereos, Storm Hammer a
    distancia, Warcry, carga de poder y los 3 supers.
 

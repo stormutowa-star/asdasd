@@ -3,7 +3,7 @@
 ;   Storm Hammer  -> proyectil de rayo que aturde (estado 1000/1050/1100)
 ;   Great Cleave  -> tajos de barrido amplio y onda de hendidura (230/1200)
 ;   Warcry        -> +defensa, +velocidad y regeneracion 8 s (1300)
-;   God's Strength-> daño x1.8 y aura roja 12 s (super 3000)
+;   God's Strength-> dano x1.8 y aura roja 12 s (super 3000)
 ;
 ; Variables:
 ;   var(5)  dash aereo usado            var(10) tiempo restante de Warcry
@@ -147,7 +147,7 @@ type = RemoveExplod
 trigger1 = var(10) = 0 && NumExplod(6310) > 0
 id = 6310
 
-; ---- God's Strength: daño x1.8, brillo rojo
+; ---- God's Strength: dano x1.8, brillo rojo
 [State -2, God's Strength ataque]
 type = AttackMulSet
 trigger1 = 1
@@ -157,9 +157,9 @@ value = ifelse(var(11) > 0, 1.8, 1)
 type = PalFX
 trigger1 = var(11) > 0
 time = 2
-add = 70, -10, -30
-mul = 256, 200, 190
-sinadd = 40, 0, 0, 30
+add = 40, -10, -20
+mul = 256, 220, 210
+sinadd = 30, 0, 0, 30
 
 [State -2, God's Strength fin aura]
 type = RemoveExplod
@@ -1260,7 +1260,7 @@ time = 10
 freq = 60
 ampl = 3
 
-[State 810, lanzar daño]
+[State 810, lanzar dano]
 type = TargetLifeAdd
 trigger1 = AnimElem = 5
 value = -55
@@ -1940,7 +1940,7 @@ ctrl = 1
 ;===========================================================================
 ; SUPERS
 ;===========================================================================
-; x+y - GOD'S STRENGTH (1000 de poder): daño x1.8 durante 12 s
+; x+y - GOD'S STRENGTH (1000 de poder): dano x1.8 durante 12 s
 [Statedef 3000]
 type = S
 movetype = I
@@ -2227,7 +2227,7 @@ type = PlaySnd
 trigger1 = Anim = 3170 && AnimElem = 3
 value = 2, 0
 
-[State 3105, rayo daño]
+[State 3105, rayo dano]
 type = TargetLifeAdd
 trigger1 = Anim = 3170 && AnimElem = 3 && NumTarget > 0
 value = -60
@@ -2498,7 +2498,7 @@ type = ChangeAnim
 trigger1 = Time = 35
 value = 3150
 
-[State 3220, tajo daño]
+[State 3220, tajo dano]
 type = TargetLifeAdd
 trigger1 = Time = 3 || Time = 14 || Time = 25 || Time = 38 || Time = 49
 value = -30
@@ -2627,7 +2627,7 @@ time = 40
 freq = 60
 ampl = 7
 
-[State 3230, daño final]
+[State 3230, dano final]
 type = TargetLifeAdd
 trigger1 = Time = 0
 value = -150

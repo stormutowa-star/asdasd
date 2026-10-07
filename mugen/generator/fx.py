@@ -278,17 +278,17 @@ def build():
         f.ring((0, -40), 10 + 70 * t, 3 * (1 - t) + 1, 0.8 - 0.6 * t, sx=1.0, sy=0.55)
         frs.append(f.frame('gold', 2))
     fx(6300, frs, name='anillo warcry')
-    # escudo del Warcry (burbuja translucida con hexagonos)
+    # escudo del Warcry (anillo translucido con destellos que giran)
     frs = []
     for k in range(4):
         f = Field(110, 140, 55, 136)
         c = (0, -64)
-        d = np.hypot((f.xx - c[0]) / 48, (f.yy - c[1]) / 66)
-        edge = np.clip(1 - np.abs(d - 1) / 0.08, 0, 1) * 0.75
-        inner = np.clip(1 - d, 0, 1) * 0.15
-        hexv = ((np.floor(f.xx / 9 + np.floor(f.yy / 8) * 0.5 + k * 0.25) + np.floor(f.yy / 8)) % 3 == 0) & (d < 1)
-        f.f = np.maximum(edge, inner + hexv * 0.12 * (0.8 + 0.2 * math.sin(k)))
-        frs.append(f.frame('trail', 4, thresh=0.1))
+        d = np.hypot((f.xx - c[0]) / 46, (f.yy - c[1]) / 64)
+        ang = np.arctan2(f.yy - c[1], f.xx - c[0])
+        edge = np.clip(1 - np.abs(d - 1) / 0.06, 0, 1)
+        glint = 0.35 + 0.35 * np.clip(np.cos(3 * ang + k * math.pi / 2), 0, 1) ** 4
+        f.f = edge * glint
+        frs.append(f.frame('trail', 4, thresh=0.12))
     fx(6310, frs, loop=0, name='escudo warcry')
 
     # ---------------- 6400 aura de God's Strength (llamas rojas)
@@ -375,11 +375,19 @@ def cutin(title, sub):
     face = face.resize((180, 120), Image.LANCZOS)
     img.paste(face, (6, -14))
     d.polygon([(150, 0), (W, 0), (W, H), (128, H)], fill=(18, 20, 40))
-    try:
-        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 15 if len(title) > 12 else 18)
-        font2 = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 12)
-    except OSError:
-        font = font2 = ImageFont.load_default()
+    def fit(text, size, maxw):
+        path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+        while size > 7:
+            try:
+                fnt = ImageFont.truetype(path, size)
+            except OSError:
+                return ImageFont.load_default()
+            if d.textlength(text, font=fnt) <= maxw:
+                return fnt
+            size -= 1
+        return fnt
+    font = fit(title, 18, 156)
+    font2 = fit(sub, 12, 150)
     d.text((154, 28), title, fill=(255, 210, 70), font=font)
     d.text((158, 56), sub, fill=(200, 215, 255), font=font2)
     d.rectangle([0, 0, W - 1, H - 1], outline=(0, 0, 0), width=4)
