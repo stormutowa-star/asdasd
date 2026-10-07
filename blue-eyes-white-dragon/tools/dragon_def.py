@@ -478,16 +478,17 @@ def build():
         ep.scale = 0.62
         ep.cube(1, 9, 9, (sx * 0.6, 0, 0), 'eye', side=sx, round=True)
         # espina larga detras del ojo (hacia atras)
-        for k, (yy, rx, L) in enumerate(((10.0, 0.30, 13), (7.0, 0.05, 12), (4.0, -0.20, 10))):
-            chain(head, 'ear%d%s' % (k, s), (sx * 4.8, yy, 2.0), (rx, sx * 0.35, 0),
-                  [(3, 3, L, 0.05), (2, 2, int(L * 0.8), 0.06), (1, 1, int(L * 0.6), 0.0)])
-        # colmillo exterior junto a la boca, apuntando hacia delante
-        # colmillo del color de los dientes: sale por la comisura de la boca, pegado a la base
-        # de la cresta/orejas, y apunta hacia delante y abajo
-        tk = M.part('tusk' + s, head, (sx * 5.4, 2.2, 6.0), (0.55, sx * 0.10, 0))
+        # aleta de la mejilla (una sola pieza, como en la imagen): nace en la comisura de la boca
+        # con una punta blanca hacia delante, corre por el lado de la cabeza y atras se abre en 3 pinchos
+        fin = M.part('fin' + s, head, (sx * 6.0, 4.6, 7.5), (-0.08, sx * 0.08, 0))
+        fin.cube(2, 4, 13, (0, 0, 0), 'horn', tip=('z', -1), ink=True)
+        tk = M.part('tusk' + s, fin, (0, -1.0, 6.0), (0.45, sx * -0.04, 0))
         tk.cube(2, 2, 6, (0, 0, 3.0), 'tooth')
         tk2 = M.part('tuskTip' + s, tk, (0, 0, 5.5), (0.20, 0, 0))
         tk2.cube(1, 1, 5, (0, 0, 2.5), 'tooth')
+        for k, (yy, rx, L) in enumerate(((1.3, 0.45, 14), (0.0, 0.05, 13), (-1.3, -0.30, 10))):
+            chain(fin, 'ear%d%s' % (k, s), (0, yy, -6.0), (rx, sx * 0.22, 0),
+                  [(2, 3, L, 0.04), (2, 2, int(L * 0.8), 0.05), (1, 1, int(L * 0.6), 0.0)])
     # dientes triangulares superiores
     for i in range(6):
         zz = 14.0 + i * 3.4
