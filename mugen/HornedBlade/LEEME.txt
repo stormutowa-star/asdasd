@@ -1,0 +1,124 @@
+=====================================================================
+  HORNED BLADE - El Caballero Errante            (estilo MUGEN JUS)
+  Personaje para MUGEN 1.0 / 1.1 / Ikemen GO
+=====================================================================
+
+Personaje creado a partir de la ilustracion "Horned Blade" (pixel art)
+con las habilidades de SVEN (Dota 2): Storm Hammer, Great Cleave,
+Warcry y God's Strength.
+
+---------------------------------------------------------------------
+ INSTALACION
+---------------------------------------------------------------------
+1. Copia la carpeta "HornedBlade" dentro de  mugen/chars/
+2. Abre  mugen/data/select.def  y en la seccion [Characters] agrega:
+
+      HornedBlade/HornedBlade.def
+
+   (o simplemente "HornedBlade" en una linea nueva)
+3. Listo. Requiere MUGEN 1.0 o superior (no funciona en WinMUGEN).
+
+---------------------------------------------------------------------
+ BOTONES
+---------------------------------------------------------------------
+ a = corte debil        b = Great Cleave        c = golpe fuerte
+ x = Storm Hammer       y = Gran Hendidura      z = Warcry
+ s (mantener) = cargar poder          abajo + s = burla
+
+ Como en JUS, los especiales salen con UN boton (con o sin direccion).
+ Tambien funcionan con los movimientos clasicos indicados.
+
+---------------------------------------------------------------------
+ SISTEMA
+---------------------------------------------------------------------
+ Adelante, Adelante ............ Correr
+ Atras, Atras .................. Salto atras
+ Adelante, Adelante (en el aire) Dash aereo (1 por salto)
+ Arriba en el aire ............. Doble salto
+ Mantener s .................... Cargar poder (aura de rayos)
+ Adelante/Atras + c (cerca) .... Agarre: cabezazo y lanzamiento
+
+---------------------------------------------------------------------
+ NORMALES
+---------------------------------------------------------------------
+ a, a, a ....................... Combo de 3 tajos (el 3o derriba)
+ b ............................. Great Cleave (barrido amplio)
+ c ............................. Golpe demoledor (onda en el suelo)
+ Adelante + c .................. Embestida con la hombrera
+ abajo + a ..................... Corte bajo
+ abajo + b ..................... Tajo lunar (lanzador; mantener
+                                  ARRIBA al conectar para perseguir)
+ abajo + c ..................... Barrida
+ aire + a / b / c .............. Corte aereo / Hendidura aerea /
+                                  Martillo aereo (estrella al suelo)
+
+ Cancelaciones: los normales que conectan se pueden cancelar en
+ especiales y supers (a -> b -> c, a,a -> x, abajo+b -> salto...)
+
+---------------------------------------------------------------------
+ ESPECIALES (habilidades de Sven)
+---------------------------------------------------------------------
+ STORM HAMMER  .......... x   (o  abajo, abajo-adelante, adelante + x)
+   Lanza su guantelete magico cargado de rayos. Al impactar explota y
+   ATURDE al rival (~0.7 s) con descargas electricas.
+   En el aire sale en diagonal hacia abajo.
+
+ CARGA DEL MARTILLO ..... adelante + x  (o  adelante, abajo, abajo-adelante + x)
+   (Mejora del Cetro de Aghanim) Sven viaja junto al martillo: embestida
+   de rayo inmune a proyectiles que aturde y explota al conectar.
+
+ GRAN HENDIDURA ......... y   (o  abajo, abajo-atras, atras + y)
+   GREAT CLEAVE: tajo enorme que libera una onda de hendidura que
+   recorre el suelo y golpea 2 veces. Con God's Strength la onda es roja.
+
+ TAJO ASCENDENTE ........ adelante + y  (o  adelante, abajo, abajo-adelante + y)
+   Antiaereo de 3 golpes, invencible al inicio.
+
+ WARCRY ................. z   (o  abajo, abajo + z)
+   Grito de guerra: durante 8 segundos +45% de defensa, mas velocidad
+   al caminar/correr y regeneracion de vida (+40 al instante, como el
+   Fragmento de Aghanim). Escudo azul visible. Enfriamiento: 15 s.
+
+---------------------------------------------------------------------
+ SUPERS  (barra de poder de 3 niveles)
+---------------------------------------------------------------------
+ GOD'S STRENGTH  [1 barra] ... x + y   (o  abajo,abajo-adelante,adelante x2 + x)
+   Fuerza de los Dioses: aura roja, todo el daño x1.8 durante 12 s.
+   Las chispas y la onda de Great Cleave se vuelven rojas.
+
+ HENDIDURA DE TORMENTA [1 barra] ... y + z  (o  abajo,abajo-adelante,adelante x2 + y)
+   Arremetida + 3 tajos + rayo del cielo que lanza al rival.
+
+ JUICIO DEL CABALLERO ERRANTE [3 barras] ... x + y + z
+                                 (o  abajo,abajo-atras,atras x2 + z)
+   Ultimate cinematico: Storm Hammer -> arremetida -> se activa God's
+   Strength -> 5 tajos -> salto y golpe final con rayo y onda.
+
+ Todos los supers muestran un panel (koma) estilo JUS con el retrato.
+
+---------------------------------------------------------------------
+ PALETAS (al elegir: x y z a b c)
+---------------------------------------------------------------------
+ 1 Original   2 Fuerza de los Dioses (rojo)   3 Sombra
+ 4 Paladin Dorado   5 Vigil Verde   6 Hielo
+
+---------------------------------------------------------------------
+ EXTRAS
+---------------------------------------------------------------------
+ - 2 intros (espada clavada / grito de guerra), 3 poses de victoria,
+   burla, derrota por tiempo, voces en español.
+ - IA incluida: la CPU usa combos, antiaereos, Storm Hammer a
+   distancia, Warcry, carga de poder y los 3 supers.
+
+---------------------------------------------------------------------
+ ARCHIVOS
+---------------------------------------------------------------------
+ HornedBlade.def   definicion          HornedBlade.cns  estados
+ HornedBlade.cmd   comandos + IA       HornedBlade.air  animaciones
+ HornedBlade.sff   sprites (SFF v1)    HornedBlade.snd  sonidos
+ HornedBlade1..6.act  paletas
+
+ Los sprites se generaron por codigo a partir de la ilustracion
+ (esqueleto 2D animado), los efectos y sonidos son procedurales y las
+ voces se sintetizaron. El generador esta en la carpeta "generator" del
+ repositorio por si quieres modificar poses, colores o sonidos.
