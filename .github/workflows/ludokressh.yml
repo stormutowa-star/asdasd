@@ -39,7 +39,13 @@ jobs:
         id: build
         run: |
           chmod +x gradlew
-          ./gradlew build --no-daemon --stacktrace
+          if ! ./gradlew build --no-daemon --info > build.log 2>&1; then
+            echo "=== build failed; relevant output ==="
+            grep -vE "^\s+at |^\s+\.\.\. [0-9]+ more" build.log | grep -iE -B2 -A8 "error|exception|failed|caused by|mavenizer" | tail -200
+            find . ~/.gradle -path '*mavenizer*' -name '*.log' 2>/dev/null | head -5 | while read f; do echo "=== $f"; tail -60 "$f"; done
+            exit 1
+          fi
+          grep -E "BUILD|Task :compileJava" build.log | tail -5
           mkdir -p dist
           cp build/libs/ludokressh-*.jar dist/
           unzip -l dist/ludokressh-*.jar
