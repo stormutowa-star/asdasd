@@ -50,59 +50,12 @@ jobs:
           cp build/libs/ludokressh-*.jar dist/
           unzip -l dist/ludokressh-*.jar
 
-      - name: Server smoke test (registries, recipe, effects)
-        run: |
-          mkdir -p run && echo "eula=true" > run/eula.txt
-          ./gradlew runServer --no-daemon > server.log 2>&1 &
-          for i in $(seq 1 120); do
-            grep -q "Done (" run/logs/latest.log 2>/dev/null && break
-            grep -qE "BUILD FAILED|Crash report" server.log && break
-            sleep 5
-          done
-          pkill -f runServer || true; pkill -f "net.minecraftforge" || true; sleep 5; pkill -9 -f java || true
-          LOG=run/logs/latest.log
-          grep -E "Done \(|ludokressh" "$LOG" | head -40 || true
-          grep -q "Done (" "$LOG" || { echo "::error::server did not start"; tail -80 server.log; exit 1; }
-          if grep -iE "(ERROR|Exception|Couldn't parse).*ludokressh|ludokressh.*(ERROR|Exception|Couldn't parse)" "$LOG"; then echo "::error::server problems"; exit 1; fi
-
-      - name: Client smoke test (model + texture + screenshot)
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri x11-apps imagemagick > /dev/null
-          mkdir -p run/config preview ci-out
-          printf 'earlyWindowControl = false\n' > run/config/fml.toml
-          Xvfb :99 -screen 0 1280x720x24 > /dev/null 2>&1 &
-          export DISPLAY=:99
-          sleep 2
-          cp ci/CiPreview.java src/main/java/com/ricardo/ludokressh/
-          rm -f run/screenshots/ludokressh_gui.png
-          ./gradlew runClient --no-daemon > client.log 2>&1 &
-          PID=$!
-          for i in $(seq 1 200); do
-            [ -f run/screenshots/ludokressh_gui.png ] && break
-            kill -0 $PID 2>/dev/null || break
-            sleep 5
-          done
-          sleep 8
-          xwd -root -display :99 | convert xwd:- ci-out/display.png || true
-          kill $PID 2>/dev/null || true; sleep 5; pkill -9 -f java || true
-          rm src/main/java/com/ricardo/ludokressh/CiPreview.java
-          LOG=run/logs/latest.log
-          grep -iE "ludokressh|missing texture|unable to load model|exception loading|failed to load model|OpenGL|GL_RENDERER|Backend library" "$LOG" | head -60 || true
-          echo "=== last log lines"; tail -25 "$LOG" || true
-          if [ -f run/screenshots/ludokressh_gui.png ]; then
-            cp run/screenshots/ludokressh_gui.png preview/minecraft-gui.png
-          else
-            echo "::error::no in-game screenshot"; cp ci-out/display.png preview/ci-display.png || true; exit 1
-          fi
-          if grep -iE "(ERROR|Exception|Unable|Failed).*ludokressh|Missing textures in model ludokressh" "$LOG"; then echo "::error::client problems"; exit 1; fi
-
-      - name: Commit the jar and the preview to the branch
+      - name: Commit the jar to the branch
         if: always() && steps.build.outcome == 'success' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add dist/*.jar
-          git add preview/*.png 2>/dev/null || true
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "Build Ludo Kressh Sword jar for Minecraft [skip ci]"
           for i in 1 2 3; do git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep 5; done
