@@ -13,7 +13,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: minecraft/LudoKresshSword
@@ -53,18 +53,24 @@ jobs:
       - name: Server smoke test (registries, recipe, effects)
         run: |
           mkdir -p run && echo "eula=true" > run/eula.txt
-          timeout -k 30 900 ./gradlew runGameTestServer --no-daemon > gametest.log 2>&1 || echo "gametest exit $?"
-          LOG=$(ls -t run/logs/latest.log run*/logs/latest.log 2>/dev/null | head -1)
-          echo "log: $LOG"
-          grep -iE "ludokressh|exception|error" "$LOG" | grep -viE "realms|telemetry|authlib" | head -80 || true
-          if grep -iE "(ERROR|Exception).*ludokressh|ludokressh.*(ERROR|Exception|Couldn't parse)" "$LOG"; then echo "::error::server problems"; exit 1; fi
+          ./gradlew runServer --no-daemon > server.log 2>&1 &
+          for i in $(seq 1 120); do
+            grep -q "Done (" run/logs/latest.log 2>/dev/null && break
+            grep -qE "BUILD FAILED|Crash report" server.log && break
+            sleep 5
+          done
+          pkill -f runServer || true; pkill -f "net.minecraftforge" || true; sleep 5; pkill -9 -f java || true
+          LOG=run/logs/latest.log
+          grep -E "Done \(|ludokressh" "$LOG" | head -40 || true
+          grep -q "Done (" "$LOG" || { echo "::error::server did not start"; tail -80 server.log; exit 1; }
+          if grep -iE "(ERROR|Exception|Couldn't parse).*ludokressh|ludokressh.*(ERROR|Exception|Couldn't parse)" "$LOG"; then echo "::error::server problems"; exit 1; fi
 
       - name: Client smoke test (model + texture + screenshot)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri > /dev/null
           cp ci/CiPreview.java src/main/java/com/ricardo/ludokressh/
           rm -f run/screenshots/ludokressh_gui.png
-          xvfb-run -a -s "-screen 0 1280x720x24" timeout -k 30 1200 ./gradlew runClient --no-daemon > client.log 2>&1 || echo "client exit $?"
+          xvfb-run -a -s "-screen 0 1280x720x24" timeout -k 30 900 ./gradlew runClient --no-daemon > client.log 2>&1 || echo "client exit $?"
           rm src/main/java/com/ricardo/ludokressh/CiPreview.java
           LOG=run/logs/latest.log
           grep -iE "ludokressh|missing texture|unable to load model|exception loading|failed to load model|OpenGL|GL_RENDERER" "$LOG" | head -80 || true
