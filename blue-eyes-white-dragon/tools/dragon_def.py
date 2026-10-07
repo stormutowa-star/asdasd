@@ -13,9 +13,9 @@ MD = (100, 208, 234)    # cian
 DK = (50, 150, 192)    # turquesa
 DD = (22, 84, 120)     # azul profundo
 BK = (7, 28, 50)       # casi negro azulado
-MEM_LT = (150, 214, 236)
-MEM_MD = (80, 168, 208)
-MEM_DK = (30, 92, 136)
+MEM_LT = (120, 190, 222)
+MEM_MD = (52, 120, 172)
+MEM_DK = (16, 46, 88)
 MAROON = (48, 10, 24)
 TONGUE = (104, 26, 44)
 EYE = (36, 76, 255)
@@ -355,33 +355,38 @@ def paint_glow(cube, face, pos, normal, edge):
 
 
 # ------------------------------------------------------------------ el modelo
+HEAD_SCALE = 1.3
+
+
 def build():
-    M = Model(512, 256)
+    M = Model(512, 512)
     root = M.root
 
     # ---------------- pelvis y torso
-    pelvis = M.part('pelvis', root, (0, 33, 3))
-    pelvis.cube(20, 14, 20, (0, 0, 0), 'belly')
+    pelvis = M.part('pelvis', root, (0, 34, 3))
+    pelvis.cube(24, 16, 22, (0, 0, 0), 'belly')
+    pelvis.cube(20, 20, 18, (0, 0, 0), 'belly')
 
-    chest = M.part('chest', pelvis, (0, 5, -5), (-0.18, 0, 0))
-    chest.cube(26, 22, 22, (0, 11, -1), 'belly')
+    chest = M.part('chest', pelvis, (0, 5, -5), (-0.30, 0, 0))
+    chest.cube(30, 24, 24, (0, 12, -1), 'belly')
+    chest.cube(24, 28, 26, (0, 12, -1), 'belly')
     # placas dorsales del torso
     for i, (zz, hh) in enumerate([(-9, 6), (-4, 7)]):
         pass
 
     # ---------------- cuello en S (4 segmentos gruesos) - cabeza arriba a la derecha de la carta
     neck_defs = [  # (w, h, d, rotX): 7 tramos cortos -> curva en S suave
-        (17, 9, 15, 0.30),
-        (17, 9, 15, 0.18),
-        (16, 9, 14, 0.10),
-        (16, 9, 14, 0.00),
-        (15, 9, 14, -0.18),
-        (15, 9, 13, -0.22),
-        (14, 9, 13, -0.30),
+        (20, 9, 18, -0.62),
+        (19, 9, 17, 0.10),
+        (18, 9, 17, 0.30),
+        (18, 9, 16, 0.38),
+        (17, 9, 16, 0.40),
+        (16, 9, 15, 0.38),
+        (15, 9, 15, 0.30),
     ]
     prev = chest
-    py = 21.0
-    pz = -5.0
+    py = 24.0
+    pz = -2.0
     for i, (w, h, d, rx) in enumerate(neck_defs):
         nk = M.part('neck%d' % (i + 1), prev, (0, py, pz), (rx, 0, 0))
         nk.cube(w, h, d, (0, h / 2.0 - 1, 0), 'belly')
@@ -394,7 +399,8 @@ def build():
 
     # ---------------- cabeza curva, como la carta: se construye por "rebanadas" inclinadas
     # que siguen el perfil (frente que baja en curva hacia un hocico largo), con aristas biseladas.
-    head = M.part('head', prev, (0, 11, 0), (0.40, 0, 0))
+    head = M.part('head', prev, (0, 9, 1.0), (-0.65, 0, 0))
+    head.scale = HEAD_SCALE
 
     def smoothstep(e0, e1, x):
         x = max(0.0, min(1.0, (x - e0) / (e1 - e0)))
@@ -453,7 +459,8 @@ def build():
             tp = M.part('toothU%d%s' % (i, 'R' if sx < 0 else 'L'), head, (sx * (w / 2.0 - 1.3), yb + 0.5, zz), (-0.25, 0, 0))
             tp.cube(1, ln, 1, (0, -ln / 2.0, 0), 'tooth')
     for sx in (-1, 1):
-        head.cube(2, 7, 2, (sx * 2.2, 0.0, 35.0), 'tooth')
+        tp = M.part('fangU' + ('R' if sx < 0 else 'L'), head, (sx * 2.2, 2.4, 35.0), (-0.2, 0, 0))
+        tp.cube(1, 5, 1, (0, -2.5, 0), 'tooth')
     head.cube(10, 4, 8, (0, 0.5, 6.0), 'throat')
 
     # corona de espinas curvas (3 tramos cada una) que irradian hacia atras
@@ -466,20 +473,20 @@ def build():
         s = 'R' if sx < 0 else 'L'
         for i, (x, y, z, rx, ry, L, cv) in enumerate(crown):
             prev_p = M.part('spike%d%s' % (i, s), head, (sx * x, y, z), (rx, sx * ry, 0))
-            prev_p.cube(3, 3, L, (0, 0, -L / 2.0), 'horn', tip=('z', -1), ink=True)
+            prev_p.cube(4, 4, L, (0, 0, -L / 2.0), 'horn', tip=('z', -1), ink=True)
             L2 = int(L * 0.75)
             p2 = M.part('spikeB%d%s' % (i, s), prev_p, (0, 0, -L + 0.5), (cv, sx * 0.05, 0))
-            p2.cube(2, 2, L2, (0, 0, -L2 / 2.0), 'horn', tip=('z', -1), ink=True)
+            p2.cube(3, 3, L2, (0, 0, -L2 / 2.0), 'horn', tip=('z', -1), ink=True)
             L3 = int(L * 0.55)
             p3 = M.part('spikeC%d%s' % (i, s), p2, (0, 0, -L2 + 0.5), (cv, sx * 0.05, 0))
-            p3.cube(1, 1, L3, (0, 0, -L3 / 2.0), 'horn', tip=('z', -1), ink=True)
+            p3.cube(2, 2, L3, (0, 0, -L3 / 2.0), 'horn', tip=('z', -1), ink=True)
     c0 = M.part('crest0', head, (0, 15.5, 4.0), (1.15, 0, 0))
     c0.cube(3, 3, 11, (0, 0, -5.5), 'horn', tip=('z', -1), ink=True)
     c1 = M.part('crest1', c0, (0, 0, -10.5), (0.25, 0, 0))
     c1.cube(2, 2, 8, (0, 0, -4.0), 'horn', tip=('z', -1), ink=True)
 
     # mandibula inferior curva (abierta en reposo, como la carta)
-    jaw = M.part('jaw', head, (0, 2.0, 0.0), (0.45, 0, 0))
+    jaw = M.part('jaw', head, (0, 2.0, 0.0), (0.72, 0, 0))
 
     def jaw_prof(t):
         yt = 0.0
@@ -496,7 +503,8 @@ def build():
             tp = M.part('toothD%d%s' % (i, 'R' if sx < 0 else 'L'), jaw, (sx * (w / 2.0 - 1.3), -0.5, zz), (0.25, 0, 0))
             tp.cube(1, ln, 1, (0, ln / 2.0, 0), 'tooth', down=False)
     for sx in (-1, 1):
-        jaw.cube(2, 5, 2, (sx * 2.0, 2.2, 33.0), 'tooth', down=False)
+        tp = M.part('fangD' + ('R' if sx < 0 else 'L'), jaw, (sx * 2.0, -0.5, 33.0), (0.2, 0, 0))
+        tp.cube(1, 4, 1, (0, 2.0, 0), 'tooth', down=False)
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
         jp = M.part('jawSpike' + s, jaw, (sx * 5.5, -2.5, 3.0), (-0.25, sx * 0.55, 0))
@@ -504,18 +512,18 @@ def build():
 
     # ---------------- cola (7 segmentos, se curva hacia arriba)
     tail_defs = [  # (w,h,d, rotX)  rotX>0 -> sube la punta
-        (16, 12, 14, -0.10),
-        (14, 11, 13, 0.02),
-        (12, 10, 13, 0.16),
-        (10, 9, 12, 0.28),
-        (8, 7, 12, 0.34),
-        (6, 5, 11, 0.40),
-        (4, 3, 10, 0.34),
+        (18, 14, 14, -0.05),
+        (16, 12, 13, 0.20),
+        (14, 11, 13, 0.32),
+        (12, 10, 12, 0.42),
+        (10, 8, 12, 0.48),
+        (8, 6, 11, 0.50),
+        (5, 4, 10, 0.45),
     ]
     prev = pelvis
     tz = -10.0
     for i, (w, h, d, rx) in enumerate(tail_defs):
-        tp = M.part('tail%d' % (i + 1), prev, (0, 0 if i else 0.5, tz), (rx, 0, 0))
+        tp = M.part('tail%d' % (i + 1), prev, (0, 0 if i else 0.5, tz), (rx, -0.14 if i else -0.2, 0))
         tp.cube(w, h, d, (0, 0, -d / 2.0 + 0.5), 'belly' if i < 5 else 'scale')
         if i < 6:
             tp.cube(2, 4 if i < 4 else 3, 5, (0, h / 2.0 + 1.0, -d / 2.0), 'horn', tip=('y', 1), outline=False)
@@ -528,41 +536,41 @@ def build():
     # ---------------- piernas
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
-        thigh = M.part('thigh' + s, pelvis, (sx * 12.0, -3, 0), (-0.55, 0, 0))
-        thigh.cube(11, 15, 13, (0, -6.5, 0), 'scale')
+        thigh = M.part('thigh' + s, pelvis, (sx * 13.0, -3, 0), (-0.55, 0, 0))
+        thigh.cube(14, 16, 15, (0, -6.5, 0), 'scale')
         shin = M.part('shin' + s, thigh, (0, -13, 0.5), (1.05, 0, 0))
-        shin.cube(9, 15, 9, (0, -6.5, 0), 'scale')
+        shin.cube(11, 15, 11, (0, -6.5, 0), 'scale')
         foot = M.part('foot' + s, shin, (0, -13.5, 0), (-0.5, 0, 0))
-        foot.cube(11, 5, 12, (0, -1.5, 3.0), 'scale')
-        for i, tx in enumerate((-3.2, 0, 3.2)):
-            fp = M.part('toe%d%s' % (i, s), foot, (tx, -2.0, 7.2), (0.35, tx * 0.05, 0))
-            fp.cube(2, 2, 6, (0, 0, 3), 'claw', tip=('z', 1))
+        foot.cube(13, 5, 13, (0, -1.5, 3.0), 'scale')
+        for i, tx in enumerate((-4.0, 0, 4.0)):
+            fp = M.part('toe%d%s' % (i, s), foot, (tx, -2.0, 7.8), (0.45, tx * 0.05, 0))
+            fp.cube(3, 3, 8, (0, 0, 4), 'claw', tip=('z', 1))
         hp = M.part('heel' + s, foot, (0, -1.5, -2.5), (0.5, 0, 0))
         hp.cube(2, 2, 5, (0, 0, -2.5), 'claw', tip=('z', -1))
 
     # ---------------- brazos con garras (alzados hacia delante como en la carta)
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
-        up = M.part('arm' + s, chest, (sx * 17.0, 17, -4.0), (-0.70, sx * 0.28, sx * 0.15))
-        up.cube(9, 15, 9, (0, -5.5, 0), 'scale')
-        lo = M.part('forearm' + s, up, (0, -11.5, 0), (-1.00, 0, 0))
-        lo.cube(8, 14, 8, (0, -5.0, 0), 'scale')
-        hand = M.part('hand' + s, lo, (0, -11.5, 0), (-0.15, 0, 0))
-        hand.cube(10, 5, 10, (0, -1.0, 0), 'scale')
-        for i, tx in enumerate((-3.4, 0.0, 3.4)):
-            cl = M.part('claw%d%s' % (i, s), hand, (tx, -4.0, 0.0), (0.25, tx * 0.05, 0))
-            cl.cube(3, 5, 3, (0, -2.0, 0), 'scale')
-            cl2 = M.part('claw2%d%s' % (i, s), cl, (0, -4.5, 0), (0.55, 0, 0))
-            cl2.cube(3, 9, 3, (0, -4.0, 0), 'claw', tip=('y', -1))
-        th = M.part('thumb' + s, hand, (sx * 5.5, -1.0, 2.0), (0.4, 0, sx * 0.5))
-        th.cube(3, 8, 3, (0, -3.5, 0), 'claw', tip=('y', -1))
+        up = M.part('arm' + s, chest, (sx * 17.0, 19, -6.0), (-0.95, sx * 0.25, sx * 0.20))
+        up.cube(11, 17, 11, (0, -6.5, 0), 'scale')
+        lo = M.part('forearm' + s, up, (0, -13.5, 0), (-0.75, 0, 0))
+        lo.cube(10, 15, 10, (0, -6.0, 0), 'scale')
+        hand = M.part('hand' + s, lo, (0, -13.0, 0), (1.05, 0, 0))
+        hand.cube(13, 6, 12, (0, -1.5, 0), 'scale')
+        for i, tx in enumerate((-4.4, 0.0, 4.4)):
+            cl = M.part('claw%d%s' % (i, s), hand, (tx, -4.5, 0.0), (0.30, tx * 0.04, 0))
+            cl.cube(4, 6, 4, (0, -2.5, 0), 'scale')
+            cl2 = M.part('claw2%d%s' % (i, s), cl, (0, -5.5, 0), (0.45, 0, 0))
+            cl2.cube(3, 12, 3, (0, -5.5, 0), 'claw', tip=('y', -1))
+        th = M.part('thumb' + s, hand, (sx * 6.5, -1.5, 2.5), (0.5, 0, sx * 0.5))
+        th.cube(3, 10, 3, (0, -4.5, 0), 'claw', tip=('y', -1))
 
     # ---------------- alas
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
-        raise_ = 0.80
-        sweep = 0.55
-        wr = M.part('wing' + s, chest, (sx * 11.0, 19, 8.0), (-0.85, -sx * sweep, -sx * raise_))
+        raise_ = 1.25
+        sweep = 0.30
+        wr = M.part('wing' + s, chest, (sx * 12.0, 24, 9.0), (-0.50, -sx * sweep, -sx * raise_))
         # huesos: humero + antebrazo
         wr.cube(18, 6, 6, (sx * 9.0, 0, 0), 'bone', outline=False)
         wr.cube(19, 5, 5, (sx * 27.0, 0, 0), 'bone', outline=False)

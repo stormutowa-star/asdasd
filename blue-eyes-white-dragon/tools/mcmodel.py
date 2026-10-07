@@ -69,6 +69,7 @@ class Part:
         self.parent = parent
         self.off = nat2model(off)
         self.rot = rot  # (x, y, z) rad
+        self.scale = 1.0
         self.cubes = []
         self.children = []
         if parent:
@@ -175,7 +176,7 @@ class Model:
                 off = off + np.array(d[:3], float)
                 rot = rot + np.array(d[3:], float)
             t = t + R @ off
-            R = R @ self.rot_matrix(*rot)
+            R = R @ self.rot_matrix(*rot) * p.scale
         return R, t
 
     def polygons_world(self, pose=None):
