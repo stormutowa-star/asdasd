@@ -189,7 +189,8 @@ weap = record('WEAP', WEAP_SWORD, [
     sub('DESC', zs('')),
     sub('INAM', fid(WPNzBlade1HandImpactSet)),
     sub('WNAM', fid(STAT_1ST)),
-    sub('SNAM', fid(WPNSwingBladeMediumSD)),
+    # vanilla swords leave Attack Sound (SNAM) empty: the swing "whoosh" is the Attack Fail Sound
+    sub('TNAM', fid(WPNSwingBladeMediumSD)),
     sub('NAM9', fid(WPNBlade1HandDrawSD)),
     sub('NAM8', fid(WPNBlade1HandSheatheSD)),
     sub('DATA', struct.pack('<IfH', 3500, 14.0, 24)),

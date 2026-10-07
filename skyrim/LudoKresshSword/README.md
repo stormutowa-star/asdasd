@@ -8,7 +8,7 @@ están imbuidos en veneno.
 
 ## Instalar con Vortex
 
-1. Descarga **`dist/LudoKresshSword-1.0.zip`**.
+1. Descarga **`dist/LudoKresshSword-1.1.zip`**.
 2. En Vortex abre **Mods** y arrastra el zip a la zona *Drop File(s)* (o usa *Install From File*).
 3. Pulsa **Enable** y después **Deploy**.
 4. En **Plugins**, comprueba que `LudoKresshSword.esp` está activado.
