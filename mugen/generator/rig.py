@@ -119,7 +119,7 @@ def solve(pose):
 
     # ---- torso, cabeza, hombrera
     out['torso'] = Placement(P['torso'], root, ta)
-    neck = tp(PT.NECK)
+    neck = tp(PT.NECK_J)
     out['head'] = Placement(P['head'], neck, ta + g.get('head', 0.0))
     pts['neck'] = neck
     pts['head_top'] = neck + rot(ta + g.get('head', 0.0)) @ np.array([0, -24.0])
@@ -138,7 +138,7 @@ def solve(pose):
 
     # ---- brazos
     arms = g.get('arms', {})
-    for side, sh_ref in (('near', PT.SH_NEAR), ('far', PT.SH_FAR)):
+    for side, sh_ref in (('near', PT.SH_NEAR_J), ('far', PT.SH_FAR_J)):
         A = arms.get(side, {})
         sh = tp(sh_ref)
         if 'hand' in A:
@@ -158,7 +158,7 @@ def solve(pose):
         pts[side + '_stretch'] = st
         pts[side + '_upper_ang'] = a1
     pa = g.get('pauldron', 0.0) + 0.25 * max(-60, min(60, pts['near_upper_ang'] - 100))
-    out['pauldron'] = Placement(P['pauldron'], tp(PT.SH_NEAR), ta + pa)
+    out['pauldron'] = Placement(P['pauldron'], tp(PT.SH_NEAR_J), ta + pa)
 
     order = ['far_upper', 'far_fore', 'SWORD_BACK', 'far_thigh', 'far_shin', 'far_foot',
              'near_thigh', 'near_shin', 'near_foot', 'torso', 'head', 'SWORD_MID',

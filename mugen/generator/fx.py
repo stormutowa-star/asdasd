@@ -387,7 +387,7 @@ def cutin(title, sub):
         x0 = r.uniform(0, W * 0.5)
         d.line([(x0, y), (W, y + r.uniform(-4, 4))], fill=(180, 190, 215), width=int(r.integers(1, 3)))
     ref = cut_ref((230, 200, 230))
-    face = ref.crop((250, 196, 560, 406))
+    face = ref.crop((464, 196, 774, 406))
     face = face.resize((180, 120), Image.LANCZOS)
     img.paste(face, (6, -14))
     d.polygon([(150, 0), (W, 0), (W, H), (128, H)], fill=(18, 20, 40))
@@ -421,9 +421,10 @@ def cutin(title, sub):
 
 
 def cut_ref(bgcol):
-    """referencia espejada con el fondo sustituido (degradado azul oscuro o color)."""
-    ref = Image.open(os.path.join(HERE, 'reference.jpg')).convert('RGB').transpose(Image.FLIP_LEFT_RIGHT)
-    bg = np.load(os.path.join(HERE, 'build', 'bg_mask.npy'))
+    """referencia (orientacion original: mira a la derecha, hacia el rival)
+    con el fondo sustituido (degradado azul oscuro o color)."""
+    ref = Image.open(os.path.join(HERE, 'reference.jpg')).convert('RGB')
+    bg = np.load(os.path.join(HERE, 'build', 'bg_mask.npy'))[:, ::-1]
     a = np.asarray(ref).astype(float)
     if bgcol is None:
         g = np.linspace(0, 1, 1024)[:, None, None]
@@ -438,9 +439,8 @@ def cut_ref(bgcol):
 def portraits():
     pal = PL.get()
     ref = cut_ref(None)
-    # en la imagen espejada la cabeza esta en x ~ 1024-800..1024-380
-    big = ref.crop((1024 - 790, 190, 1024 - 410, 633)).resize((120, 140), Image.LANCZOS)
-    small = ref.crop((1024 - 700, 200, 1024 - 520, 380)).resize((25, 25), Image.LANCZOS)
+    big = ref.crop((410, 190, 790, 633)).resize((120, 140), Image.LANCZOS)
+    small = ref.crop((520, 200, 700, 380)).resize((25, 25), Image.LANCZOS)
     out = []
     for im in (small, big):
         arr = np.asarray(im).astype(int)

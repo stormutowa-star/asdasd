@@ -9,7 +9,7 @@ CR = G + 18      # agachado
 
 IDLE = dict(root=(0, G), torso=0, head=0,
             legs=dict(near=dict(ankle=(-30, -12), knee=1), far=dict(ankle=(19, -12), knee=1)),
-            sword=dict(grip=(4, -4), ang=-52))
+            sword=dict(grip=(-4, -4), ang=-128))
 
 
 def P(base=None, **kw):
@@ -65,17 +65,17 @@ def A(no, name, frames, loop=None):
 
 # ---------------------------------------------------------------- reposo
 I0 = IDLE
-I1 = P(dr=(0, 1), torso=1, sword=sw((4, -3), -51))
-I2 = P(dr=(0, 2), torso=2, head=-1, sword=sw((4, -2), -50))
+I1 = P(dr=(0, 1), torso=1, sword=sw((-4, -3), -129))
+I2 = P(dr=(0, 2), torso=2, head=-1, sword=sw((-4, -2), -130))
 A(0, 'De pie', [F(I0, 8), F(I1, 7), F(I2, 10), F(I1, 7)], loop=0)
 
-TURN = P(torso=-6, head=-4, sword=sw((2, -6), -70))
+TURN = P(torso=-4, head=0, sword=sw((-2, -6), -110))
 A(5, 'Giro de pie', [F(TURN, 3), F(I0, 3)])
 
-CMID = P(dr=(1, 9), torso=4, legs=legs((-31, -12), (20, -12)), sword=sw((6, -3), -46))
-CFULL = P(root=(2, CR), torso=8, head=-4, legs=legs((-33, -12), (22, -12)), sword=sw((8, -1), -40))
-CFULL2 = P(CFULL, dr=(0, 1), torso=9, sword=sw((8, 0), -39))
-A(6, 'Giro agachado', [F(P(CFULL, torso=0, sword=sw((4, -2), -60)), 3), F(CFULL, 3)])
+CMID = P(dr=(1, 9), torso=4, legs=legs((-31, -12), (20, -12)), sword=sw((-6, -3), -134))
+CFULL = P(root=(2, CR), torso=8, head=0, legs=legs((-33, -12), (22, -12)), sword=sw((-8, -1), -140))
+CFULL2 = P(CFULL, dr=(0, 1), torso=9, sword=sw((-8, 0), -141))
+A(6, 'Giro agachado', [F(P(CFULL, torso=0, sword=sw((-4, -2), -120)), 3), F(CFULL, 3)])
 A(10, 'De pie a agachado', [F(CMID, 3)])
 A(11, 'Agachado', [F(CFULL, 10), F(CFULL2, 10)], loop=0)
 A(12, 'Agachado a de pie', [F(CMID, 3)])
@@ -97,7 +97,7 @@ def walk_pose(phi, back=False, S=26, H=10, cn=-8, cf=6, lean=4, run=False):
                          foot=(-15 * math.sin(math.pi * u) if ph >= 0.5 else 0))
     bob = 1.5 * abs(math.cos(2 * math.pi * phi))
     pose = P(dr=(0, bob), torso=lean + 1.5 * math.sin(4 * math.pi * phi), legs=out,
-             sword=sw((4, -4 + bob), -52 + 3 * math.sin(2 * math.pi * phi)))
+             sword=sw((-4, -4 + bob), -128 - 3 * math.sin(2 * math.pi * phi)))
     return pose
 
 
@@ -106,11 +106,11 @@ A(21, 'Caminar atras', [F(walk_pose(1 - k / 8, lean=-2), 5) for k in range(8)], 
 
 # ---------------------------------------------------------------- salto
 JPREP = P(CMID, dr=(0, 3), torso=6)
-JUP1 = P(torso=4, legs=legs((-22, -16), (16, -20)), sword=sw((4, -8), -58))
-JUP2 = P(torso=6, legs=legs((-16, -26), (14, -30)), sword=sw((4, -10), -62))
+JUP1 = P(torso=4, legs=legs((-22, -16), (16, -20)), sword=sw((-4, -8), -122))
+JUP2 = P(torso=6, legs=legs((-16, -26), (14, -30)), sword=sw((-4, -10), -118))
 JFWD = P(JUP2, torso=12, legs=legs((-12, -28), (16, -32)))
 JBACK = P(JUP2, torso=-6, legs=legs((-20, -24), (10, -28)))
-JDN = P(torso=4, legs=legs((-24, -12), (18, -9)), sword=sw((4, -6), -48))
+JDN = P(torso=4, legs=legs((-24, -12), (18, -9)), sword=sw((-4, -6), -132))
 A(40, 'Inicio de salto', [F(JPREP, 2), F(JPREP, 2)])
 A(41, 'Salto neutral (subida)', [F(JUP1, 4), F(JUP2, -1)])
 A(42, 'Salto adelante (subida)', [F(JUP1, 4), F(JFWD, -1)])
@@ -161,16 +161,16 @@ DROOP = dict(ang=-30)
 
 def hh(k):
     return P(dr=(-1 - 2 * k, 1 + k), torso=-8 - 6 * k, head=-6 - 4 * k,
-             sword=sw((2 - 2 * k, -4 + k), -56 - 8 * k), arms=dict(far=dict(elbow=(0.2, 1))))
+             sword=sw((-2 + 2 * k, -4 + k), -124 + 8 * k))
 
 
 def hl(k):
     return P(dr=(1 + k, 2 + 3 * k), torso=10 + 8 * k, head=10 + 3 * k,
-             legs=legs((-31, -12), (21, -12)), sword=sw((8 + k, 0 + 2 * k), -40 + 10 * k))
+             legs=legs((-31, -12), (21, -12)), sword=sw((-8 - k, 0 + 2 * k), -140 - 10 * k))
 
 
 def hc(k):
-    return P(CFULL, dr=(-1 - k, 0), torso=-4 - 7 * k, head=-6 - 4 * k, sword=sw((4, -2), -46 + 10 * k))
+    return P(CFULL, dr=(-1 - k, 0), torso=-4 - 7 * k, head=-6 - 4 * k, sword=sw((-4, -2), -134 - 10 * k))
 
 
 HH = [hh(0), hh(1), hh(2), hh(3), hh(2.4)]
@@ -242,7 +242,7 @@ A(5200, 'Recuperacion cerca del suelo', [F(P(TUCK, spin=-120), 3), F(P(TUCK, spi
                                           F(P(TUCK, spin=-330), 4), F(CMID, -1)])
 A(5210, 'Recuperacion en el aire', [F(P(TUCK, spin=-60), 3), F(P(TUCK, spin=-150), 3), F(P(TUCK, spin=-240), 3),
                                      F(P(TUCK, spin=-320), 3), F(JUP1, 4), F(JUP2, 4)], loop=4)
-DZ = [P(dr=(0, 3), torso=10 + 4 * s, head=18 + 6 * s, sword=sw((10, -2), 25), legs=legs((-28, -12), (18, -12)),
+DZ = [P(dr=(0, 3), torso=10 + 4 * s, head=18 + 6 * s, sword=sw((-10, -2), 166), legs=legs((-28, -12), (18, -12)),
         arms=dict(far=dict(elbow=(1, 0.5))), spin=2 * s) for s in (-1, 0, 1, 0)]
 A(5300, 'Mareado', [F(DZ[0], 8), F(DZ[1], 8), F(DZ[2], 8), F(DZ[3], 8)], loop=0)
 

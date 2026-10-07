@@ -108,6 +108,21 @@ HIP_FAR = (100, 112)
 HIP_T, KNEE_T, ANKLE_T = (104, 110), (112, 134), (107, 157)
 GROUND_T = 169
 
+# La cabeza, el torso y la hombrera se usan con la ORIENTACION ORIGINAL de la
+# ilustracion (cara y hombrera hacia el rival). Se recortan de la imagen
+# espejada y se vuelven a voltear sobre su pivote; sus articulaciones se
+# reflejan respecto a la pelvis.
+UPPER_ORIGINAL = True
+
+
+def _mx(p):
+    return (2 * PELVIS[0] - p[0], p[1]) if UPPER_ORIGINAL else p
+
+
+NECK_J = _mx(NECK)
+SH_NEAR_J = _mx(SH_NEAR)
+SH_FAR_J = _mx(SH_FAR)
+
 GUARD = (121, 91)            # base de la hoja
 TIP = (175, 22)
 SWORD_ANG = ang(GUARD, TIP)  # ~ -52 grados
@@ -259,10 +274,19 @@ def build():
     parts['sword'] = sword
 
     # ---------------- brazos y puños (procedurales)
+    if UPPER_ORIGINAL:
+        for k in ('head', 'torso', 'pauldron'):
+            flip(parts[k])
     parts['upper'] = limb(UPPER_LEN, 6.4, 5.2, 'blue')
     parts['fore'] = limb(FORE_LEN - 4, 5.6, 4.6, 'armor')
     parts['fist'] = fist()
     return parts
+
+
+def flip(part):
+    """voltea la parte horizontalmente sobre su pivote."""
+    part.img = np.fliplr(part.img).copy()
+    part.pivot = (part.img.shape[1] - part.pivot[0], part.pivot[1])
 
 
 def limb(L, r0, r1, kind):

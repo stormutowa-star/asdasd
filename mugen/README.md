@@ -4,6 +4,8 @@
 
 ![pelea](preview/pelea_ikemen.gif)
 
+![tu imagen vs el sprite en el juego](preview/orientacion_vs_original.png)
+
 | Botón | Normal | Especial (estilo JUS) |
 |---|---|---|
 | a | combo de 3 tajos | — |

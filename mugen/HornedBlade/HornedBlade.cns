@@ -183,7 +183,7 @@ trigger1 = statetype != L && movetype != H
 trigger1 = GameTime % 14 = 0
 anim = 6420 + (GameTime / 14) % 2
 postype = p1
-pos = ifelse(statetype = C, 2, -4), ifelse(statetype = C, -75, -88)
+pos = ifelse(statetype = C, 12, 4), ifelse(statetype = C, -74, -88)
 bindtime = -1
 removetime = -2
 sprpriority = 4

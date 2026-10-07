@@ -18,7 +18,11 @@ def main():
         p = os.path.join(CH, fn)
         ext = fn.rsplit('.', 1)[-1].lower()
         if ext in ('cns', 'cmd', 'def', 'air', 'txt'):
-            txt = open(p, 'rb').read().decode('utf-8')
+            raw = open(p, 'rb').read()
+            try:
+                txt = raw.decode('utf-8')
+            except UnicodeDecodeError:
+                txt = raw.decode('cp1252')
             txt = txt.replace('\r\n', '\n')
             if ext != 'txt':
                 txt = ascii_fold(txt)
