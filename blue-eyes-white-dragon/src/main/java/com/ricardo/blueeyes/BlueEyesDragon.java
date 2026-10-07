@@ -56,13 +56,15 @@ public class BlueEyesDragon extends FlyingMob {
     private static final EntityDataAccessor<Integer> DATA_CHARGE = SynchedEntityData.defineId(BlueEyesDragon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_FIRE = SynchedEntityData.defineId(BlueEyesDragon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_BEAM_TARGET = SynchedEntityData.defineId(BlueEyesDragon.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_RECALL = SynchedEntityData.defineId(BlueEyesDragon.class, EntityDataSerializers.INT);
 
     public static final int CHARGE_TIME = 24;
     public static final int FIRE_TIME = 14;
     public static final float MODEL_SCALE = 0.8F;
     /** Boca respecto a los pies (bloques), medido sobre el modelo generado * MODEL_SCALE. */
-    private static final double MOUTH_HEIGHT = 4.85D;
-    private static final double MOUTH_FORWARD = 1.75D;
+    private static final double MOUTH_HEIGHT = 5.0D;
+    private static final double MOUTH_FORWARD = 1.6D;
+    public static final int RECALL_TIME = 26;
 
     private static final float BEAM_DAMAGE = 40.0F;
     private static final float SPLASH_DAMAGE = 20.0F;
@@ -104,6 +106,7 @@ public class BlueEyesDragon extends FlyingMob {
         builder.define(DATA_CHARGE, 0);
         builder.define(DATA_FIRE, 0);
         builder.define(DATA_BEAM_TARGET, -1);
+        builder.define(DATA_RECALL, 0);
     }
 
     @Override
@@ -154,6 +157,53 @@ public class BlueEyesDragon extends FlyingMob {
         }
         Entity e = sl.getEntity(this.cardUUID);
         return e instanceof FieldCardEntity c && c.isAlive() ? c : null;
+    }
+
+    // ------------------------------------------------------------------ desactivacion: el dragon vuelve a su carta
+
+    public int getRecall() {
+        return this.entityData.get(DATA_RECALL);
+    }
+
+    public boolean isRecalling() {
+        return getRecall() > 0;
+    }
+
+    /** Empieza a volver a la carta: deja de luchar, se encoge y entra en ella convertido en luz. */
+    public void recall() {
+        if (isRecalling() || this.level().isClientSide) {
+            return;
+        }
+        this.entityData.set(DATA_RECALL, 1);
+        this.entityData.set(DATA_CHARGE, 0);
+        this.setTarget(null);
+        this.level().playSound(null, getX(), getY() + 3.0D, getZ(), SoundEvents.ENDER_DRAGON_AMBIENT, SoundSource.NEUTRAL, 2.0F, 1.3F);
+        this.level().playSound(null, getX(), getY(), getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.NEUTRAL, 2.0F, 0.8F);
+    }
+
+    private void tickRecall(ServerLevel sl) {
+        int r = getRecall() + 1;
+        this.entityData.set(DATA_RECALL, r);
+        FieldCardEntity card = getCard();
+        Vec3 target = card != null ? card.position() : position();
+        // vuela hacia la carta mientras se encoge
+        Vec3 to = target.subtract(position());
+        this.setDeltaMovement(to.scale(0.12D));
+        Vec3 c = position().add(0.0D, 2.5D * (1.0D - r / (double) RECALL_TIME), 0.0D);
+        for (int i = 0; i < 6; i++) {
+            double t = this.random.nextDouble();
+            Vec3 p = c.add(target.subtract(c).scale(t));
+            sl.sendParticles(ParticleTypes.END_ROD, p.x, p.y, p.z, 1, 0.25D, 0.25D, 0.25D, 0.0D);
+        }
+        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y, c.z, 4, 1.0D, 1.5D, 1.0D, 0.1D);
+        if (r >= RECALL_TIME) {
+            sl.sendParticles(ParticleTypes.FLASH, target.x, target.y + 0.3D, target.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            sl.sendParticles(ParticleTypes.END_ROD, target.x, target.y + 0.2D, target.z, 40, 0.4D, 0.3D, 0.4D, 0.08D);
+            if (card != null) {
+                card.onDragonReturned(this);
+            }
+            this.discard();
+        }
     }
 
     /** Retirada (al recoger la carta, o si el duenio desaparece). */
@@ -218,6 +268,10 @@ public class BlueEyesDragon extends FlyingMob {
             if (fire - 1 == 0) {
                 this.entityData.set(DATA_BEAM_TARGET, -1);
             }
+        }
+        if (isRecalling()) {
+            tickRecall((ServerLevel) this.level());
+            return;
         }
         updateOrientation();
 
@@ -373,9 +427,9 @@ public class BlueEyesDragon extends FlyingMob {
             if (!this.level().isClientSide) {
                 FieldCardEntity card = getCard();
                 if (card != null) {
-                    card.retrieve(player);
+                    card.deactivate(player);
                 } else {
-                    dismiss();
+                    recall();
                 }
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide);
@@ -385,7 +439,7 @@ public class BlueEyesDragon extends FlyingMob {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (isOwner(source.getEntity())) {
+        if (isOwner(source.getEntity()) || isRecalling()) {
             return false;
         }
         return super.hurt(source, amount);
@@ -507,7 +561,7 @@ public class BlueEyesDragon extends FlyingMob {
 
         @Override
         public boolean canUse() {
-            return this.dragon.getTarget() == null;
+            return this.dragon.getTarget() == null && !this.dragon.isRecalling();
         }
 
         @Override
@@ -577,7 +631,7 @@ public class BlueEyesDragon extends FlyingMob {
         @Override
         public boolean canUse() {
             LivingEntity t = this.dragon.getTarget();
-            return t != null && t.isAlive();
+            return t != null && t.isAlive() && !this.dragon.isRecalling();
         }
 
         @Override
@@ -663,6 +717,9 @@ public class BlueEyesDragon extends FlyingMob {
 
         @Override
         public boolean canUse() {
+            if (this.dragon.isRecalling()) {
+                return false;
+            }
             this.pending = find();
             return this.pending != null;
         }
@@ -676,7 +733,7 @@ public class BlueEyesDragon extends FlyingMob {
         @Override
         public boolean canContinueToUse() {
             LivingEntity t = this.dragon.getTarget();
-            if (t == null || !this.dragon.canTarget(t) || this.dragon.distanceToSqr(t) > 56.0D * 56.0D) {
+            if (t == null || this.dragon.isRecalling() || !this.dragon.canTarget(t) || this.dragon.distanceToSqr(t) > 56.0D * 56.0D) {
                 return false;
             }
             if (--this.recheck <= 0) {

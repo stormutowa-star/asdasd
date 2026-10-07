@@ -77,5 +77,8 @@ public class CardItem extends Item {
         tips.add(Component.literal("Este legendario dragon es una poderosa maquina de destruccion.").withStyle(ChatFormatting.GRAY));
         tips.add(Component.literal("Clic derecho sobre el campo: invoca al dragon.").withStyle(ChatFormatting.AQUA));
         tips.add(Component.literal("Ataca a tus enemigos con White Lightning.").withStyle(ChatFormatting.AQUA));
+        tips.add(Component.literal("Clic der. a la carta del campo: desactivar / activar.").withStyle(ChatFormatting.DARK_AQUA));
+        tips.add(Component.literal("Agachado + clic der. al dragon, o di \"desactivar\": vuelve a la carta.").withStyle(ChatFormatting.DARK_AQUA));
+        tips.add(Component.literal("Agachado + clic der. a la carta: recogerla.").withStyle(ChatFormatting.DARK_AQUA));
     }
 }

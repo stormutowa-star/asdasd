@@ -5,5 +5,9 @@
   "itemGroup.blueeyes": "Blue-Eyes White Dragon",
   "message.blueeyes.aim_at_ground": "Aim at a block on the field to summon the dragon.",
   "message.blueeyes.card_returned": "The card returns to your hand.",
-  "message.blueeyes.not_owner": "This card is not yours."
+  "message.blueeyes.not_owner": "This card is not yours.",
+  "message.blueeyes.deactivated": "Deactivated: the White Dragon returns to its card.",
+  "message.blueeyes.activated": "Blue-Eyes White Dragon, appear!",
+  "message.blueeyes.cooldown": "The card can be activated again in %s s.",
+  "message.blueeyes.destroyed": "The dragon was destroyed! The card is set face-down (%s s)."
 }

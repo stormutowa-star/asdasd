@@ -5,5 +5,9 @@
   "itemGroup.blueeyes": "Dragón Blanco de Ojos Azules",
   "message.blueeyes.aim_at_ground": "Apunta a un bloque del campo para invocar al dragón.",
   "message.blueeyes.card_returned": "La carta vuelve a tu mano.",
-  "message.blueeyes.not_owner": "Esta carta no es tuya."
+  "message.blueeyes.not_owner": "Esta carta no es tuya.",
+  "message.blueeyes.deactivated": "Desactivada: el Dragón Blanco vuelve a su carta.",
+  "message.blueeyes.activated": "¡Dragón Blanco de Ojos Azules, aparece!",
+  "message.blueeyes.cooldown": "La carta podrá activarse en %s s.",
+  "message.blueeyes.destroyed": "¡El dragón fue destruido! La carta queda boca abajo (%s s)."
 }

@@ -41,7 +41,7 @@ def main():
         R, t = M.world_transform(M.parts[part])
         m = R @ np.array([nat[0], -nat[1], -nat[2]], float) + t
         return (-m[0] / 16.0, (24 - m[1]) / 16.0 * 1.0, -m[2] / 16.0)
-    print('boca(punta)   x=%.2f y=%.2f z=%.2f' % anchor('head', (0, 3.0, 38.0)))
+    print('boca(punta)   x=%.2f y=%.2f z=%.2f' % anchor('head', (0, 3.0, 36.0)))
     print('ojo/cabeza    x=%.2f y=%.2f z=%.2f' % anchor('head', (0, 6.0, 6.0)))
     for name, (yaw, pitch) in views.items():
         img, _, _ = mcmodel.render(polys, tex, size=(700, 700), yaw=yaw, pitch=pitch, scale=scale*0.95, center=center)
@@ -51,8 +51,8 @@ def main():
         R, t = M.world_transform(M.parts[part])
         m = R @ np.array([nat[0], -nat[1], -nat[2]], float) + t
         return np.array([-m[0], -m[1], m[2]]) / 16.0
-    hc = cam_at('head', (0, 6, 14))
-    for name, yaw, pitch in (('head_front', 0.3, 0.1), ('head_side', -math.pi/2, 0.0), ('head_3q', -0.8, 0.25)):
+    hc = cam_at('head', (0, 4, 16))
+    for name, yaw, pitch in (('head_front', 0.0, 0.1), ('head_side', -math.pi/2, 0.0), ('head_3q', -0.6, 0.15), ('head_3q2', 0.8, 0.3)):
         img, _, _ = mcmodel.render(polys, tex, size=(700, 700), yaw=yaw, pitch=pitch, scale=scale*3.2, center=hc)
         Image.fromarray(img).save(os.path.join(PREV, name + '.png'))
     print('ok')

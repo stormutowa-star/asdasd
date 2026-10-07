@@ -44,7 +44,13 @@ public class BlueEyesRenderer extends MobRenderer<BlueEyesDragon, BlueEyesModel>
 
     @Override
     protected void scale(BlueEyesDragon dragon, PoseStack poseStack, float partialTick) {
-        poseStack.scale(BlueEyesDragon.MODEL_SCALE, BlueEyesDragon.MODEL_SCALE, BlueEyesDragon.MODEL_SCALE);
+        float s = BlueEyesDragon.MODEL_SCALE;
+        int recall = dragon.getRecall();
+        if (recall > 0) {
+            float k = Mth.clamp((recall + partialTick) / BlueEyesDragon.RECALL_TIME, 0.0F, 1.0F);
+            s *= 1.0F - k * k * 0.97F;
+        }
+        poseStack.scale(s, s, s);
     }
 
     @Override

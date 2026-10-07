@@ -77,9 +77,9 @@ public class BlueEyesModel extends HierarchicalModel<BlueEyesDragon> {
         head.xRot += Mth.clamp(headPitch, -35.0F, 40.0F) * Mth.DEG_TO_RAD * 0.7F + c * 0.15F - f * 0.15F;
 
         // fauces: respiracion, carga (se abre) y disparo (abiertas del todo)
-        float jaw = 0.06F + Mth.sin(t * 0.1F) * 0.04F;
-        jaw = Math.max(jaw, c * 0.55F);
-        jaw = Math.max(jaw, f * 0.75F);
+        float jaw = Mth.sin(t * 0.1F) * 0.05F;
+        jaw = Math.max(jaw, c * 0.30F);
+        jaw = Math.max(jaw, f * 0.45F);
         p.get("jaw").xRot += jaw;
 
         // cola

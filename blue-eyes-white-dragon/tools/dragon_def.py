@@ -16,8 +16,8 @@ BK = (7, 28, 50)       # casi negro azulado
 MEM_LT = (150, 214, 236)
 MEM_MD = (80, 168, 208)
 MEM_DK = (30, 92, 136)
-MAROON = (74, 14, 32)
-TONGUE = (152, 44, 62)
+MAROON = (48, 10, 24)
+TONGUE = (104, 26, 44)
 EYE = (36, 76, 255)
 EYE_HI = (190, 215, 255)
 
@@ -191,7 +191,7 @@ def paint(cube, face, pos, normal, edge):
         t = (k + L / 2.0) / max(1.0, L)
         c = lerp(lerp(LT, DK, 0.35), HI, t)
         if edge == 0:
-            c = lerp(c, DD, 0.4)
+            c = lerp(c, BK if o.get('ink') else DD, 0.5 if o.get('ink') else 0.4)
         return tuple(int(v) for v in c) + (255,)
 
     if m == 'bone':
@@ -206,9 +206,11 @@ def paint(cube, face, pos, normal, edge):
             if abs(rel[0]) < 1.6:
                 c = TONGUE
             return tuple(int(v) for v in c) + (255,)
-    if m == 'mouth_roof':    # hocico: cara de abajo = paladar
+    if m == 'mouth_roof' or (m == 'skull' and o.get('roof')):
         if up < -0.5:
-            return tuple(int(v) for v in MAROON) + (255,)
+            return tuple(int(v) for v in mul(MAROON, 0.8 + 0.2 * n)) + (255,)
+    if m == 'throat':
+        return tuple(int(v) for v in mul(MAROON, 0.45)) + (255,)
 
     # ---- piel de escamas (base)
     a, b = {'x': (pos[2], pos[1]), 'y': (pos[0], pos[2]), 'z': (pos[0], pos[1])}[
@@ -268,7 +270,9 @@ def paint(cube, face, pos, normal, edge):
     if m in ('dark',):
         c = lerp(DK, DD, 0.5 + 0.4 * n)
 
-    if o.get('outline', True) and edge == 0 and min(cube.w, cube.h, cube.d) >= 3:
+    if o.get('ink') and edge == 0:
+        c = lerp(c, BK, 0.55)
+    elif o.get('outline', True) and edge == 0 and min(cube.w, cube.h, cube.d) >= 3:
         c = lerp(c, DD, 0.30)
     return tuple(int(v) for v in c) + (255,)
 
@@ -321,52 +325,65 @@ def build():
         py = h - 1.5
         pz = 0.0
 
-    # ---------------- cabeza (grande, como en la carta)
-    head = M.part('head', prev, (0, 11, 0), (0.50, 0, 0))
-    head.cube(18, 14, 17, (0, 6, 6.0), 'skull', eye=(7.0, 1.4))
-    head.cube(20, 7, 10, (0, 3.5, 3.5), 'skull', outline=False)          # mejillas
-    head.cube(13, 8, 15, (0, 5.5, 21.5), 'skull', nostril=(4.5, 2.6))    # hocico
-    head.cube(10, 7, 8, (0, 4.5, 32.5), 'skull', nostril=(1.5, 2.2), snout_tip=True)
-    head.cube(2, 2, 2, (-3.0, 8.5, 35.0), 'dark')
-    head.cube(2, 2, 2, (3.0, 8.5, 35.0), 'dark')
-    # dientes superiores y colmillos
-    for zz in (15, 19, 23, 27, 31, 35):
+    # ---------------- cabeza (hocico largo en cuna, fauces abiertas, corona de espinas)
+    head = M.part('head', prev, (0, 11, 0), (0.42, 0, 0))
+    head.cube(16, 14, 14, (0, 7, 4), 'skull', eye=(4.6, 2.6), ink=True)                 # craneo
+    head.cube(13, 10, 10, (0, 7, 15.5), 'skull', roof=True, ink=True)                   # hocico 1
+    head.cube(11, 8, 9, (0, 6.5, 24.5), 'skull', roof=True, ink=True, nostril=(2.5, 2.2))
+    head.cube(9, 6, 7, (0, 5.5, 32.5), 'skull', roof=True, ink=True, snout_tip=True)    # punta
+    head.cube(2, 1, 2, (-2.4, 9.0, 33.5), 'dark')                                       # fosas
+    head.cube(2, 1, 2, (2.4, 9.0, 33.5), 'dark')
+    # cresta nasal que baja hacia la punta
+    ridge = M.part('ridge', head, (0, 12.0, 8.0), (0.16, 0, 0))
+    ridge.cube(5, 3, 26, (0, 0.5, 12.0), 'horn', tip=('z', -1), ink=True)
+    # cejas afiladas sobre los ojos (mirada fiera)
+    for sx in (-1, 1):
+        s = 'R' if sx < 0 else 'L'
+        br = M.part('brow' + s, head, (sx * 6.2, 12.8, 11.5), (0.30, -sx * 0.18, sx * 0.25))
+        br.cube(5, 3, 11, (0, 0, -3.5), 'horn', tip=('z', 1), ink=True)
+        # placa de la mejilla
+        head.cube(2, 7, 9, (sx * 8.6, 4.5, 3.0), 'horn', tip=('z', -1), ink=True)
+    # dientes superiores: hileras como en la carta + colmillos
+    for zz, half in ((11.5, 5.6), (14, 5.6), (16.5, 5.6), (19, 5.6), (21.5, 4.6), (24, 4.6), (26.5, 4.6), (29.5, 3.6), (32, 3.6)):
         for sx in (-1, 1):
-            head.cube(1, 3, 2, (sx * 5.0, 0.8, zz), 'tooth')
+            head.cube(1, 3, 1, (sx * half, 1.0, zz), 'tooth')
     for sx in (-1, 1):
-        head.cube(2, 7, 2, (sx * 3.6, -1.6, 36.5), 'tooth')
-    # ceja
-    for sx in (-1, 1):
-        head.cube(7, 3, 11, (sx * 5.8, 13.5, 8.5), 'horn', tip=('z', 1), outline=False)
-    # cuernos principales (hacia atras, con curva)
-    for sx in (-1, 1):
-        s = 'R' if sx < 0 else 'L'
-        hp = M.part('horn' + s, head, (sx * 6.5, 12.0, 0.5), (-0.18, sx * 0.20, 0))
-        hp.cube(5, 5, 18, (0, 0, -9), 'horn', tip=('z', -1))
-        hp2 = M.part('horn2' + s, hp, (0, 0, -17.0), (0.20, sx * 0.08, 0))
-        hp2.cube(4, 4, 14, (0, 0, -6.0), 'horn', tip=('z', -1))
-    # cresta central de espinas hacia atras
-    for i, (zz, hh, ang) in enumerate([(9.0, 7, 0.9), (4.0, 9, 1.0), (-1.0, 8, 1.1)]):
-        sp = M.part('crest%d' % i, head, (0, 12.5, zz), (ang, 0, 0))
-        sp.cube(3, 4, hh, (0, 1, -hh / 2.0), 'horn', tip=('z', -1))
-    # aletas de mejilla
+        head.cube(2, 7, 2, (sx * 3.0, -0.8, 34.5), 'tooth')
+    # garganta oscura (se ve con las fauces abiertas)
+    head.cube(10, 4, 8, (0, 0.5, 7.0), 'throat')
+    # corona de espinas que irradia hacia atras
+    crown = [  # (x, y, z, rotX, rotY, largo, punta)
+        (5.0, 13.0, 1.0, 0.75, 0.22, 15, 10),
+        (7.0, 9.5, 0.0, 0.25, 0.55, 14, 9),
+        (8.0, 5.0, 1.5, -0.15, 0.75, 11, 7),
+    ]
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
-        cp = M.part('cheek' + s, head, (sx * 10.0, 3.0, 3.0), (0.0, sx * 0.75, 0))
-        cp.cube(3, 4, 12, (0, 0, -6), 'horn', tip=('z', -1))
-        cp2 = M.part('cheek2' + s, head, (sx * 10.0, 7.0, 7.0), (0.0, sx * 0.55, 0))
-        cp2.cube(3, 3, 8, (0, 0, -4), 'horn', tip=('z', -1))
+        for i, (x, y, z, rx, ry, L, T) in enumerate(crown):
+            sp = M.part('spike%d%s' % (i, s), head, (sx * x, y, z), (rx, sx * ry, 0))
+            w = 4 if i == 0 else 3
+            sp.cube(w, w, L, (0, 0, -L / 2.0), 'horn', tip=('z', -1), ink=True)
+            tp = M.part('spikeTip%d%s' % (i, s), sp, (0, 0, -L + 0.5), (0.22, sx * 0.08, 0))
+            tp.cube(w - 1, w - 1, T, (0, 0, -T / 2.0), 'horn', tip=('z', -1), ink=True)
+    for i, (zz, L, ang) in enumerate([(5.0, 9, 0.75), (0.0, 13, 0.95)]):
+        sp = M.part('crest%d' % i, head, (0, 13.5, zz), (ang, 0, 0))
+        sp.cube(3, 3, L, (0, 0, -L / 2.0), 'horn', tip=('z', -1), ink=True)
 
-    # mandibula inferior (bisagra bajo el craneo)
-    jaw = M.part('jaw', head, (0, 0.5, 3.0), (0.0, 0, 0))
-    jaw.cube(13, 4, 28, (0, -1.0, 15.0), 'mouth_top')
-    jaw.cube(9, 3, 9, (0, -1.5, 33.5), 'mouth_top')
-    for zz in (10, 14, 18, 22, 26, 30, 34):
+    # mandibula inferior: abierta en reposo, como la carta
+    jaw = M.part('jaw', head, (0, 2.0, 0.5), (0.42, 0, 0))
+    jaw.cube(12, 4, 14, (0, -1.0, 7.0), 'mouth_top', ink=True)
+    jaw.cube(10, 3, 12, (0, -0.5, 19.5), 'mouth_top', ink=True)
+    jaw.cube(8, 3, 10, (0, -0.5, 30.0), 'mouth_top', ink=True)
+    for zz, half in ((9, 5.0), (11.5, 5.0), (14.5, 4.0), (17, 4.0), (19.5, 4.0), (22, 4.0), (24.5, 4.0), (27, 3.0), (29.5, 3.0), (32, 3.0)):
         for sx in (-1, 1):
-            jaw.cube(1, 3, 2, (sx * 5.0, 2.8, zz), 'tooth', down=False)
+            jaw.cube(1, 3, 1, (sx * half, 2.2, zz), 'tooth', down=False)
     for sx in (-1, 1):
-        jaw.cube(2, 5, 2, (sx * 3.2, 3.2, 37.0), 'tooth', down=False)
-    jaw.cube(6, 2, 9, (0, -3.5, 8.0), 'horn', tip=('z', 1))   # barbilla
+        jaw.cube(2, 5, 2, (sx * 2.6, 2.6, 33.8), 'tooth', down=False)
+    jaw.cube(5, 2, 10, (0, -3.5, 12.0), 'horn', tip=('z', 1), ink=True)   # barbilla
+    for sx in (-1, 1):
+        s = 'R' if sx < 0 else 'L'
+        jp = M.part('jawSpike' + s, jaw, (sx * 5.5, -1.5, 2.0), (-0.2, sx * 0.6, 0))
+        jp.cube(2, 2, 8, (0, 0, -4), 'horn', tip=('z', -1), ink=True)
 
     # ---------------- cola (7 segmentos, se curva hacia arriba)
     tail_defs = [  # (w,h,d, rotX)  rotX>0 -> sube la punta

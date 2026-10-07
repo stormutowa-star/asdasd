@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -66,6 +67,7 @@ public class BlueEyesMod {
         ENTITIES.register(modEventBus);
         TABS.register(modEventBus);
         modEventBus.addListener(BlueEyesMod::onAttributes);
+        MinecraftForge.EVENT_BUS.addListener(BlueEyesEvents::onChat);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modEventBus.addListener(ClientSetup::registerRenderers);
