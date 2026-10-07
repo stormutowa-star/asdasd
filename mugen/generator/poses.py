@@ -269,7 +269,7 @@ A2 = [S(torso=8, grip=(16, -6), ang=30),
       S(torso=-2, grip=(6, -26), ang=-80)]
 A(210, 'Tajo ascendente (a,a)', [F(A2[0], 2), F(A2[1], 2, hit=True, trail=True), F(A2[2], 3, hit=True, trail=True),
                                   F(A2[3], 8), F(I1, 4)])
-A3 = [S(torso=-10, head=-4, grip=(-8, -40), ang=-140, legs=STEP),
+A3 = [S(torso=-10, head=2, grip=(-8, -40), ang=-140, legs=STEP),
       S(torso=2, grip=(12, -40), ang=-60, legs=STEP),
       S(torso=14, grip=(24, -18), ang=10, dr=(4, 4), legs=STEP),
       S(torso=18, grip=(24, -6), ang=40, dr=(6, 6), legs=legs((-24, -12), (32, -12))),
@@ -287,7 +287,7 @@ A(230, 'Great Cleave (b)', [F(B[0], 6), F(B[1], 2, hit=True, trail=True), F(B[2]
                              F(B[3], 12), F(B[4], 6)])
 
 # --- c: golpe vertical demoledor ---------------------------------------
-C = [S(torso=-14, head=-8, grip=(-4, -56), ang=-110, legs=WIDE),
+C = [S(torso=-12, head=2, grip=(-4, -56), ang=-110, legs=WIDE),
      S(torso=2, grip=(10, -50), ang=-60, legs=WIDE),
      S(torso=20, grip=(24, -28), ang=12, dr=(4, 4), legs=STEP),
      S(torso=26, head=6, grip=(26, -14), ang=31, dr=(6, 10), legs=legs((-30, -12), (32, -12))),
@@ -369,7 +369,7 @@ A(1100, 'Carga del Martillo (F+x)', [F(RUSH0, 8), F(RUSH[0], 2, hit=True, c1=[(-
 A(1101, 'Carga del Martillo (fin)', [F(RUSH_END, 6), F(JDN, -1)])
 
 # Great Cleave especial: onda de hendidura
-GC = [S(torso=-16, head=-6, grip=(-16, -30), ang=-160, dr=(0, 2), legs=WIDE),
+GC = [S(torso=-14, head=2, grip=(-16, -30), ang=-160, dr=(0, 2), legs=WIDE),
       S(torso=6, grip=(14, -36), ang=-70, legs=STEP),
       S(torso=22, grip=(28, -14), ang=15, dr=(6, 6), legs=legs((-26, -12), (34, -12))),
       S(torso=24, grip=(28, -8), ang=28, dr=(6, 8), legs=legs((-26, -12), (34, -12))),
@@ -386,26 +386,27 @@ A(1250, 'Tajo Ascendente del Caballero (F+y)', [F(RC[0], 4), F(RC[1], 2, hit=Tru
                                                 F(RC[4], -1)])
 
 # Warcry
-WC = [P(CMID, torso=10, head=10, sword=sw((8, -2), -40)),
-      P(torso=-14, head=-24, sword=sw((24, -52), -95), arms=dict(near=dict(hand=(-30, -40)))),
-      P(torso=-15, head=-26, sword=sw((24, -53), -95), arms=dict(near=dict(hand=(-31, -42))), spin=1)]
+WC = [P(CMID, torso=8, head=4, sword=sw((8, -2), -40)),
+      P(torso=-2, head=0, legs=WIDE, sword=sw((20, -58), -80), arms=dict(near=dict(hand=(12, -36)))),
+      P(torso=-3, head=-1, legs=WIDE, sword=sw((20, -59), -81), arms=dict(near=dict(hand=(13, -37))), dr=(0, -1))]
 A(1300, 'Warcry (z)', [F(WC[0], 8), F(WC[1], 4), F(WC[2], 3), F(WC[1], 3), F(WC[2], 3), F(WC[1], 3),
                        F(WC[2], 3), F(WC[1], 10), F(I1, 6)])
 
 # ================================================================ SUPERS
 PLANT = dict(grip=(26, -16), ang=88)
-GS = [P(CMID, torso=18, head=16, sword=sw(**PLANT), clip_ground=True),
-      P(CMID, torso=-16, head=-26, sword=sw(**PLANT), clip_ground=True,
-        arms=dict(near=dict(hand=(-26, -58)), far=dict(hand=(30, -60), elbow=(1, 0.6)))),
-      P(CMID, torso=-17, head=-28, sword=sw(**PLANT), spin=1, clip_ground=True,
-        arms=dict(near=dict(hand=(-27, -60)), far=dict(hand=(31, -62), elbow=(1, 0.6))))]
+GS = [P(CMID, torso=6, head=4, sword=sw(**PLANT), clip_ground=True,
+        arms=dict(near=dict(hand=(14, -26)), far=dict(hand=(30, -24)))),
+      P(torso=4, head=0, legs=WIDE, sword=sw(**PLANT), clip_ground=True,
+        arms=dict(near=dict(hand=(8, -44)), far=dict(hand=(30, -46)))),
+      P(torso=3, head=-1, legs=WIDE, sword=sw(**PLANT), clip_ground=True, dr=(0, -1),
+        arms=dict(near=dict(hand=(9, -46)), far=dict(hand=(31, -48))))]
 A(3000, "God's Strength", [F(GS[0], 12), F(GS[1], 4), F(GS[2], 3), F(GS[1], 3), F(GS[2], 3), F(GS[1], 3),
                            F(GS[2], 3), F(GS[1], 3), F(GS[2], 3), F(GS[1], 20), F(CMID, 6)])
 # arremetida (supers): pose de carrera con espada atras
 DASH = [P(p, torso=24, sword=sw((-12, -8), 168), arms=dict(far=dict(elbow=(-1, 0.5)))) for p in RUN[:2]]
 A(3100, 'Hendidura de Tormenta (inicio)', [F(GC[0], 6), F(DASH[0], 3), F(DASH[1], 3)], loop=1)
-SKY = [S(torso=-8, head=-10, grip=(6, -62), ang=-90, legs=WIDE),
-       S(JUP2, torso=-10, head=-10, grip=(4, -62), ang=-92),
+SKY = [S(torso=-4, head=-2, grip=(6, -62), ang=-90, legs=WIDE),
+       S(JUP2, torso=-5, head=-2, grip=(4, -62), ang=-92),
        S(JUP2, torso=10, grip=(18, -40), ang=-40),
        S(torso=24, grip=(26, -14), ang=31, dr=(6, 10), legs=legs((-30, -12), (32, -12)))]
 A(3110, 'Tajo del cielo (alzar)', [F(SKY[0], 6), F(SKY[1], -1)])
@@ -419,9 +420,9 @@ A(3170, 'Tajo rojo 3', [F(CB[0], 2), F(CB[1], 2, hit=True, trail=True, style='re
                         F(CB[2], 3, hit=True, trail=True, style='red'), F(CB[3], 6)])
 
 # ================================================================ OTROS
-CHG = [P(CMID, torso=-6, head=-14, sword=sw((24, -20), 84), clip_ground=True,
+CHG = [P(CMID, torso=2, head=-1, sword=sw((24, -20), 84), clip_ground=True,
          arms=dict(near=dict(hand=(-14, -24)), far=dict(hand=(14, -30), elbow=(1, 0.8)))),
-       P(CMID, torso=-7, head=-15, dr=(0, 1), sword=sw((24, -20), 84), clip_ground=True,
+       P(CMID, torso=1, head=-2, dr=(0, 1), sword=sw((24, -20), 84), clip_ground=True,
          arms=dict(near=dict(hand=(-15, -24)), far=dict(hand=(15, -30), elbow=(1, 0.8))))]
 A(700, 'Cargar poder', [F(CHG[0], 4), F(CHG[1], 4)], loop=0)
 A(195, 'Burla', [F(P(sword=sw((22, -36), -4), torso=4, arms=dict(near=dict(hand=(-6, -6)))), 8),
@@ -436,7 +437,7 @@ A(190, 'Intro (espada clavada)', [F(KNEELP, 40), F(P(KNEELP, head=0, torso=8), 2
                                   F(P(CMID, sword=sw((14, -28), -20)), 6), F(I0, 8), F(I1, 20)])
 A(191, 'Intro (grito)', [F(I0, 10)] + [f for f in ANIMS[1300]['frames'][:8]] + [F(I1, 10)])
 A(181, 'Victoria (espada en alto)', [F(I1, 6), F(SKY[0], 8),
-                                     F(S(torso=-6, head=-12, grip=(8, -66), ang=-88, legs=WIDE), -1)])
+                                     F(S(torso=-3, head=-2, grip=(8, -66), ang=-88, legs=WIDE), -1)])
 A(182, 'Victoria (espada al hombro)', [F(I1, 6), F(S(torso=-2, head=-6, grip=(16, -36), ang=-152,
                                                     arms=dict(far=dict(hand=(12, -8)))), -1)])
 A(183, 'Victoria (grito)', [F(GS[0], 10), F(GS[1], 6), F(GS[2], 4), F(GS[1], 4), F(GS[2], 4), F(GS[1], -1)])

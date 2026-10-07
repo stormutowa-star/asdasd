@@ -12,7 +12,7 @@
 | x | — | **Storm Hammer** (aturde) · adelante + x: carga del martillo (Aghanim) |
 | y | — | **Gran Hendidura** (onda de 2 golpes) · adelante + y: tajo ascendente |
 | z | — | **Warcry** (+defensa, +velocidad, regeneración) |
-| x+y | — | **God's Strength** (daño ×1.8, 1 barra) |
+| x+y | — | **God's Strength** (piel roja, ojos encendidos con destellos, daño ×1.8; 1 barra) |
 | y+z | — | **Hendidura de Tormenta** (1 barra) |
 | x+y+z | — | **Juicio del Caballero Errante** (ultimate, 3 barras) |
 | mantener s | cargar poder | abajo + s: burla |

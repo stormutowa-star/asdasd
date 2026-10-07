@@ -98,6 +98,7 @@ BLADE_POLY = [(110, 80), (124, 67), (140, 52), (149, 40), (149, 21), (158, 13), 
               (187, 17), (193, 26), (194, 39), (189, 45), (176, 47), (166, 53), (150, 69),
               (137, 84), (129, 92), (122, 97), (113, 93)]
 
+EYES = [(77, 51), (86, 51)]      # pixeles de los ojos (rejilla nativa espejada)
 PELVIS = (88, 112)
 NECK = (86, 62)
 SH_NEAR = (66, 78)
@@ -128,10 +129,21 @@ def build():
     char = nat > 0
     parts = {}
 
-    # ---------------- cabeza
+    # ---------------- cabeza (con indices propios para los ojos)
     m = poly(HEAD_POLY) & char
-    img = np.where(m, nat, 0)
-    parts['head'] = Part('head', outline(img), NECK)
+    img = outline(np.where(m, nat, 0))
+    lum = pal[img] @ [0.3, 0.59, 0.11]
+    for ex, ey in EYES:
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                y, x = ey + dy, ex + dx
+                if img[y, x] == 0:
+                    continue
+                if dx == 0 and dy == 0:
+                    img[y, x] = PL.EYE_CORE
+                else:
+                    img[y, x] = PL.EYE_DARK if lum[y, x] < 90 else PL.EYE_LIGHT
+    parts['head'] = Part('head', img, NECK)
 
     # ---------------- hombrera
     m = poly(PAULDRON_POLY) & char

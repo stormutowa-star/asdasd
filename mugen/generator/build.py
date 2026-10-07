@@ -170,8 +170,11 @@ def main():
     write_air(os.path.join(OUT, NAME + '.air'), air)
     S = sounds.build()
     MF.write_snd(os.path.join(OUT, NAME + '.snd'), S)
-    for i in range(len(PL.VARIANTS)):
+    nv = len(PL.VARIANTS)
+    for i in range(nv):
         MF.write_act(os.path.join(OUT, '%s%d.act' % (NAME, i + 1)), PL.variant(i))
+        # paletas 7..12: God's Strength (se activan con RemapPal 1,1 -> 1,PalNo+6)
+        MF.write_act(os.path.join(OUT, '%s%d.act' % (NAME, i + 1 + nv)), PL.gods_strength(i))
     with open(os.path.join(HERE, 'build', 'anim_summary.json'), 'w') as f:
         json.dump(summary, f, indent=1, ensure_ascii=False)
     # hoja de sprites para el readme

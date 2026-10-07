@@ -25,6 +25,13 @@ pal3     = HornedBlade3.act
 pal4     = HornedBlade4.act
 pal5     = HornedBlade5.act
 pal6     = HornedBlade6.act
+; 7-12: version God's Strength de cada paleta (piel roja, ojos encendidos)
+pal7     = HornedBlade7.act
+pal8     = HornedBlade8.act
+pal9     = HornedBlade9.act
+pal10    = HornedBlade10.act
+pal11    = HornedBlade11.act
+pal12    = HornedBlade12.act
 
 [Palette Keymap]
 x = 1

@@ -153,18 +153,42 @@ type = AttackMulSet
 trigger1 = 1
 value = ifelse(var(11) > 0, 1.8, 1)
 
-[State -2, God's Strength brillo]
-type = PalFX
-trigger1 = var(11) > 0
-time = 2
-add = 40, -10, -20
-mul = 256, 220, 210
-sinadd = 30, 0, 0, 30
+[State -2, God's Strength piel roja]
+type = RemapPal
+trigger1 = var(11) > 0 && var(14) = 0
+source = 1,1
+dest = 1, PalNo + 6
 
-[State -2, God's Strength fin aura]
-type = RemoveExplod
-trigger1 = var(11) = 0 && NumExplod(6400) > 0
-id = 6400
+[State -2, God's Strength piel roja marca]
+type = VarSet
+trigger1 = var(11) > 0 && var(14) = 0
+var(14) = 1
+
+[State -2, God's Strength fin]
+type = RemapPal
+trigger1 = var(11) = 0 && var(14) = 1
+trigger2 = RoundState <= 1 && var(11) = 0
+source = 1,1
+dest = 1, PalNo
+
+[State -2, God's Strength fin marca]
+type = VarSet
+trigger1 = var(11) = 0 && var(14) = 1
+var(14) = 0
+
+[State -2, God's Strength destellos en los ojos]
+type = Explod
+trigger1 = var(11) > 0 && alive
+trigger1 = statetype != L && movetype != H
+trigger1 = GameTime % 14 = 0
+anim = 6420 + (GameTime / 14) % 2
+postype = p1
+pos = ifelse(statetype = C, 2, -4), ifelse(statetype = C, -75, -88)
+bindtime = -1
+removetime = -2
+sprpriority = 4
+ownpal = 1
+trans = add
 
 [State -2, God's Strength chispa roja]
 type = Explod
@@ -309,6 +333,12 @@ time = 1
 type = PlaySnd
 trigger1 = Time = 10
 value = 4, 1
+
+[State 183, piel roja]
+type = RemapPal
+trigger1 = Time = 10
+source = 1,1
+dest = 1, PalNo + 6
 
 [State 183, aura]
 type = Explod
@@ -1957,6 +1987,22 @@ trigger1 = 1
 value = SCA
 time = 1
 
+[State 3000, activar]
+type = VarSet
+trigger1 = Time = 0
+var(11) = 780
+
+[State 3000, piel roja]
+type = RemapPal
+trigger1 = Time = 0
+source = 1,1
+dest = 1, PalNo + 6
+
+[State 3000, piel roja marca]
+type = VarSet
+trigger1 = Time = 0
+var(14) = 1
+
 [State 3000, pausa]
 type = SuperPause
 trigger1 = Time = 0
@@ -2001,24 +2047,6 @@ sprpriority = 3
 ownpal = 1
 trans = add
 removetime = -2
-
-[State 3000, activar]
-type = VarSet
-trigger1 = AnimElem = 2
-var(11) = 720
-
-[State 3000, aura]
-type = Explod
-trigger1 = AnimElem = 2
-anim = 6400
-id = 6400
-postype = p1
-pos = 0, 0
-bindtime = -1
-removetime = 720
-sprpriority = -2
-ownpal = 1
-trans = add
 
 [State 3000, temblor]
 type = EnvShake
@@ -2460,18 +2488,16 @@ ownpal = 1
 trans = add
 removetime = -2
 
-[State 3220, aura]
-type = Explod
-trigger1 = Time = 0 && NumExplod(6400) = 0
-anim = 6400
-id = 6400
-postype = p1
-pos = 0, 0
-bindtime = -1
-removetime = 420
-sprpriority = -2
-ownpal = 1
-trans = add
+[State 3220, piel roja]
+type = RemapPal
+trigger1 = Time = 0
+source = 1,1
+dest = 1, PalNo + 6
+
+[State 3220, piel roja marca]
+type = VarSet
+trigger1 = Time = 0
+var(14) = 1
 
 [State 3220, rugido]
 type = PlaySnd

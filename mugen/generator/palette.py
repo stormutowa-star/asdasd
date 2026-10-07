@@ -33,11 +33,19 @@ RAMPS = {
 }
 
 
+# indices propios de los ojos (para que brillen con God's Strength)
+EYE_CORE, EYE_DARK, EYE_LIGHT = 73, 74, 75
+EYE_BASE = {EYE_CORE: (242, 209, 105), EYE_DARK: (18, 22, 50), EYE_LIGHT: (190, 202, 230)}
+EYE_GLOW = {EYE_CORE: (255, 255, 230), EYE_DARK: (255, 222, 60), EYE_LIGHT: (255, 240, 150)}
+
+
 def build_palette():
     pal = np.zeros((256, 3), int)
     pal[0] = (255, 0, 255)
     C = np.load(os.path.join(BUILD, 'pal_char.npy')).astype(int)
     pal[1:1 + len(C)] = C
+    for k, v in EYE_BASE.items():
+        pal[k] = v
     for name, (start, n, stops) in RAMPS.items():
         pal[start:start + n] = ramp(stops, n)
     return pal
@@ -83,7 +91,7 @@ def _classify(c):
     r, g, b = [v / 255 for v in c]
     h, l, s = colorsys.rgb_to_hls(r, g, b)
     hd = h * 360
-    if s > 0.5 and 185 <= hd <= 240 and l > 0.12:
+    if 185 <= hd <= 240 and 0.12 < l < 0.75 and c[2] - max(c[0], c[1]) > 70:
         return 'skin'
     if s > 0.3 and 15 <= hd <= 65 and l > 0.12:
         return 'gold'
@@ -104,7 +112,7 @@ def _tf(c, hue=None, sat=None, lmul=1.0, ladd=0.0, smul=1.0):
 
 VARIANTS = [
     ('Original', {}),
-    ('Fuerza de los Dioses', dict(skin=dict(hue=356), armor=dict(hue=0, smul=0.3, lmul=0.85), gold=dict())),
+    ('Rojo', dict(skin=dict(hue=356), armor=dict(hue=0, smul=0.3, lmul=0.85), gold=dict())),
     ('Sombra', dict(skin=dict(hue=275, lmul=0.75), armor=dict(lmul=0.55, smul=0.3), gold=dict(sat=0.05, lmul=1.1))),
     ('Paladin Dorado', dict(skin=dict(), armor=dict(hue=44, sat=0.45, lmul=1.05), gold=dict(sat=0.1, lmul=1.2))),
     ('Vigil Verde', dict(skin=dict(hue=128, lmul=0.9), armor=dict(hue=28, sat=0.3), gold=dict(hue=18))),
@@ -125,3 +133,25 @@ def variant(i):
             continue   # contornos
         base[k] = _tf(base[k], **rules.get(cls, {}))
     return base
+
+
+def skin_indices():
+    base = get()
+    return [k for k in range(1, 73) if _classify(base[k]) == 'skin']
+
+
+def gods_strength(i):
+    """paleta de God's Strength para la variante i: piel carmesi, ojos
+    encendidos en amarillo y estelas de la espada en rojo/naranja.
+    La armadura y el oro no cambian."""
+    pal = variant(i)
+    base = get()
+    for k in skin_indices():
+        r, g, b = [v / 255 for v in base[k]]
+        h, l, s = colorsys.rgb_to_hls(r, g, b)
+        pal[k] = [int(round(v * 255)) for v in colorsys.hls_to_rgb(357 / 360, min(0.62, l * 0.92), min(1, s * 1.05))]
+    for k, v in EYE_GLOW.items():
+        pal[k] = v
+    start, n, _ = RAMPS['trail']
+    pal[start:start + n] = ramp([(70, 0, 10), (190, 20, 20), (250, 90, 30), (255, 200, 80), (255, 245, 210)], n)
+    return pal

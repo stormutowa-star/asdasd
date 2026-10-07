@@ -85,8 +85,11 @@ Warcry y God's Strength.
  SUPERS  (barra de poder de 3 niveles)
 ---------------------------------------------------------------------
  GOD'S STRENGTH  [1 barra] ... x + y   (o  abajo,abajo-adelante,adelante x2 + x)
-   Fuerza de los Dioses: aura roja, todo el daño x1.8 durante 12 s.
-   Las chispas y la onda de Great Cleave se vuelven rojas.
+   Fuerza de los Dioses (como en Dota): la PIEL de Sven se vuelve roja
+   (la armadura no cambia), los OJOS se encienden en amarillo con
+   destellos y todo su daño se multiplica x1.8 durante 12 s.
+   Las estelas de la espada, las chispas y la onda de Great Cleave
+   tambien se vuelven rojas. Funciona con las 6 paletas.
 
  HENDIDURA DE TORMENTA [1 barra] ... y + z  (o  abajo,abajo-adelante,adelante x2 + y)
    Arremetida + 3 tajos + rayo del cielo que lanza al rival.
@@ -94,15 +97,16 @@ Warcry y God's Strength.
  JUICIO DEL CABALLERO ERRANTE [3 barras] ... x + y + z
                                  (o  abajo,abajo-atras,atras x2 + z)
    Ultimate cinematico: Storm Hammer -> arremetida -> se activa God's
-   Strength -> 5 tajos -> salto y golpe final con rayo y onda.
+   Strength (piel roja) -> 5 tajos -> salto y golpe final con rayo y onda.
 
  Todos los supers muestran un panel (koma) estilo JUS con el retrato.
 
 ---------------------------------------------------------------------
  PALETAS (al elegir: x y z a b c)
 ---------------------------------------------------------------------
- 1 Original   2 Fuerza de los Dioses (rojo)   3 Sombra
- 4 Paladin Dorado   5 Vigil Verde   6 Hielo
+ 1 Original   2 Rojo   3 Sombra   4 Paladin Dorado   5 Vigil Verde   6 Hielo
+ (las paletas 7-12 son las versiones God's Strength de cada una; el
+  personaje las usa solo al activar la super)
 
 ---------------------------------------------------------------------
  EXTRAS

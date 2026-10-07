@@ -319,6 +319,22 @@ def build():
         frs.append(f.frame('fire', 3))
     fx(6410, frs, name='estallido dios')
 
+    # ---------------- 6420/6421 ojos de God's Strength: brillo + destello
+    for no, side in ((6420, -1), (6421, 1)):
+        frs = []
+        for k, (L, inten) in enumerate([(3, .7), (6, .95), (9, 1.0), (7, .85), (4, .6), (2, .4)]):
+            f = Field(40, 40)
+            for ex in (-3.5, 3.5):
+                f.glowdisc((ex, 0), 4.5, 0.75)
+            cx = 3.5 * side
+            a = math.radians(15 * k)
+            for i in range(4):
+                ang = a + i * math.pi / 2
+                f.line((cx, 0), (cx + math.cos(ang) * L, math.sin(ang) * L), 1.2, inten, glow=1.2)
+            f.glowdisc((cx, 0), 3.5, inten)
+            frs.append(f.frame('gold', 2))
+        fx(no, frs, name='ojos dios')
+
     # ---------------- 6500 polvo / 6510 grieta y onda en el suelo
     frs = []
     for k in range(7):

@@ -7,8 +7,8 @@ import rig, poses, palette as PL, fx
 OUTDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'preview')
 
 
-def frames_of(no, palidx=0, bg=(28, 34, 52), zoom=2, crop=(110, 110, 330, 290)):
-    pal = PL.variant(palidx).copy()
+def frames_of(no, palidx=0, bg=(28, 34, 52), zoom=2, crop=(110, 110, 330, 290), gs=False):
+    pal = (PL.gods_strength(palidx) if gs else PL.variant(palidx)).copy()
     pal[0] = bg
     a = poses.ANIMS[no]
     out = []
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     os.makedirs(OUTDIR, exist_ok=True)
     combo = frames_of(0) + frames_of(200) + frames_of(210) + frames_of(220) + frames_of(240) + frames_of(0)
     save_gif(combo, os.path.join(OUTDIR, 'combo.gif'))
-    sp = frames_of(1200) + frames_of(1250)[:4] + frames_of(1300) + frames_of(3000, palidx=1)
+    sp = frames_of(1200) + frames_of(1250)[:4] + frames_of(1300) + frames_of(3000, gs=True) + frames_of(220, gs=True)
     save_gif(sp, os.path.join(OUTDIR, 'especiales.gif'))
     walk = frames_of(20) * 2 + frames_of(100) * 2
     save_gif(walk, os.path.join(OUTDIR, 'movimiento.gif'))
@@ -48,4 +48,10 @@ if __name__ == '__main__':
     for im in pal_ims:
         sheet.paste(im, (x, 0)); x += im.width
     sheet.save(os.path.join(OUTDIR, 'paletas.png'))
+    gs_ims = [frames_of(0, palidx=i, zoom=2, gs=True)[0][0] for i in range(len(PL.VARIANTS))]
+    sheet = Image.new('RGB', (W, H))
+    x = 0
+    for im in gs_ims:
+        sheet.paste(im, (x, 0)); x += im.width
+    sheet.save(os.path.join(OUTDIR, 'paletas_gods_strength.png'))
     print('ok')
