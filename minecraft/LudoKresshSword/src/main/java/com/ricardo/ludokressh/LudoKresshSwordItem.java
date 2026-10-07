@@ -19,9 +19,22 @@ public class LudoKresshSwordItem extends SwordItem {
         super(Tiers.NETHERITE, properties);
     }
 
+    /** Sonido de corte en cada tajo. */
+    @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        if (!entity.level().isClientSide) {
+            PoisonFx.play(entity, LudoKresshMod.SWING_SOUND.get(), 0.8F);
+        }
+        return false;
+    }
+
+    /** Golpe: sonido de impacto, destellos de veneno y el encantamiento. */
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (!target.level().isClientSide && !SithPoisonEffect.isImmune(target)) {
+        if (!target.level().isClientSide) {
+            PoisonFx.play(target, LudoKresshMod.HIT_SOUND.get(), 1.0F);
+            PoisonFx.play(target, LudoKresshMod.POISON_SOUND.get(), 0.7F);
+            PoisonFx.hitBurst(target);
             target.addEffect(new MobEffectInstance(LudoKresshMod.SITH_POISON.getHolder().orElseThrow(), EFFECT_TICKS, 0), attacker);
             target.addEffect(new MobEffectInstance(LudoKresshMod.SITH_TOXIN.getHolder().orElseThrow(), EFFECT_TICKS, 0), attacker);
         }

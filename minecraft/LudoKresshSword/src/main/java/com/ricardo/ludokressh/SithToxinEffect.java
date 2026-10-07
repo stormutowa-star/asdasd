@@ -27,7 +27,7 @@ public class SithToxinEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-        if (entity.level().isClientSide || SithPoisonEffect.isImmune(entity)) {
+        if (entity.level().isClientSide) {
             return true;
         }
         if (entity instanceof Player player) {

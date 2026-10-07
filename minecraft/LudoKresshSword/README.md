@@ -28,12 +28,23 @@ las mismas posiciones que las espadas vanilla.
 
 **Veneno Sith**, en cada golpe:
 - *Veneno de Ludo Kressh:* 12 puntos de daño por segundo durante 5 segundos (60 en total).
-  Ignora la armadura, como el veneno de Skyrim.
+  Ignora la armadura, como el veneno de Skyrim, y afecta a todos los mobs, también a los no muertos.
 - *Toxina Sith:* drena 10 puntos de aguante por segundo durante 5 segundos. En Minecraft el aguante
   es la barra de hambre: a los jugadores les quita 2 puntos de comida por segundo (el mismo 10 % por
   segundo que en Skyrim, donde el aguante base es 100). Los mobs no tienen hambre, así que la
   toxina los ralentiza mientras dura.
-- Los no muertos (zombis, esqueletos, etc.) son inmunes, igual que los draugr en Skyrim.
+
+## Sonidos y efectos
+
+- **Al blandirla:** sonido de corte metálico.
+- **Al golpear:** impacto de hoja, siseo de veneno y un estallido de destellos verdes sobre el
+  objetivo.
+- **Mientras dura el veneno:** cada segundo, nuevos destellos verdes y el siseo del veneno.
+
+Los sonidos son originales, hechos a imitación de los de Skyrim (`tools/make_sounds.py`), porque los
+archivos de audio de Skyrim pertenecen a Bethesda y no se pueden incluir. Si tienes Skyrim, puedes
+usar sus sonidos reales con un paquete de recursos que sustituya
+`assets/ludokressh/sounds/swing1-3.ogg`, `hit1-3.ogg` y `poison1-2.ogg` (sonidos en mono).
 
 ## Fabricarla
 
