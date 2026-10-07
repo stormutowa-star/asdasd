@@ -1,0 +1,5 @@
+# Material for the Ludo Kressh Sword OBJ
+newmtl sword
+Kd 1.0 1.0 1.0
+d 1.0
+map_Kd #sword

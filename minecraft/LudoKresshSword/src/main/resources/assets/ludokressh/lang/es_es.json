@@ -1,0 +1,9 @@
+{
+  "item.ludokressh.ludo_kressh_sword": "Ludo Kressh Sword",
+  "item.ludokressh.ludo_kressh_sword.enchantment": "Veneno Sith",
+  "item.ludokressh.ludo_kressh_sword.poison": "Envenena al objetivo: 12 puntos de daño por segundo durante 5 segundos.",
+  "item.ludokressh.ludo_kressh_sword.toxin": "La toxina drena 10 puntos de aguante por segundo durante 5 segundos.",
+  "item.ludokressh.ludo_kressh_sword.weight_value": "Peso 14 · Valor 3500",
+  "effect.ludokressh.sith_poison": "Veneno de Ludo Kressh",
+  "effect.ludokressh.sith_toxin": "Toxina Sith"
+}

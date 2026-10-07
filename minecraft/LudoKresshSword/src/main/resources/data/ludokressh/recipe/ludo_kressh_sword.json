@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    { "item": "minecraft:netherite_ingot" },
+    { "item": "minecraft:netherite_ingot" },
+    { "item": "minecraft:netherite_ingot" },
+    { "item": "minecraft:heart_of_the_sea" },
+    { "item": "minecraft:wither_rose" },
+    { "item": "minecraft:wither_rose" },
+    { "item": "minecraft:leather" },
+    { "item": "minecraft:leather" }
+  ],
+  "result": { "id": "ludokressh:ludo_kressh_sword", "count": 1 }
+}
