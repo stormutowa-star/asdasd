@@ -1,0 +1,7 @@
+.gradle/
+build/
+run/
+tools/preview/
+tools/__pycache__/
+*.iml
+.idea/

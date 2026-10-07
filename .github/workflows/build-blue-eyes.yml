@@ -1,0 +1,49 @@
+name: Compilar Blue-Eyes White Dragon
+
+on:
+  push:
+    paths:
+      - 'blue-eyes-white-dragon/**'
+      - '.github/workflows/build-blue-eyes.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: blue-eyes-white-dragon
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Compilar
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blueeyes-mod
+          path: blue-eyes-white-dragon/build/libs/*.jar
+
+      - name: Guardar el jar en la rama (dist/)
+        run: |
+          mkdir -p ../dist
+          cp build/libs/blueeyes-1.0.0.jar ../dist/blueeyes-1.0.0.jar
+          cd ..
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/blueeyes-1.0.0.jar
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Jar compilado de Blue-Eyes White Dragon [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}

@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[52,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="blueeyes"
+version="1.0.0"
+displayName="Blue-Eyes White Dragon"
+authors="Ricardo"
+description='''Dragon Blanco de Ojos Azules: la carta fisica, invocala con clic derecho y el dragon aparece sobre ella.
+Ataca a los enemigos con White Lightning.'''
+
+[[dependencies.blueeyes]]
+    modId="forge"
+    mandatory=true
+    versionRange="[52,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.blueeyes]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.1,1.22)"
+    ordering="NONE"
+    side="BOTH"

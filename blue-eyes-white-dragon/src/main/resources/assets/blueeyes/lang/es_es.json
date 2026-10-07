@@ -1,0 +1,9 @@
+{
+  "item.blueeyes.blue_eyes_card": "Dragón Blanco de Ojos Azules",
+  "entity.blueeyes.blue_eyes_white_dragon": "Dragón Blanco de Ojos Azules",
+  "entity.blueeyes.field_card": "Carta en el campo",
+  "itemGroup.blueeyes": "Dragón Blanco de Ojos Azules",
+  "message.blueeyes.aim_at_ground": "Apunta a un bloque del campo para invocar al dragón.",
+  "message.blueeyes.card_returned": "La carta vuelve a tu mano.",
+  "message.blueeyes.not_owner": "Esta carta no es tuya."
+}
