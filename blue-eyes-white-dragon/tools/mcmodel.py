@@ -254,6 +254,10 @@ class Model:
             path = p.path()[1:]
             expr = 'root' + ''.join('.getChild("%s")' % n for n in path)
             a('        m.put("%s", %s);' % (name, expr))
+            if abs(p.scale - 1.0) > 1e-6:
+                a('        m.get("%s").xScale = %sF;' % (name, fmt(p.scale)))
+                a('        m.get("%s").yScale = %sF;' % (name, fmt(p.scale)))
+                a('        m.get("%s").zScale = %sF;' % (name, fmt(p.scale)))
         a('        return m;')
         a('    }')
         a('}')

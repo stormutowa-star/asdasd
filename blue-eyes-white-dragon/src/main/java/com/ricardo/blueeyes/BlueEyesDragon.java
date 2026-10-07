@@ -62,8 +62,8 @@ public class BlueEyesDragon extends FlyingMob {
     public static final int FIRE_TIME = 14;
     public static final float MODEL_SCALE = 0.8F;
     /** Boca respecto a los pies (bloques), medido sobre el modelo generado * MODEL_SCALE. */
-    private static final double MOUTH_HEIGHT = 4.4D;
-    private static final double MOUTH_FORWARD = 1.7D;
+    private static final double MOUTH_HEIGHT = 4.6D;
+    private static final double MOUTH_FORWARD = 2.4D;
     public static final int RECALL_TIME = 26;
 
     private static final float BEAM_DAMAGE = 40.0F;

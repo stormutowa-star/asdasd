@@ -25,11 +25,6 @@ public class BlueEyesModel extends HierarchicalModel<BlueEyesDragon> {
     public BlueEyesModel(ModelPart modelRoot) {
         this.modelRoot = modelRoot;
         this.p = BlueEyesLayer.collect(modelRoot);
-        // cabeza grande, como en la carta
-        ModelPart head = this.p.get("head");
-        head.xScale = 1.3F;
-        head.yScale = 1.3F;
-        head.zScale = 1.3F;
     }
 
     @Override
