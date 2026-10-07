@@ -36,15 +36,14 @@ las mismas posiciones que las espadas vanilla.
 
 ## Sonidos y efectos
 
-- **Al blandirla:** sonido de corte metálico.
-- **Al golpear:** impacto de hoja, siseo de veneno y un estallido de destellos verdes sobre el
-  objetivo.
-- **Mientras dura el veneno:** cada segundo, nuevos destellos verdes y el siseo del veneno.
+Usa sonidos vanilla de Minecraft:
 
-Los sonidos son originales, hechos a imitación de los de Skyrim (`tools/make_sounds.py`), porque los
-archivos de audio de Skyrim pertenecen a Bethesda y no se pueden incluir. Si tienes Skyrim, puedes
-usar sus sonidos reales con un paquete de recursos que sustituya
-`assets/ludokressh/sounds/swing1-3.ogg`, `hit1-3.ogg` y `poison1-2.ogg` (sonidos en mono).
+- **Al blandirla:** el tajo de espada (`entity.player.attack.sweep`).
+- **En cada golpe a un enemigo:** impacto metálico de hoja (`item.trident.hit`) más golpe fuerte
+  (`entity.player.attack.strong`), aunque ese golpe no haga daño.
+- **Cuando el golpe hace daño:** burbujeo y siseo del veneno (`block.brewing_stand.brew`,
+  `block.fire.extinguish`) y un estallido de destellos verdes sobre el objetivo.
+- **Mientras dura el veneno:** cada segundo, nuevos destellos verdes y un siseo suave.
 
 ## Fabricarla
 

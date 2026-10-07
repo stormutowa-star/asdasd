@@ -25,7 +25,7 @@ public class SithPoisonEffect extends MobEffect {
         if (!entity.level().isClientSide) {
             entity.hurt(entity.damageSources().magic(), DAMAGE_PER_SECOND);
             PoisonFx.tickBurst(entity);
-            PoisonFx.play(entity, LudoKresshMod.POISON_SOUND.get(), 0.45F);
+            PoisonFx.poisonTickSound(entity);
         }
         return true;
     }

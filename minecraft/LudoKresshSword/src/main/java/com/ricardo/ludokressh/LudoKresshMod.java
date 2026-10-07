@@ -1,14 +1,13 @@
 package com.ricardo.ludokressh;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.Unbreakable;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -23,11 +22,6 @@ public class LudoKresshMod {
 
     public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
-
-    public static final RegistryObject<SoundEvent> SWING_SOUND = sound("item.ludo_kressh_sword.swing");
-    public static final RegistryObject<SoundEvent> HIT_SOUND = sound("item.ludo_kressh_sword.hit");
-    public static final RegistryObject<SoundEvent> POISON_SOUND = sound("item.ludo_kressh_sword.poison");
 
     public static final RegistryObject<MobEffect> SITH_POISON = EFFECTS.register("sith_poison", SithPoisonEffect::new);
     public static final RegistryObject<MobEffect> SITH_TOXIN = EFFECTS.register("sith_toxin", SithToxinEffect::new);
@@ -42,14 +36,10 @@ public class LudoKresshMod {
 
     public LudoKresshMod(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-        SOUNDS.register(modEventBus);
         EFFECTS.register(modEventBus);
         ITEMS.register(modEventBus);
         modEventBus.addListener(LudoKresshMod::addToCreativeTab);
-    }
-
-    private static RegistryObject<SoundEvent> sound(String name) {
-        return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MODID, name)));
+        MinecraftForge.EVENT_BUS.addListener(LudoKresshSwordItem::onPlayerAttack);
     }
 
     private static void addToCreativeTab(BuildCreativeModeTabContentsEvent event) {

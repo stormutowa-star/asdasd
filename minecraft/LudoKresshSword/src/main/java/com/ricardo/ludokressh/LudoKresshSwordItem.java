@@ -6,10 +6,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 /** Encantamiento «Veneno Sith»: cada golpe aplica el veneno y la toxina durante 5 segundos. */
 public class LudoKresshSwordItem extends SwordItem {
@@ -19,21 +21,30 @@ public class LudoKresshSwordItem extends SwordItem {
         super(Tiers.NETHERITE, properties);
     }
 
-    /** Sonido de corte en cada tajo. */
+    /** Sonido de tajo en cada movimiento de la espada. */
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         if (!entity.level().isClientSide) {
-            PoisonFx.play(entity, LudoKresshMod.SWING_SOUND.get(), 0.8F);
+            PoisonFx.swingSound(entity);
         }
         return false;
     }
 
-    /** Golpe: sonido de impacto, destellos de veneno y el encantamiento. */
+    /** Sonido de impacto en cada golpe a un enemigo, aunque ese golpe no llegue a hacer daño. */
+    public static void onPlayerAttack(AttackEntityEvent event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide
+                && player.getMainHandItem().is(LudoKresshMod.LUDO_KRESSH_SWORD.get())
+                && event.getTarget() instanceof LivingEntity target) {
+            PoisonFx.hitSound(target);
+        }
+    }
+
+    /** Golpe con daño: destellos de veneno, sonido del veneno y el encantamiento. */
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (!target.level().isClientSide) {
-            PoisonFx.play(target, LudoKresshMod.HIT_SOUND.get(), 1.0F);
-            PoisonFx.play(target, LudoKresshMod.POISON_SOUND.get(), 0.7F);
+            PoisonFx.poisonSound(target);
             PoisonFx.hitBurst(target);
             target.addEffect(new MobEffectInstance(LudoKresshMod.SITH_POISON.getHolder().orElseThrow(), EFFECT_TICKS, 0), attacker);
             target.addEffect(new MobEffectInstance(LudoKresshMod.SITH_TOXIN.getHolder().orElseThrow(), EFFECT_TICKS, 0), attacker);

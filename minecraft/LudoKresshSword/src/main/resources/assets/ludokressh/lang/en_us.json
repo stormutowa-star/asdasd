@@ -5,8 +5,5 @@
   "item.ludokressh.ludo_kressh_sword.toxin": "The toxin drains 10 points of stamina per second for 5 seconds.",
   "item.ludokressh.ludo_kressh_sword.weight_value": "Weight 14 · Value 3500",
   "effect.ludokressh.sith_poison": "Ludo Kressh's Poison",
-  "effect.ludokressh.sith_toxin": "Sith Toxin",
-  "subtitles.ludokressh.swing": "Sword swings",
-  "subtitles.ludokressh.hit": "Sword hits",
-  "subtitles.ludokressh.poison": "Sith poison hisses"
+  "effect.ludokressh.sith_toxin": "Sith Toxin"
 }
