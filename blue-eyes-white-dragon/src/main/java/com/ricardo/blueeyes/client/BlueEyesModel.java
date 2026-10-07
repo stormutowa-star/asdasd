@@ -63,14 +63,15 @@ public class BlueEyesModel extends HierarchicalModel<BlueEyesDragon> {
         p.get("wingOutL").zRot -= flapOut * 0.30F;
 
         // cuello en S que respira
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 7; i++) {
             ModelPart n = p.get("neck" + i);
-            n.xRot += Mth.sin(t * 0.07F + i * 0.5F) * 0.025F;
-            n.yRot += Mth.sin(t * 0.05F + i * 0.4F) * 0.03F + netHeadYaw * Mth.DEG_TO_RAD * 0.08F;
+            n.xRot += Mth.sin(t * 0.07F + i * 0.3F) * 0.015F;
+            n.yRot += Mth.sin(t * 0.05F + i * 0.25F) * 0.018F + netHeadYaw * Mth.DEG_TO_RAD * 0.045F;
         }
         // al cargar, echa la cabeza hacia atras; al disparar, la lanza hacia delante
-        p.get("neck3").xRot -= c * 0.20F;
-        p.get("neck4").xRot -= c * 0.20F - f * 0.25F;
+        p.get("neck5").xRot -= c * 0.12F;
+        p.get("neck6").xRot -= c * 0.12F - f * 0.12F;
+        p.get("neck7").xRot -= c * 0.12F - f * 0.12F;
 
         ModelPart head = p.get("head");
         head.yRot += Mth.clamp(netHeadYaw, -40.0F, 40.0F) * Mth.DEG_TO_RAD * 0.5F;
