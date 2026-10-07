@@ -242,6 +242,12 @@ def paint(cube, face, pos, normal, edge):
     if m in ('smooth', 'smooth_jaw'):
         return smooth_pixel(cube, face, rel, normal, edge, n)
 
+    if m == 'tusk':
+        c = lerp((200, 232, 245), (255, 255, 255), 0.5 + 0.5 * n)
+        if edge == 0:
+            c = lerp(c, DK, 0.35)
+        return tuple(int(v) for v in c) + (255,)
+
     if m == 'tooth':
         t = (rel[1] + cube.h / 2.0) / max(1.0, cube.h)
         c = lerp((205, 232, 240), (255, 255, 255), 1 - t if o.get('down', True) else t)
@@ -367,6 +373,10 @@ def paint_glow(cube, face, pos, normal, edge):
 
 # ------------------------------------------------------------------ el modelo
 HEAD_SCALE = 1.75
+WING_RAISE = 1.10
+WING_SWEEP = 0.35
+WING_PITCH = -0.55
+WING_OUT = (0.0, -0.10, -0.18)
 
 
 def build():
@@ -460,8 +470,7 @@ def build():
 
     # visera / cresta: nace en la punta del hocico y barre hacia atras en una hoja curva enorme
     chain(head, 'visor', (0, 9.6, 33.0), (-0.20, 0, 0), [
-        (8, 4, 10, 0.08), (8, 6, 10, 0.12), (6, 7, 10, 0.16), (5, 7, 10, 0.20),
-        (4, 7, 10, 0.22), (4, 6, 9, 0.24), (3, 5, 9, 0.24), (2, 4, 8, 0.20), (2, 2, 7, 0.0)])
+        (8, 4, 10, 0.08), (9, 5, 10, 0.10), (8, 5, 10, 0.16), (6, 4, 9, 0.30), (3, 3, 6, 0.0)])
     # ojo redondo bajo la visera
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
@@ -469,8 +478,14 @@ def build():
         ep.scale = 0.62
         ep.cube(1, 9, 9, (sx * 0.6, 0, 0), 'eye', side=sx, round=True)
         # espina larga detras del ojo (hacia atras)
-        chain(head, 'earSpike' + s, (sx * 4.5, 7.5, 4.0), (-0.10, sx * 0.30, 0),
-              [(3, 4, 12, 0.05), (2, 3, 10, 0.08), (1, 2, 8, 0.0)])
+        for k, (yy, rx, L) in enumerate(((10.0, 0.30, 13), (7.0, 0.05, 12), (4.0, -0.20, 10))):
+            chain(head, 'ear%d%s' % (k, s), (sx * 4.8, yy, 2.0), (rx, sx * 0.35, 0),
+                  [(3, 3, L, 0.05), (2, 2, int(L * 0.8), 0.06), (1, 1, int(L * 0.6), 0.0)])
+        # colmillo exterior junto a la boca, apuntando hacia delante
+        tk = M.part('tusk' + s, head, (sx * 5.2, 2.6, 21.0), (0.35, sx * -0.08, 0))
+        tk.cube(2, 2, 8, (0, 0, 4.0), 'tusk')
+        tk2 = M.part('tuskTip' + s, tk, (0, 0, 7.5), (0.30, 0, 0))
+        tk2.cube(1, 1, 6, (0, 0, 3.0), 'tusk')
     # dientes triangulares superiores
     for i in range(6):
         zz = 14.0 + i * 3.4
@@ -495,10 +510,6 @@ def build():
             tp = M.part('toothD%d%s' % (i, 'R' if sx < 0 else 'L'), jaw, (sx * (w / 2.0 - 1.0), -0.3, zz), (0.15, 0, 0))
             tp.cube(1, 2, 2, (0, 1.0, 0), 'tooth', down=False)
             tp.cube(1, 1, 1, (0, 2.5, 0.3), 'tooth', down=False)
-    for sx in (-1, 1):
-        s = 'R' if sx < 0 else 'L'
-        chain(jaw, 'jawSpike' + s, (sx * 4.0, -2.0, 1.0), (-0.35, sx * 0.25, 0),
-              [(3, 3, 10, -0.05), (2, 2, 9, -0.05), (1, 1, 7, 0.0)])
 
     # ---------------- cola (7 segmentos, se curva hacia arriba)
     tail_defs = [  # (w,h,d, rotX)  rotX>0 -> sube la punta
@@ -558,16 +569,16 @@ def build():
     # ---------------- alas
     for sx in (-1, 1):
         s = 'R' if sx < 0 else 'L'
-        raise_ = 1.40
-        sweep = 0.65
-        wr = M.part('wing' + s, chest, (sx * 12.0, 24, 9.0), (-0.30, -sx * sweep, -sx * raise_))
+        raise_ = WING_RAISE
+        sweep = WING_SWEEP
+        wr = M.part('wing' + s, chest, (sx * 12.0, 24, 9.0), (WING_PITCH, -sx * sweep, -sx * raise_))
         wr.scale = 1.35
         # huesos: humero + antebrazo
         wr.cube(18, 6, 6, (sx * 9.0, 0, 0), 'bone', outline=False)
         wr.cube(19, 5, 5, (sx * 27.0, 0, 0), 'bone', outline=False)
         # membrana interior
         wr.cube(36, 1, 48, (sx * 18.0, 0.0, -24.0), 'membrane', side=sx, x_off=0.0)
-        wo = M.part('wingOut' + s, wr, (sx * 36.0, 0, 0), (0.0, -sx * 0.45, sx * 0.25))
+        wo = M.part('wingOut' + s, wr, (sx * 36.0, 0, 0), (WING_OUT[0], sx * WING_OUT[1], sx * WING_OUT[2]))
         wo.cube(22, 1, 48, (sx * 11.0, 0.0, -24.0), 'membrane', side=sx, x_off=36.0)
         wo.cube(22, 4, 4, (sx * 11.0, 0, -1.0), 'bone', outline=False)
         # puntas de los dedos (garra del ala)
