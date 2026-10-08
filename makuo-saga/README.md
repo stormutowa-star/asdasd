@@ -43,18 +43,37 @@ En un mundo de pruebas, súbete las stats con los comandos de DragonMineZ.
 No uses `/dmzquest startsaga makuo_saga`: acepta las 15 misiones a la vez, sin orden, y varias se completan juntas.
 Si ya lo usaste, `/dmzquest resetsaga makuo_saga` lo deja como estaba.
 
+## Guía: saber adónde ir
+
+Mientras haces la saga, encima de la barra de objetos aparece qué hacer y, cuando hay un sitio al que ir,
+una **flecha** (relativa a donde miras) y la **distancia**: `Makuo ▸ Gran Patriarca ↗ 340 bloques`.
+Señala al Gran Patriarca, a Saien, a la Ciudadela y al enemigo de la misión más cercano. En la misión 5
+cuenta los materiales que llevas.
+
+| Comando | Qué hace |
+|---|---|
+| `/makuo donde` | Te dice la misión actual, qué hacer, coordenadas y dirección (norte, sur…) |
+| `/makuo guia off` / `/makuo guia on` | Oculta o vuelve a mostrar la flecha |
+| `/makuo ir namek` | Te lleva a Namek, junto a la casa del Gran Patriarca |
+| `/makuo ir vharos` | Te lleva al campamento de Saien (después de completar la misión 5) |
+| `/makuo ir tierra` | Te lleva al punto de aparición de la Tierra |
+| `/makuo invencible` | Activa o desactiva el modo invencible (ver abajo) |
+
+`/makuo ir` y `/makuo invencible` funcionan sin trucos en un mundo de un jugador; en un servidor necesitan ser OP.
+`/makuo ir` sirve también si otro mod del modpack no te deja despegar con la nave.
+
 ## Modo historia: que te golpeen sin quitarte vida
 
-En creativo los enemigos nunca atacan, así que juega en **supervivencia** con esta etiqueta:
+En creativo los enemigos nunca atacan, así que juega en **supervivencia** con el modo invencible:
 
 ```
 /gamemode survival
-/tag @s add makuo_invencible
+/makuo invencible
 ```
 
 Los enemigos te atacan y te golpean (empujón, animación, aturdimiento), pero no pierdes vida.
-Para volver a recibir daño normal: `/tag @s remove makuo_invencible`.
-(El efecto de Resistencia de Minecraft no sirve para esto: DragonMineZ recalcula el daño y se lo salta.)
+Vuelve a escribir `/makuo invencible` para recibir daño normal. (También vale `/tag @s add makuo_invencible`.)
+El efecto de Resistencia de Minecraft no sirve para esto: DragonMineZ recalcula el daño y se lo salta.
 
 ## Compilar
 
