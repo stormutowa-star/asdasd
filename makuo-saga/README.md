@@ -28,14 +28,20 @@ En un servidor, el `.jar` va en el servidor **y** en los jugadores (añade model
 
 ## Probarla sin jugar todo DragonMineZ
 
-Con trucos activados (u OP):
+La saga se desbloquea al completar la Saga de Buu. En un **mundo de pruebas**, con trucos activados (u OP):
 
 ```
-/dmzquest startsaga makuo_saga
+/dmzquest finishsaga buu_saga
 ```
+
+Eso marca la Saga de Buu como completada (sin darte sus recompensas) y la Saga de Makuo aparece desbloqueada
+en el árbol de sagas. No lo hagas en tu mundo de verdad: te saltarías toda la saga de Buu.
 
 Las misiones piden nivel de personaje (de 2340 a 2540, como las sagas oficiales después de Buu).
-Para probar rápido, usa los comandos de DragonMineZ de stats o `/dmzquest finish <misión>` para saltar misiones.
+En un mundo de pruebas, súbete las stats con los comandos de DragonMineZ.
+
+No uses `/dmzquest startsaga makuo_saga`: acepta las 15 misiones a la vez, sin orden, y varias se completan juntas.
+Si ya lo usaste, `/dmzquest resetsaga makuo_saga` lo deja como estaba.
 
 ## Compilar
 
