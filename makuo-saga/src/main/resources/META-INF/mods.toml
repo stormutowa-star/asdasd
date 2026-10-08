@@ -1,0 +1,42 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="GPL-3.0"
+
+[[mods]]
+modId="makuosaga"
+version="${file.jarVersion}"
+displayName="La Saga de Makuo"
+authors="Ricardo"
+credits="Built on DragonMineZ (GPL-3.0): models, animations and saga systems by the DragonMineZ team."
+description='''
+Una saga nueva para DragonMineZ: Makuo, un namekiano desterrado hace 600 años, vuelve con su ejército de Zhar,
+sus tres Heraldos y su forma final, las Alas del Vacío. Incluye el planeta Vharos.
+'''
+
+[[dependencies.makuosaga]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.makuosaga]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.makuosaga]]
+modId="dragonminez"
+mandatory=true
+versionRange="[2.1.3,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.makuosaga]]
+modId="geckolib"
+mandatory=true
+versionRange="[4.4,)"
+ordering="AFTER"
+side="BOTH"

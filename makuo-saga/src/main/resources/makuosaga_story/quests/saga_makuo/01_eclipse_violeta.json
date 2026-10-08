@@ -1,0 +1,34 @@
+{
+  "id": 1,
+  "title": "dmz.quest.makuo1.name",
+  "description": "dmz.quest.makuo1.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2340
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "DIMENSION",
+      "dimension": "dragonminez:namek"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 120000
+    }
+  ]
+}

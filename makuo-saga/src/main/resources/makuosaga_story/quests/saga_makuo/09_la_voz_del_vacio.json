@@ -1,0 +1,54 @@
+{
+  "id": 9,
+  "title": "dmz.quest.makuo9.name",
+  "description": "dmz.quest.makuo9.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 8
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2420
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "makuosaga:vharos"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "KILL",
+      "entity": "makuosaga:saga_seiryn",
+      "count": 1,
+      "health": 900000,
+      "meleeDamage": 34000,
+      "kiDamage": 38000,
+      "spawn": "QUEST",
+      "count_mode": "QUEST_SPAWNED_ONLY"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 340000
+    }
+  ]
+}

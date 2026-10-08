@@ -1,0 +1,48 @@
+{
+  "id": 2,
+  "title": "dmz.quest.makuo2.name",
+  "description": "dmz.quest.makuo2.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 1
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2340
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "dragonminez:namek"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "TALK_TO",
+      "npcId": "guru"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 150000
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": 7,
+  "title": "dmz.quest.makuo7.name",
+  "description": "dmz.quest.makuo7.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 6
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2380
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "makuosaga:vharos"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "TALK_TO",
+      "npcId": "saien"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 150000
+    }
+  ]
+}

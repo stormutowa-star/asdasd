@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "destinations": [
+    {
+      "id": "vharos",
+      "name": "gui.makuosaga.spacepod.vharos",
+      "translate": true,
+      "dimension": "makuosaga:vharos",
+      "icon_texture": "makuosaga:textures/gui/vharos_icon.png",
+      "x": 0.5,
+      "y": 180.0,
+      "z": 6.5,
+      "show_when_locked": true,
+      "unlock_rules": {
+        "quest": "makuo_saga:5"
+      }
+    }
+  ]
+}

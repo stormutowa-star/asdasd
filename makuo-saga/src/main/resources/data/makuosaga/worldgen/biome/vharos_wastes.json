@@ -1,0 +1,64 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.8,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 2754624,
+    "fog_color": 4723822,
+    "water_color": 8664544,
+    "water_fog_color": 2756170,
+    "grass_color": 7754934,
+    "foliage_color": 6170777,
+    "particle": {
+      "options": {
+        "type": "minecraft:portal"
+      },
+      "probability": 0.003
+    },
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    }
+  },
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "features": [
+    [],
+    [],
+    [
+      "minecraft:amethyst_geode"
+    ],
+    [],
+    [],
+    [],
+    [
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_iron_small",
+      "minecraft:ore_gold",
+      "minecraft:ore_redstone",
+      "minecraft:ore_diamond",
+      "minecraft:ore_lapis"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_dead_bush",
+      "minecraft:patch_grass_plain"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ]
+}

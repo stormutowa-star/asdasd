@@ -1,0 +1,63 @@
+{
+  "id": 13,
+  "title": "dmz.quest.makuo13.name",
+  "description": "dmz.quest.makuo13.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 12
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2500
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "makuosaga:vharos"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "KILL",
+      "entity": "makuosaga:saga_drakhul",
+      "count": 1,
+      "health": 1100000,
+      "meleeDamage": 45000,
+      "kiDamage": 40000,
+      "spawn": "QUEST",
+      "count_mode": "QUEST_SPAWNED_ONLY",
+      "TransformHealth": 1600000,
+      "TransformMeleeDamage": 56000,
+      "TransformKiDamage": 50000,
+      "TransformTriggerPercent": 0.4
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 450000
+    },
+    {
+      "type": "ITEM",
+      "item": "dragonminez:senzu_bean",
+      "count": 3
+    }
+  ]
+}

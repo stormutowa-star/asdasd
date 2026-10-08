@@ -1,0 +1,64 @@
+{
+  "id": 10,
+  "title": "dmz.quest.makuo10.name",
+  "description": "dmz.quest.makuo10.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 9
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2440
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "makuosaga:vharos"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "KILL",
+      "entity": "makuosaga:saga_zhar_elite",
+      "count": 6,
+      "health": 160000,
+      "meleeDamage": 7000,
+      "kiDamage": 6500,
+      "spawn": "QUEST",
+      "count_mode": "QUEST_SPAWNED_ONLY"
+    },
+    {
+      "type": "ITEM",
+      "item": "makuosaga:void_shard",
+      "count": 4
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 320000
+    },
+    {
+      "type": "ITEM",
+      "item": "dragonminez:senzu_bean",
+      "count": 3
+    }
+  ]
+}

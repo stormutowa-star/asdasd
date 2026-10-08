@@ -1,0 +1,58 @@
+{
+  "id": 14,
+  "title": "dmz.quest.makuo14.name",
+  "description": "dmz.quest.makuo14.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 13
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2540
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "makuosaga:vharos"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "KILL",
+      "entity": "makuosaga:saga_makuo",
+      "count": 1,
+      "health": 1350000,
+      "meleeDamage": 52000,
+      "kiDamage": 52000,
+      "spawn": "QUEST",
+      "count_mode": "QUEST_SPAWNED_ONLY",
+      "TransformHealth": 2100000,
+      "TransformMeleeDamage": 66000,
+      "TransformKiDamage": 68000,
+      "TransformTriggerPercent": 0.5
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 650000
+    }
+  ]
+}

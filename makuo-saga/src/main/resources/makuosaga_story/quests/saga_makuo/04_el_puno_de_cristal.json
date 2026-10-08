@@ -1,0 +1,59 @@
+{
+  "id": 4,
+  "title": "dmz.quest.makuo4.name",
+  "description": "dmz.quest.makuo4.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 3
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2370
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "dragonminez:namek"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "KILL",
+      "entity": "makuosaga:saga_garuk",
+      "count": 1,
+      "health": 820000,
+      "meleeDamage": 33600,
+      "kiDamage": 29000,
+      "spawn": "QUEST",
+      "count_mode": "QUEST_SPAWNED_ONLY"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 300000
+    },
+    {
+      "type": "ITEM",
+      "item": "dragonminez:senzu_bean",
+      "count": 3
+    }
+  ]
+}

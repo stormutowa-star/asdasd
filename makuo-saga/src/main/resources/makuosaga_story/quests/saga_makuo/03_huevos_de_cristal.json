@@ -1,0 +1,54 @@
+{
+  "id": 3,
+  "title": "dmz.quest.makuo3.name",
+  "description": "dmz.quest.makuo3.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 2
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2350
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "dragonminez:namek"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "KILL",
+      "entity": "makuosaga:saga_zhar",
+      "count": 12,
+      "health": 52000,
+      "meleeDamage": 2300,
+      "kiDamage": 2100,
+      "spawn": "QUEST",
+      "count_mode": "QUEST_SPAWNED_ONLY"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 230000
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+name: Compilar La Saga de Makuo
+
+on:
+  push:
+    paths:
+      - 'makuo-saga/**'
+      - '.github/workflows/compilar-makuo-saga.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: makuo-saga
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Descargar DragonMineZ (Modrinth)
+        run: |
+          mkdir -p libs
+          VERSION=$(grep '^dragonminez_version=' gradle.properties | cut -d= -f2)
+          curl -sSf -A 'makuo-saga-ci (github.com/stormutowa-star/asdasd)' \
+            'https://api.modrinth.com/v2/project/dragonminez/version?loaders=%5B%22forge%22%5D&game_versions=%5B%221.20.1%22%5D' \
+            -o versions.json
+          URL=$(python3 - "$VERSION" <<'PY'
+          import json, sys
+          wanted = sys.argv[1]
+          versions = json.load(open('versions.json'))
+          for v in versions:
+              print(v['version_number'], v['date_published'], [f['filename'] for f in v['files']], file=sys.stderr)
+          match = [v for v in versions if wanted in v['version_number']] or versions
+          files = match[0]['files']
+          primary = next((f for f in files if f.get('primary')), files[0])
+          print('Usando', match[0]['version_number'], primary['filename'], file=sys.stderr)
+          print(primary['url'])
+          PY
+          )
+          curl -sSfL -A 'makuo-saga-ci' "$URL" -o "libs/dragonminez-${VERSION}.jar"
+          ls -la libs
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Compilar
+        run: |
+          chmod +x gradlew
+          ./gradlew build --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: makuosaga-mod
+          path: makuo-saga/build/libs/makuosaga-*.jar
+          if-no-files-found: error

@@ -1,0 +1,16 @@
+sagas/makuo_saga.json
+quests/saga_makuo/01_eclipse_violeta.json
+quests/saga_makuo/02_palabras_del_patriarca.json
+quests/saga_makuo/03_huevos_de_cristal.json
+quests/saga_makuo/04_el_puno_de_cristal.json
+quests/saga_makuo/05_preparar_el_salto.json
+quests/saga_makuo/06_rumbo_a_vharos.json
+quests/saga_makuo/07_el_ultimo_guardian.json
+quests/saga_makuo/08_ceniza_y_cristal.json
+quests/saga_makuo/09_la_voz_del_vacio.json
+quests/saga_makuo/10_fragmentos_del_vacio.json
+quests/saga_makuo/11_la_sombra.json
+quests/saga_makuo/12_las_puertas_de_la_ciudadela.json
+quests/saga_makuo/13_drakhul_el_coloso.json
+quests/saga_makuo/14_alas_del_vacio.json
+quests/saga_makuo/15_amanecer.json

@@ -1,0 +1,51 @@
+{
+  "id": 12,
+  "title": "dmz.quest.makuo12.name",
+  "description": "dmz.quest.makuo12.desc",
+  "type": "SAGA",
+  "category": "saga_makuo",
+  "parallel_objectives": false,
+  "party_scaling": true,
+  "secret": false,
+  "claim_mode": "TREE_OR_NPC",
+  "quest_giver": null,
+  "turn_in": null,
+  "prerequisites": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "SAGA_QUEST",
+        "sagaId": "makuo_saga",
+        "questId": 11
+      }
+    ]
+  },
+  "requirements": {
+    "operator": "AND",
+    "conditions": [
+      {
+        "type": "LEVEL",
+        "minLevel": 2470
+      },
+      {
+        "type": "DIMENSION",
+        "dimension": "makuosaga:vharos"
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "COORDS",
+      "x": 0,
+      "y": 101,
+      "z": -300,
+      "radius": 40
+    }
+  ],
+  "rewards": [
+    {
+      "type": "TPS",
+      "amount": 200000
+    }
+  ]
+}

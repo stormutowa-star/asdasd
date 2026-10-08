@@ -1,0 +1,8 @@
+{
+  "id": "makuo_saga",
+  "name": "dmz.saga.makuo_saga",
+  "requirements": {
+    "previousSaga": "buu_saga"
+  },
+  "questFolder": "saga_makuo"
+}
