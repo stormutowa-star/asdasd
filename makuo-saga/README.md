@@ -43,6 +43,19 @@ En un mundo de pruebas, súbete las stats con los comandos de DragonMineZ.
 No uses `/dmzquest startsaga makuo_saga`: acepta las 15 misiones a la vez, sin orden, y varias se completan juntas.
 Si ya lo usaste, `/dmzquest resetsaga makuo_saga` lo deja como estaba.
 
+## Modo historia: que te golpeen sin quitarte vida
+
+En creativo los enemigos nunca atacan, así que juega en **supervivencia** con esta etiqueta:
+
+```
+/gamemode survival
+/tag @s add makuo_invencible
+```
+
+Los enemigos te atacan y te golpean (empujón, animación, aturdimiento), pero no pierdes vida.
+Para volver a recibir daño normal: `/tag @s remove makuo_invencible`.
+(El efecto de Resistencia de Minecraft no sirve para esto: DragonMineZ recalcula el daño y se lo salta.)
+
 ## Compilar
 
 El `.jar` se compila con **GitHub Actions** (workflow *Compilar La Saga de Makuo*):
