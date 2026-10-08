@@ -7,6 +7,9 @@ on:
       - '.github/workflows/compilar-makuo-saga.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -56,3 +59,19 @@ jobs:
           name: makuosaga-mod
           path: makuo-saga/build/libs/makuosaga-*.jar
           if-no-files-found: error
+
+      - name: Guardar el jar en la rama (makuo-saga/dist)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          mkdir -p dist
+          rm -f dist/*.jar
+          cp build/libs/makuosaga-*.jar dist/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dist
+          if git diff --cached --quiet; then
+            echo 'El jar no ha cambiado'
+          else
+            git commit -m 'Actualizar jar compilado de La Saga de Makuo'
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
