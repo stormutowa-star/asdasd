@@ -274,7 +274,7 @@ public final class MakuoGuide {
 		if (nowOn) player.addTag(InvincibleHandler.TAG);
 		else player.removeTag(InvincibleHandler.TAG);
 		player.sendSystemMessage(Component.literal(nowOn
-				? "Modo invencible ACTIVADO: te golpean pero no pierdes vida (juega en supervivencia)."
+				? "Modo invencible ACTIVADO: te golpean pero no pierdes vida ni hambre (juega en supervivencia)."
 				: "Modo invencible desactivado: vuelves a recibir daño.").withStyle(ChatFormatting.LIGHT_PURPLE));
 		return 1;
 	}

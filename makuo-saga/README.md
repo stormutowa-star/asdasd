@@ -71,7 +71,7 @@ En creativo los enemigos nunca atacan, así que juega en **supervivencia** con e
 /makuo invencible
 ```
 
-Los enemigos te atacan y te golpean (empujón, animación, aturdimiento), pero no pierdes vida.
+Los enemigos te atacan y te golpean (empujón, animación, aturdimiento), pero no pierdes vida, y el hambre se mantiene siempre llena.
 Vuelve a escribir `/makuo invencible` para recibir daño normal. (También vale `/tag @s add makuo_invencible`.)
 El efecto de Resistencia de Minecraft no sirve para esto: DragonMineZ recalcula el daño y se lo salta.
 
