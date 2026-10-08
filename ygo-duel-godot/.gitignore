@@ -1,0 +1,20 @@
+# Compilación
+build/
+*.os
+*.o
+*.obj
+*.lib
+*.exp
+*.pdb
+.sconsign*.dblite
+thirdparty/sqlite/
+
+# Godot
+game/.godot/
+game/export/
+*.import
+
+# Bibliotecas que no se suben (sí se suben las de linux/windows ya compiladas)
+game/bin/*.framework/
+game/bin/*.dylib
+game/bin/~*

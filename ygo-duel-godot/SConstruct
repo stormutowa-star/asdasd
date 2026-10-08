@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+# Compila la GDExtension "ocgcore_gd": ocgcore (EDOPro) + Lua 5.4 (como C++) + SQLite.
+#
+#   scons platform=linux   target=template_debug
+#   scons platform=windows target=template_debug   (MSVC o use_mingw=yes)
+#
+# Antes de compilar: git submodule update --init --recursive
+# y descarga SQLite con tools/setup.sh (o tools/setup.ps1 en Windows).
+import os
+
+root = Dir(".").srcnode().abspath
+core_dir = os.path.join(root, "thirdparty", "ygopro-core")
+lua_dir = os.path.join(core_dir, "lua")
+sqlite_dir = os.path.join(root, "thirdparty", "sqlite")
+
+if not os.path.isfile(os.path.join(core_dir, "ocgapi.h")) or not os.path.isfile(os.path.join(lua_dir, "src", "lua.h")):
+    print("ERROR: faltan los submódulos. Ejecuta: git submodule update --init --recursive")
+    Exit(1)
+if not os.path.isfile(os.path.join(sqlite_dir, "sqlite3.c")):
+    print("ERROR: falta thirdparty/sqlite/sqlite3.c. Ejecuta tools/setup.sh (o tools/setup.ps1).")
+    Exit(1)
+
+# ocgcore usa excepciones de C++ para los errores de Lua: hay que habilitarlas.
+env = Environment(tools=["default"], PLATFORM="")
+env["disable_exceptions"] = False
+Export("env")
+env = SConscript("thirdparty/godot-cpp/SConstruct")
+
+is_msvc = env.get("is_msvc", False)
+
+env.Append(CPPPATH=["extension/src", core_dir, os.path.join(lua_dir, "src"), sqlite_dir])
+if env["platform"] == "windows":
+    env.Append(CPPDEFINES=["NOMINMAX", "WIN32_LEAN_AND_MEAN"])
+
+# --- Lua 5.4 compilado como C++ con luaconf-customize.h incluido primero (igual que meson.build del core)
+gen_dir = os.path.join(root, "build", "lua_cpp")
+os.makedirs(gen_dir, exist_ok=True)
+lua_sources = [
+    "lapi", "lauxlib", "lbaselib", "lcode", "lctype", "ldebug", "ldo", "ldump", "lfunc", "lgc",
+    "liolib", "llex", "lmathlib", "lmem", "lobject", "lopcodes", "lparser", "lstate", "lstring",
+    "lstrlib", "ltable", "ltablib", "ltm", "lundump", "lvm", "lzio",
+]
+lua_env = env.Clone()
+if is_msvc:
+    lua_env.Append(CCFLAGS=["/w"])
+else:
+    lua_env.Append(CCFLAGS=["-w"])
+lua_objs = []
+for name in lua_sources:
+    wrapper = os.path.join(gen_dir, name + ".cpp")
+    content = '#include "{}"\n#include "{}"\n'.format(
+        os.path.join(lua_dir, "luaconf-customize.h").replace("\\", "/"),
+        os.path.join(lua_dir, "src", name + ".c").replace("\\", "/"),
+    )
+    if not os.path.isfile(wrapper) or open(wrapper).read() != content:
+        with open(wrapper, "w") as f:
+            f.write(content)
+    lua_objs.append(lua_env.SharedObject(wrapper))
+
+# --- ocgcore
+core_env = env.Clone()
+if not is_msvc:
+    core_env.Append(CCFLAGS=["-Wno-unused-parameter"])
+core_sources = [
+    "card", "duel", "effect", "field", "interpreter", "libcard", "libdebug", "libduel", "libeffect",
+    "libgroup", "ocgapi", "operations", "playerop", "processor", "processor_visit", "scriptlib",
+]
+core_objs = [core_env.SharedObject(os.path.join("build", "core", s), os.path.join(core_dir, s + ".cpp")) for s in core_sources]
+
+# --- SQLite (C)
+sqlite_env = env.Clone()
+sqlite_env.Append(CPPDEFINES=["SQLITE_OMIT_LOAD_EXTENSION", "SQLITE_THREADSAFE=0", "SQLITE_DEFAULT_MEMSTATUS=0"])
+if is_msvc:
+    sqlite_env.Append(CCFLAGS=["/w"])
+else:
+    sqlite_env.Append(CCFLAGS=["-w"])
+sqlite_objs = [sqlite_env.SharedObject(os.path.join("build", "sqlite3"), os.path.join(sqlite_dir, "sqlite3.c"))]
+
+# --- Bindings para Godot
+sources = Glob("extension/src/*.cpp")
+
+if env["platform"] == "macos":
+    library = env.SharedLibrary(
+        "game/bin/libocgcore_gd.{}.{}.framework/libocgcore_gd.{}.{}".format(
+            env["platform"], env["target"], env["platform"], env["target"]
+        ),
+        source=sources + lua_objs + core_objs + sqlite_objs,
+    )
+else:
+    library = env.SharedLibrary(
+        "game/bin/libocgcore_gd{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        source=sources + lua_objs + core_objs + sqlite_objs,
+    )
+
+env.NoCache(library)
+Default(library)

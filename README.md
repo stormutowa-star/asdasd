@@ -24,3 +24,10 @@ Zanpakutō original. Un solo item: **Akagane** (pestaña creativa "Akagane", o r
 **En GitHub (lo más fácil):** sube todo el contenido de esta carpeta a un repositorio → pestaña *Actions* → *Compilar Akagane* → cuando termine, baja el artefacto `akagane-mod` (contiene `akagane-1.0.0.jar`). Pon el jar en tu carpeta `mods` (Forge 1.21.1).
 
 **En tu PC:** `gradlew build` (necesita Java 21) → `build/libs/akagane-1.0.0.jar`.
+
+---
+
+## Otro proyecto en este repositorio: YGO Duel (Godot + ocgcore)
+
+La carpeta [`ygo-duel-godot/`](ygo-duel-godot/README.md) contiene un prototipo jugable de simulador de duelos de
+Yu-Gi-Oh! estilo EDOPro hecho con Godot 4 + GDScript y el core de reglas ocgcore. Consulta su README.

@@ -1,0 +1,7 @@
+[submodule "ygo-duel-godot/thirdparty/godot-cpp"]
+	path = ygo-duel-godot/thirdparty/godot-cpp
+	url = https://github.com/godotengine/godot-cpp.git
+	branch = 4.4
+[submodule "ygo-duel-godot/thirdparty/ygopro-core"]
+	path = ygo-duel-godot/thirdparty/ygopro-core
+	url = https://github.com/edo9300/ygopro-core.git
