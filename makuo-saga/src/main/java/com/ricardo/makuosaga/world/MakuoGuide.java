@@ -158,7 +158,7 @@ public final class MakuoGuide {
 			}
 		}
 		if (nearest == null) {
-			return text(q, "Derrota a los enemigos de la misión (aparecen a tu alrededor al iniciarla)");
+			return text(q, "No hay enemigos cerca: en el árbol (V) pulsa otra vez «Iniciar misión» para que vuelvan");
 		}
 		return new Step(q, true, Component.literal("Derrota a " + nearest.getDisplayName().getString()), dimension,
 				nearest.blockPosition(), nearest.getDisplayName().getString());
