@@ -47,7 +47,16 @@ func _init() -> void:
 
 ## options: {seed, lp, hand, draw, flags, ai: [bool, bool]}
 func setup(deck0: Dictionary, deck1: Dictionary, options: Dictionary = {}) -> bool:
-	decks = [deck0, deck1]
+	# Extra Deck bien colocado y sin cartas que no estén en la base de datos
+	decks = []
+	for d in [deck0, deck1]:
+		var nd := CardDB.normalize_deck(d)
+		var unknown := CardDB.unknown_cards(nd)
+		if not unknown.is_empty():
+			push_warning("Cartas sin datos (se omiten; actualiza la base de cartas): %s" % [unknown])
+			for k in ["main", "extra", "side"]:
+				nd[k] = nd[k].filter(func(c): return not c in unknown)
+		decks.append(nd)
 	duel = YGODuel.new()
 	duel.set_database(CardDB.db)
 	duel.core_log.connect(_on_core_log)

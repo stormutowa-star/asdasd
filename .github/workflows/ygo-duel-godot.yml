@@ -65,6 +65,20 @@ jobs:
           ~/godot/godot --headless --path game --export-release "Linux" export/linux/YGODuel.x86_64
           ls -la game/export/*
 
+      - name: Añadir base de cartas completa (expansions/) y carpetas Decks/pics
+        run: |
+          git clone --depth 1 https://github.com/ProjectIgnis/CardScripts ../cs
+          git clone --depth 1 https://github.com/ProjectIgnis/BabelCDB ../cdb
+          for d in game/export/windows game/export/linux; do
+            mkdir -p $d/expansions/script $d/Decks $d/pics
+            cp ../cs/*.lua $d/expansions/script/
+            cp -r ../cs/official ../cs/pre-release $d/expansions/script/
+            cp ../cdb/cards.cdb ../cdb/release-*.cdb $d/expansions/
+            for f in ../cdb/prerelease-*.cdb; do case $f in *rush*) ;; *) cp $f $d/expansions/;; esac; done
+            date -u +%Y-%m-%dT%H:%M:%S > $d/expansions/version.txt
+            cp game/Decks/*.ydk $d/Decks/
+          done
+
       - uses: actions/upload-artifact@v4
         with:
           name: ygo-duel-windows

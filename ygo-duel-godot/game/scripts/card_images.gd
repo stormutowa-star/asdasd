@@ -1,15 +1,13 @@
 extends Node
-## Autoload "CardImages": imágenes de cartas guardadas en la carpeta pics/ (como EDOPro).
-##  - preload_decks(): al iniciar descarga las que falten de todos los mazos de Decks/.
-##  - ensure(code): al pasar el cursor por una carta comprueba si existe y, si no, la descarga con prioridad.
-##  - get_texture(code) / get_art_texture(code): carta completa / ilustración recortada y pixelada.
+## Autoload "CardImages": imágenes de cartas en la carpeta pics/ (como EDOPro).
+## Las descargas se hacen en un hilo propio (HTTPClient bloqueante), sin frenar el juego:
+##  - al iniciar se encolan, en silencio, todas las cartas de los mazos de Decks/ que no estén en pics/;
+##  - ensure(code): al pasar el cursor por una carta se pone la primera de la cola si falta.
 
 signal texture_ready(code: int)
-signal preload_progress(done: int, total: int, failed: int)
 signal preload_finished(done: int, failed: int)
 
 const DEFAULT_URL := "https://images.ygoprodeck.com/images/cards/%d.jpg"
-const MAX_PARALLEL := 4
 const RETRY_COOLDOWN_MS := 15000
 const ART_PIXELS := 36 # resolución de la ilustración pixelada (estilo GBA)
 
@@ -17,44 +15,72 @@ var download_enabled := true
 ## Se puede cambiar con la variable de entorno YGO_PICS_URL (p.ej. un servidor propio o para pruebas)
 var image_url := DEFAULT_URL
 
+var _textures := {}
+var _arts := {}
+var _failed := {} # code -> ticks del último fallo (hilo principal)
+
+# Compartido con el hilo de descargas (protegido por _mutex)
+var _mutex := Mutex.new()
+var _sem := Semaphore.new()
+var _queue: Array[int] = []
+var _queued := {}
+var _exit := false
+var _thread: Thread
+var _alias := {} # code -> alias (copiado de CardDB para no tocarlo desde el hilo)
+
+var _preload_pending := {}
+var _preload_done := 0
+var _preload_failed := 0
+
 
 func _ready() -> void:
 	var env := OS.get_environment("YGO_PICS_URL")
 	if env != "":
 		image_url = env
-var _textures := {} # code -> Texture2D (carta completa)
-var _arts := {} # code -> Texture2D (ilustración pixelada)
-var _failed := {} # code -> ticks del último fallo
-var _queue: Array[int] = []
-var _in_flight := {}
-var _active := 0
+	_thread = Thread.new()
+	_thread.start(_worker)
+	preload_decks.call_deferred()
 
-var _preload_total := 0
-var _preload_done := 0
-var _preload_failed := 0
-var _preload_pending := {}
+
+func _exit_tree() -> void:
+	_mutex.lock()
+	_exit = true
+	_mutex.unlock()
+	_sem.post()
+	if _thread and _thread.is_started():
+		_thread.wait_to_finish()
 
 
 func has_image(code: int) -> bool:
 	return code > 0 and (FileAccess.file_exists(Paths.pic_path(code)) or FileAccess.file_exists("res://pics/%d.jpg" % code))
 
 
-## Comprueba si la imagen está en pics/ y si no la pone la primera de la cola.
+## Comprueba si la imagen está en pics/ y si no la encola (al principio si `priority`).
 func ensure(code: int, priority := true) -> void:
-	if code <= 0 or not download_enabled or has_image(code) or _in_flight.has(code):
+	if code <= 0 or not download_enabled or has_image(code):
 		return
 	if _failed.has(code) and Time.get_ticks_msec() - int(_failed[code]) < RETRY_COOLDOWN_MS:
 		return
 	_failed.erase(code)
-	_queue.erase(code)
-	if priority:
-		_queue.push_front(code)
+	var alias := int(CardDB.get_card(code).get("alias", 0))
+	_mutex.lock()
+	_alias[code] = alias
+	var already: bool = _queued.has(code)
+	if already:
+		if priority:
+			_queue.erase(code)
+			_queue.push_front(code)
 	else:
-		_queue.append(code)
-	_pump()
+		_queued[code] = true
+		if priority:
+			_queue.push_front(code)
+		else:
+			_queue.append(code)
+	_mutex.unlock()
+	if not already:
+		_sem.post()
 
 
-## Textura de la carta completa (o null mientras no esté descargada).
 func get_texture(code: int) -> Texture2D:
 	if code <= 0:
 		return null
@@ -81,7 +107,6 @@ func get_art_texture(code: int) -> Texture2D:
 		return null
 	var w := img.get_width()
 	var h := img.get_height()
-	# Zona de la ilustración en una carta estándar (421x614)
 	var rect := Rect2i(int(w * 0.12), int(h * 0.185), int(w * 0.76), int(w * 0.76))
 	if rect.end.y > h:
 		rect.size.y = h - rect.position.y
@@ -102,9 +127,7 @@ func _load_image(code: int) -> Image:
 	return null
 
 
-# ---------------------------------------------------------------- precarga al iniciar
-
-## Descarga en pics/ las imágenes de todas las cartas de los mazos de Decks/ que falten.
+## Encola en segundo plano las imágenes de todas las cartas de los mazos de Decks/ que falten.
 func preload_decks() -> int:
 	var codes := {}
 	for path in Paths.deck_files():
@@ -113,78 +136,155 @@ func preload_decks() -> int:
 			for c in deck[section]:
 				codes[int(c)] = true
 	_preload_pending.clear()
+	_preload_done = 0
+	_preload_failed = 0
 	for c in codes:
 		if not has_image(c):
 			_preload_pending[c] = true
-	_preload_total = _preload_pending.size()
-	_preload_done = 0
-	_preload_failed = 0
-	if _preload_total == 0 or not download_enabled:
+	if _preload_pending.is_empty() or not download_enabled:
 		preload_finished.emit.call_deferred(0, 0)
 		return 0
 	for c in _preload_pending:
 		ensure(c, false)
-	return _preload_total
+	return _preload_pending.size()
 
 
-func _preload_step(code: int, ok: bool) -> void:
-	if not _preload_pending.has(code):
-		return
-	_preload_pending.erase(code)
-	_preload_done += 1
-	if not ok:
-		_preload_failed += 1
-	preload_progress.emit(_preload_done, _preload_total, _preload_failed)
-	if _preload_pending.is_empty():
-		preload_finished.emit(_preload_done, _preload_failed)
+# ================================================================ hilo de descargas
 
-
-# ---------------------------------------------------------------- descargas
-
-func _pump() -> void:
-	while _active < MAX_PARALLEL and not _queue.is_empty():
-		var code: int = _queue.pop_front()
-		if has_image(code):
-			_preload_step(code, true)
+func _worker() -> void:
+	var client := HTTPClient.new()
+	var host := [""] # host:puerto al que está conectado el cliente
+	while true:
+		_sem.wait()
+		_mutex.lock()
+		if _exit:
+			_mutex.unlock()
+			break
+		if _queue.is_empty():
+			_mutex.unlock()
 			continue
-		_start_request(code, code)
-
-
-## `url_code` puede ser el alias (arte original) si el código exacto no existe en el servidor.
-func _start_request(code: int, url_code: int) -> void:
-	_active += 1
-	_in_flight[code] = true
-	var http := HTTPRequest.new()
-	http.timeout = 25
-	add_child(http)
-	http.request_completed.connect(_on_done.bind(code, url_code, http))
-	if http.request(image_url % url_code) != OK:
-		_on_done(HTTPRequest.RESULT_CANT_CONNECT, 0, PackedStringArray(), PackedByteArray(), code, url_code, http)
-
-
-func _on_done(result: int, status: int, _headers: PackedStringArray, body: PackedByteArray, code: int, url_code: int, http: HTTPRequest) -> void:
-	_active -= 1
-	_in_flight.erase(code)
-	http.queue_free()
-	var ok := false
-	if result == HTTPRequest.RESULT_SUCCESS and status == 200 and body.size() > 0:
-		var img := Image.new()
-		if img.load_jpg_from_buffer(body) == OK or img.load_png_from_buffer(body) == OK:
-			var f := FileAccess.open(Paths.pic_path(code), FileAccess.WRITE)
-			if f:
-				f.store_buffer(body)
-				f.close()
-			_textures.erase(code)
-			_arts.erase(code)
+		var code: int = _queue.pop_front()
+		var alias: int = _alias.get(code, 0)
+		var url := image_url
+		_mutex.unlock()
+		var ok := false
+		if FileAccess.file_exists(Paths.pic_path(code)):
 			ok = true
-	elif status == 404 and url_code == code:
-		var alias: int = CardDB.get_card(code).get("alias", 0)
-		if alias > 0:
-			_start_request(code, alias)
-			return
+		else:
+			var res := _fetch(client, host, url % code)
+			if res[0] == 404 and alias > 0:
+				res = _fetch(client, host, url % alias)
+			if res[0] == 200:
+				var body: PackedByteArray = res[1]
+				var img := Image.new()
+				if body.size() > 0 and (img.load_jpg_from_buffer(body) == OK or img.load_png_from_buffer(body) == OK):
+					var tmp := Paths.pic_path(code) + ".part"
+					var f := FileAccess.open(tmp, FileAccess.WRITE)
+					if f:
+						f.store_buffer(body)
+						f.close()
+						DirAccess.rename_absolute(tmp, Paths.pic_path(code))
+						ok = true
+		_mutex.lock()
+		_queued.erase(code)
+		_mutex.unlock()
+		_on_downloaded.call_deferred(code, ok)
+	client.close()
+
+
+## GET síncrono (sólo desde el hilo). Devuelve [código HTTP, cuerpo]; 0 si falla la conexión.
+## Si una conexión reutilizada estaba cerrada por el servidor, reintenta con una nueva.
+func _fetch(client: HTTPClient, host: Array, url: String, redirects := 3) -> Array:
+	var reused: bool = host[0] != ""
+	var res := _fetch_once(client, host, url, redirects)
+	if res[0] == 0 and reused and not _exit:
+		client.close()
+		host[0] = ""
+		res = _fetch_once(client, host, url, redirects)
+	return res
+
+
+func _fetch_once(client: HTTPClient, host: Array, url: String, redirects: int) -> Array:
+	var m := RegEx.create_from_string("^(https?)://([^/:]+)(?::(\\d+))?(/.*)?$").search(url)
+	if m == null:
+		return [0, PackedByteArray()]
+	var tls := m.get_string(1) == "https"
+	var hostname := m.get_string(2)
+	var port := int(m.get_string(3)) if m.get_string(3) != "" else (443 if tls else 80)
+	var path := m.get_string(4) if m.get_string(4) != "" else "/"
+	var key := "%s:%d" % [hostname, port]
+	if host[0] != key or client.get_status() != HTTPClient.STATUS_CONNECTED:
+		client.close()
+		host[0] = ""
+		if client.connect_to_host(hostname, port, TLSOptions.client() if tls else null) != OK:
+			return [0, PackedByteArray()]
+		var t0 := Time.get_ticks_msec()
+		while client.get_status() in [HTTPClient.STATUS_CONNECTING, HTTPClient.STATUS_RESOLVING]:
+			client.poll()
+			OS.delay_msec(5)
+			if Time.get_ticks_msec() - t0 > 15000 or _exit:
+				client.close()
+				return [0, PackedByteArray()]
+		if client.get_status() != HTTPClient.STATUS_CONNECTED:
+			client.close()
+			return [0, PackedByteArray()]
+		host[0] = key
+	if client.request(HTTPClient.METHOD_GET, path, ["User-Agent: YGODuel/1.0", "Accept: image/*"]) != OK:
+		client.close()
+		host[0] = ""
+		return [0, PackedByteArray()]
+	var t1 := Time.get_ticks_msec()
+	while client.get_status() == HTTPClient.STATUS_REQUESTING:
+		client.poll()
+		OS.delay_msec(2)
+		if Time.get_ticks_msec() - t1 > 20000 or _exit:
+			client.close()
+			host[0] = ""
+			return [0, PackedByteArray()]
+	if not client.has_response():
+		client.close()
+		host[0] = ""
+		return [0, PackedByteArray()]
+	var status := client.get_response_code()
+	var headers := client.get_response_headers_as_dictionary()
+	var body := PackedByteArray()
+	while client.get_status() == HTTPClient.STATUS_BODY:
+		client.poll()
+		var chunk := client.read_response_body_chunk()
+		if chunk.size() == 0:
+			OS.delay_msec(2)
+		else:
+			body.append_array(chunk)
+		if Time.get_ticks_msec() - t1 > 30000 or _exit:
+			client.close()
+			host[0] = ""
+			return [0, PackedByteArray()]
+	var close := false
+	for k in headers:
+		if String(k).to_lower() == "connection" and String(headers[k]).to_lower().contains("close"):
+			close = true
+	if close or client.get_status() != HTTPClient.STATUS_CONNECTED:
+		client.close()
+		host[0] = ""
+	if status in [301, 302, 303, 307, 308] and redirects > 0:
+		for k in headers:
+			if String(k).to_lower() == "location":
+				return _fetch(client, host, headers[k], redirects - 1)
+	return [status, body]
+
+
+## Vuelve al hilo principal cuando termina una descarga.
+func _on_downloaded(code: int, ok: bool) -> void:
 	if ok:
+		_textures.erase(code)
+		_arts.erase(code)
 		texture_ready.emit(code)
 	else:
 		_failed[code] = Time.get_ticks_msec()
-	_preload_step(code, ok)
-	_pump()
+	if _preload_pending.has(code):
+		_preload_pending.erase(code)
+		_preload_done += 1
+		if not ok:
+			_preload_failed += 1
+		if _preload_pending.is_empty():
+			preload_finished.emit(_preload_done, _preload_failed)

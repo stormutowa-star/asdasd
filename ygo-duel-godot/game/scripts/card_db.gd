@@ -17,13 +17,29 @@ func _ready() -> void:
 	if not own in EXPANSION_DIRS:
 		EXPANSION_DIRS.append(own)
 	db = YGOCardDatabase.new()
+	reload()
+	_load_strings(DATA_DIR + "/strings.conf")
+	_load_strings(DATA_DIR + "/strings_es.conf") # sobrescribe con el español cuando existe
+
+
+## (Re)carga las bases de datos: la incluida y las de expansions/ (p.ej. tras actualizar).
+func reload() -> void:
+	db.clear()
+	_cache.clear()
 	var n := db.load_cdb(DATA_DIR + "/cards.cdb")
 	print("CardDB: %d cartas en cards.cdb" % n)
 	for dir in EXPANSION_DIRS:
-		for f in _list_files(dir, ".cdb"):
+		var files := _list_files(dir, ".cdb")
+		files.sort_custom(func(a, b): return _cdb_order(a) < _cdb_order(b))
+		for f in files:
 			print("CardDB: expansión %s (%d cartas)" % [f, db.load_cdb(f)])
-	_load_strings(DATA_DIR + "/strings.conf")
-	_load_strings(DATA_DIR + "/strings_es.conf") # sobrescribe con el español cuando existe
+	print("CardDB: %d cartas en total" % db.get_card_count())
+
+
+## cards.cdb primero, luego release-*, luego prerelease-* (los últimos sobrescriben)
+func _cdb_order(path: String) -> String:
+	var f := path.get_file()
+	return ("0" if f == "cards.cdb" else ("1" if f.begins_with("release") else "2")) + f
 
 
 ## Directorios de scripts Lua para YGODuel.add_script_directory (los últimos tienen prioridad).
@@ -68,21 +84,90 @@ func desc_text(desc: int) -> String:
 	return "Efecto de %s" % c.get("name", "")
 
 
-## Lee un .ydk de EDOPro → {"main": [...], "extra": [...], "side": [...]}
+## Lee un mazo: .ydk de EDOPro/YGOPRODeck/Master Duel, o un enlace ydke:// guardado en el fichero.
+## → {"main": [...], "extra": [...], "side": [...]}
 func load_deck(path: String) -> Dictionary:
-	var deck := {"main": [], "extra": [], "side": []}
 	var f := FileAccess.open(path, FileAccess.READ)
 	if f == null:
 		push_error("No se pudo abrir el mazo " + path)
+		return {"main": [], "extra": [], "side": []}
+	return parse_deck_text(f.get_as_text())
+
+
+## Admite el formato YDK (#main / #extra / !side, con comentarios "#..." y códigos con ceros a la izquierda)
+## y el formato ydke://main!extra!side! (base64 de enteros de 32 bits little-endian).
+func parse_deck_text(text: String) -> Dictionary:
+	var deck := {"main": [], "extra": [], "side": []}
+	var t := text.strip_edges()
+	var ydke := t.find("ydke://")
+	if ydke >= 0:
+		var parts := t.substr(ydke + 7).split("!")
+		var keys := ["main", "extra", "side"]
+		for i in min(3, parts.size()):
+			var raw := Marshalls.base64_to_raw(parts[i].strip_edges())
+			for j in range(0, raw.size() - 3, 4):
+				deck[keys[i]].append(raw.decode_u32(j))
 		return deck
 	var section := "main"
-	while not f.eof_reached():
-		var line := f.get_line().strip_edges()
-		if line == "#main": section = "main"
-		elif line == "#extra": section = "extra"
-		elif line == "!side": section = "side"
-		elif line.is_valid_int(): deck[section].append(line.to_int())
+	var num := RegEx.create_from_string("^(\\d+)")
+	for raw_line in t.split("\n"):
+		var line := raw_line.strip_edges()
+		var low := line.to_lower()
+		if low.begins_with("#main"): section = "main"
+		elif low.begins_with("#extra"): section = "extra"
+		elif low.begins_with("!side") or low.begins_with("#side"): section = "side"
+		elif line.begins_with("#") or line.begins_with("!"): continue
+		else:
+			var m := num.search(line)
+			if m:
+				deck[section].append(m.get_string(1).to_int())
 	return deck
+
+
+## Coloca en el Extra Deck los monstruos de Fusión/Sincronía/Xyz/Link que vengan en el Main (y al revés).
+func normalize_deck(deck: Dictionary) -> Dictionary:
+	var out := {"main": [], "extra": deck.get("extra", []).duplicate(), "side": deck.get("side", []).duplicate()}
+	for c in deck.get("main", []):
+		var type: int = get_card(c).get("type", 0)
+		if type & OCG.TYPE_MONSTER and OCG.is_extra_deck_type(type):
+			out.extra.append(c)
+		else:
+			out.main.append(c)
+	return out
+
+
+## Códigos del mazo que no están en la base de datos (cartas demasiado nuevas → actualizar base).
+func unknown_cards(deck: Dictionary) -> Array:
+	var out := []
+	for section in ["main", "extra", "side"]:
+		for c in deck.get(section, []):
+			if not db.has_card(c) and not c in out:
+				out.append(c)
+	return out
+
+
+## Guarda un mazo en Decks/<nombre>.ydk y devuelve la ruta.
+func save_deck(deck: Dictionary, name: String) -> String:
+	var safe := name.validate_filename().strip_edges()
+	if safe == "":
+		safe = "Mazo"
+	var path := Paths.decks_dir.path_join(safe + ".ydk")
+	var i := 2
+	while FileAccess.file_exists(path):
+		path = Paths.decks_dir.path_join("%s (%d).ydk" % [safe, i])
+		i += 1
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return ""
+	f.store_line("#created by YGO Duel")
+	f.store_line("#main")
+	for c in deck.main: f.store_line(str(c))
+	f.store_line("#extra")
+	for c in deck.extra: f.store_line(str(c))
+	f.store_line("!side")
+	for c in deck.side: f.store_line(str(c))
+	f.close()
+	return path
 
 
 ## Mazos .ydk de la carpeta Decks/ (ver Paths).

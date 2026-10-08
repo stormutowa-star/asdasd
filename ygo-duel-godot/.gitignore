@@ -20,3 +20,5 @@ game/bin/~*
 
 # Caché de imágenes de cartas (se descargan al jugar)
 game/pics/
+game/expansions/
+game/expansions.download/

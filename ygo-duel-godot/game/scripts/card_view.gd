@@ -24,6 +24,9 @@ var highlight := Color.TRANSPARENT
 var selected := false
 var dimmed := false
 var badge := ""
+## Carta propia colocada boca abajo: se dibuja el dorso salvo mientras el cursor está encima.
+var peek_only := false
+var _hover := false
 
 var _art: Texture2D
 var _full: Texture2D
@@ -33,8 +36,14 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	mouse_entered.connect(func(): hovered.emit(self))
-	mouse_exited.connect(func(): unhovered.emit(self))
+	mouse_entered.connect(func():
+		_hover = true
+		if peek_only: queue_redraw()
+		hovered.emit(self))
+	mouse_exited.connect(func():
+		_hover = false
+		if peek_only: queue_redraw()
+		unhovered.emit(self))
 
 
 func setup(p_code: int, p_data: Dictionary, p_face_up: bool) -> CardView:
@@ -83,7 +92,7 @@ func _draw() -> void:
 	if defense_pos:
 		draw_set_transform_matrix(Transform2D(PI / 2.0, Vector2(0.86, 0.86), 0.0, center) * Transform2D(0.0, -center))
 	var rect := Rect2(Vector2.ZERO, size)
-	if not face_up:
+	if not face_up or (peek_only and not _hover):
 		draw_texture_rect(GBA.tex("card_back"), rect, false)
 	elif full_art and _full:
 		draw_texture_rect(_full, rect, false)
@@ -98,6 +107,8 @@ func _draw() -> void:
 		draw_rect(rect, Color(1, 0.88, 0.25, 0.28))
 		draw_rect(rect.grow(3), GBA.C_YELLOW, false, 3.0)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
+	if peek_only and _hover:
+		draw_string(GBA.font_big, Vector2(2, 11), "SET", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, GBA.C_YELLOW)
 	if badge != "":
 		draw_rect(Rect2(size.x - 18, -2, 20, 18), GBA.C_RED)
 		draw_rect(Rect2(size.x - 18, -2, 20, 18), GBA.C_WHITE, false, 2.0)

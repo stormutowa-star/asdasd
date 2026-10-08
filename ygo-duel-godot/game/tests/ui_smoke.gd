@@ -67,7 +67,28 @@ func _on_request(msg: Dictionary) -> void:
 			board._on_card_hovered(v)
 			await get_tree().process_frame
 			_shot("hover_hand")
+	# Carta propia colocada: oculta hasta pasar el cursor
+	if not seen.has("set_hover"):
+		for k in board.views:
+			var cv = board.views[k]
+			if cv is CardView and cv.peek_only:
+				seen["set_hover"] = true
+				_shot("set_hidden")
+				cv.mouse_entered.emit()
+				board._on_card_hovered(cv)
+				await get_tree().process_frame
+				_shot("set_hover")
+				if is_instance_valid(cv): cv.mouse_exited.emit()
+				break
 	var resp: PackedByteArray = bot.decide(msg)
+	if not board._fsel.is_empty():
+		if not seen.has("fsel"):
+			seen["fsel"] = true
+			_shot("field_select_%d" % msg.type)
+		board.current_req = {}
+		board._fsel_done.emit(null)
+		board.ctrl.respond(resp)
+		return
 	if board.dialog.visible:
 		board.dialog.visible = false
 		board._dialog_busy = false

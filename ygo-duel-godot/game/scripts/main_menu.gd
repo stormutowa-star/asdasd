@@ -10,6 +10,8 @@ var lp: SpinBox
 var images: CheckBox
 var start: Button
 var info: Label
+var data_label: Label
+var update_btn: Button
 
 
 func _ready() -> void:
@@ -79,6 +81,30 @@ func _ready() -> void:
 	reload_b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	reload_b.pressed.connect(_reload_decks)
 	row.add_child(reload_b)
+	var row2 := HBoxContainer.new()
+	row2.add_theme_constant_override("separation", 8)
+	v.add_child(row2)
+	var import_b := Button.new()
+	import_b.text = "Importar mazo (portapapeles)"
+	import_b.tooltip_text = "Copia un enlace ydke:// o el texto de un .ydk (YGOPRODeck, EDOPro, Master Duel...)"
+	import_b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	import_b.pressed.connect(_import_clipboard)
+	row2.add_child(import_b)
+	update_btn = Button.new()
+	update_btn.text = "Actualizar cartas"
+	update_btn.tooltip_text = "Descarga la base de cartas y los scripts actuales de EDOPro (ProjectIgnis)"
+	update_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	update_btn.pressed.connect(_update_cards)
+	row2.add_child(update_btn)
+	data_label = Label.new()
+	data_label.add_theme_font_size_override("font_size", 20)
+	data_label.add_theme_color_override("font_color", GBA.C_TEXT_DIM)
+	data_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	data_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(data_label)
+	DataUpdater.update_finished.connect(_on_update_finished)
+	my_deck.item_selected.connect(func(_i): _check_decks())
+	cpu_deck.item_selected.connect(func(_i): _check_decks())
 	start = Button.new()
 	start.text = "¡A DUELO!"
 	start.custom_minimum_size = Vector2(0, 58)
@@ -122,6 +148,58 @@ func _reload_decks() -> void:
 			deck_paths.size(), Paths.decks_dir, cached, total.size()]
 	if deck_paths.is_empty():
 		info.text = "No hay mazos .ydk en " + Paths.decks_dir
+	_check_decks()
+
+
+## Estado de la base de cartas y aviso si los mazos elegidos tienen cartas sin datos.
+func _check_decks() -> void:
+	if data_label == null:
+		return
+	var ver := DataUpdater.installed_version()
+	var txt := "Base de cartas: %d cartas%s" % [CardDB.db.get_card_count(),
+			(" (actualizada %s)" % ver.left(10)) if ver != "" else " (sólo las de ejemplo)"]
+	if DataUpdater.busy:
+		txt = "Descargando la base de cartas actual..."
+	var warn := []
+	for o in [my_deck, cpu_deck]:
+		if o.selected >= 0 and o.selected < deck_paths.size():
+			var unknown := CardDB.unknown_cards(CardDB.load_deck(deck_paths[o.selected]))
+			if not unknown.is_empty():
+				warn.append("%s: %d cartas sin datos" % [deck_paths[o.selected].get_file().get_basename(), unknown.size()])
+	if not warn.is_empty():
+		txt += "\n[!] " + ", ".join(warn) + " -> pulsa «Actualizar cartas»"
+	data_label.text = txt
+	data_label.add_theme_color_override("font_color", Color("ffb060") if not warn.is_empty() else GBA.C_TEXT_DIM)
+
+
+func _update_cards() -> void:
+	update_btn.disabled = true
+	DataUpdater.update_async()
+	_check_decks()
+
+
+func _on_update_finished(ok: bool, message: String) -> void:
+	update_btn.disabled = false
+	Sfx.play("summon" if ok else "cancel")
+	_reload_decks()
+	data_label.text = message + "\n" + data_label.text
+
+
+func _import_clipboard() -> void:
+	var text := DisplayServer.clipboard_get()
+	var deck := CardDB.parse_deck_text(text)
+	if deck.main.is_empty() and deck.extra.is_empty():
+		Sfx.play("cancel")
+		data_label.text = "El portapapeles no contiene un mazo (ydke:// o texto .ydk)"
+		return
+	var path := CardDB.save_deck(CardDB.normalize_deck(deck), "Importado " + Time.get_datetime_string_from_system().replace(":", "-"))
+	Sfx.play("summon")
+	_reload_decks()
+	var idx := deck_paths.find(path)
+	if idx >= 0:
+		my_deck.select(idx)
+	_check_decks()
+	data_label.text = "Mazo importado: %s (%d + %d cartas)\n" % [path.get_file(), deck.main.size(), deck.extra.size()] + data_label.text
 
 
 func _option(grid: GridContainer, label: String) -> OptionButton:

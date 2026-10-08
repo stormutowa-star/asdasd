@@ -71,6 +71,7 @@ func _clone(v: CardView, parent: Control) -> CardView:
 	g.set_card_size(v.size.x)
 	g.setup(v.code, v.data, v.face_up)
 	g.defense_pos = v.defense_pos
+	g.peek_only = v.peek_only
 	g.position = v.position
 	g.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(g)
@@ -266,9 +267,8 @@ func _summon(loc: Dictionary, special: bool) -> void:
 	_restore_alpha(v)
 
 
-func _restore_alpha(v: CardView) -> void:
-	if is_instance_valid(v) and v.controller == board.me and v.location & OCG.LOCATION_ONFIELD and not v.face_up:
-		v.modulate = Color(1, 1, 1, 0.8)
+func _restore_alpha(_v: CardView) -> void:
+	pass
 
 
 func _flip(loc: Dictionary) -> void:
@@ -303,7 +303,7 @@ func _set_card(loc: Dictionary) -> void:
 	var target := v.position
 	var off := 50.0 if int(loc.controller) == board.me else -50.0
 	v.position = target + Vector2(0, off)
-	var a := v.modulate.a
+	var a := 1.0
 	v.modulate.a = 0.0
 	var t := _tw().set_parallel(true)
 	t.tween_property(v, "position", target, _d(0.2)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -570,6 +570,7 @@ func _shatter_view(v: CardView) -> void:
 			c.set_card_size(size.x)
 			c.setup(v.code, v.data, v.face_up)
 			c.defense_pos = v.defense_pos
+			c.peek_only = v.peek_only
 			c.position = -Vector2(i * pw, j * ph)
 			c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			piece.add_child(c)

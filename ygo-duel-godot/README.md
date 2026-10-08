@@ -22,9 +22,18 @@ Prototipo jugable de un simulador de duelos de Yu-Gi-Oh! al estilo **EDOPro**, h
   opciones, posición, zonas, contadores, declarar carta/tipo/atributo/número, piedra-papel-tijera.
 - IA rival sencilla en GDScript (invoca, activa magias, coloca trampas, encadena y ataca con cabeza).
 - Mazos `.ydk` de EDOPro en la carpeta **`Decks/`** y bases de datos `.cdb` de ProjectIgnis.
-- Imágenes de cartas en la carpeta **`pics/`** (como EDOPro):
-  - **al iniciar el juego** se descargan las de todas las cartas de los mazos de `Decks/` (con barra de progreso);
-  - **al pasar el cursor** por una carta se comprueba si su imagen está en `pics/` y, si no, se descarga al momento;
+- **Mazos actuales**: el paquete incluye la base de cartas completa de EDOPro/ProjectIgnis (~15 000 cartas
+  con sus scripts) en `expansions/`, y el botón **Actualizar cartas** del menú descarga la última versión
+  (en un hilo aparte). Se admiten `.ydk` de EDOPro/YGOPRODeck/Master Duel y enlaces **`ydke://`**
+  (botón *Importar mazo (portapapeles)*). Los monstruos del Extra que vengan en el Main se recolocan solos
+  y se avisa si un mazo tiene cartas que aún no están en la base.
+- **Objetivos en el campo**: al elegir objetivos de efectos, de ataque, sacrificios o materiales que están
+  en el campo o la mano, se hace clic directamente en las cartas resaltadas (sólo se usa una ventana
+  para cartas del Cementerio, Deck, etc.).
+- **Cartas colocadas ocultas**: tus cartas boca abajo se ven como dorso; sólo se revelan mientras pasas el cursor.
+- Imágenes de cartas en la carpeta **`pics/`** (como EDOPro), descargadas en un **hilo propio** sin frenar el juego:
+  - al iniciar se encolan en silencio las de todas las cartas de los mazos de `Decks/`;
+  - al pasar el cursor por una carta sin imagen, se descarga con prioridad;
   - si no hay red se dibuja una carta pixelada genérica con nivel y ATK/DEF.
 
 ## Carpetas del jugador
@@ -34,7 +43,7 @@ Prototipo jugable de un simulador de duelos de Yu-Gi-Oh! al estilo **EDOPro**, h
 | `Decks/` | Mazos `.ydk` (formato EDOPro). La primera vez se copian los de ejemplo. Botón *Abrir carpeta Decks* en el menú. |
 | `pics/` | Caché de imágenes `<código>.jpg` (descargadas de images.ygoprodeck.com). También puedes copiar aquí las `pics` de EDOPro. |
 | `skin/` | Opcional: PNG con el nombre de una textura (`window`, `button`, `mat_tile`, `card_back`, `zone_monster`, `zone_spell`, `zone_field`, `zone_grave`, `zone_deck`, `zone_extra`, `zone_banish`, `zone_emz`, `icon_atk`, `icon_def`, `icon_star`…) o `sfx_<nombre>.wav` para reemplazar gráficos y sonidos. |
-| `expansions/` | Opcional: `.cdb` y `script/` adicionales (más cartas). |
+| `expansions/` | Base de cartas completa (`.cdb` + `script/`); la rellena/actualiza el botón *Actualizar cartas*. |
 
 Están junto al ejecutable (`YGODuel.exe`); si esa carpeta no permite escribir se usan en
 `%APPDATA%\YGODuel\` (Windows) o `~/.local/share/YGODuel/` (Linux). En el editor, dentro de `game/`.
@@ -82,7 +91,7 @@ ygo-duel-godot/
     ├── data/                  # cards.cdb, scripts Lua, strings.conf (es/en)
     ├── Decks/                 # Yugi.ydk, Kaiba.ydk (mazos por defecto)
     ├── assets/fonts/          # VT323 y Silkscreen (licencia OFL)
-    ├── scenes/                # boot.tscn (precarga de imágenes), main_menu.tscn, duel.tscn
+    ├── scenes/                # main_menu.tscn, duel.tscn
     ├── scripts/
     │   ├── ocg.gd             #   constantes del core y textos
     │   ├── message_parser.gd  #   mensajes binarios del core → Dictionary
@@ -97,7 +106,8 @@ ygo-duel-godot/
     │   ├── prompt_dialog.gd   #   diálogos de selección
     │   ├── card_view.gd       #   dibujo de una carta
     │   ├── card_db.gd         #   autoload: base de datos, strings y mazos
-    │   └── card_images.gd     #   autoload: caché pics/, precarga y descarga al pasar el cursor
+    │   ├── data_updater.gd    #   autoload: descarga e instala la base de cartas actual (hilo)
+    │   └── card_images.gd     #   autoload: caché pics/ con hilo de descargas
     └── tests/                 # pruebas IA vs IA (sin interfaz) y de la interfaz
 ```
 
@@ -147,6 +157,7 @@ godot --headless --path game --import
 godot --headless --path game res://tests/ai_vs_ai.tscn -- 6 2024      # 6 duelos IA vs IA
 xvfb-run godot --path game res://tests/ui_smoke.tscn -- /tmp/capturas 42 fakepics # interfaz + capturas
 YGO_PICS_URL="http://127.0.0.1:8765/%d.jpg" godot --headless --path game res://tests/pics_test.tscn # caché pics/
+YGO_SCRIPTS_URL=... YGO_CDB_URL=... godot --headless --path game res://tests/update_test.tscn -- mazo_ydke.txt # actualizar + mazo moderno
 ```
 
 ## Limitaciones del prototipo

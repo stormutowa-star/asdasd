@@ -70,6 +70,14 @@ var speed_opt: OptionButton
 var sound_cb: CheckBox
 var _end_panel: PanelContainer
 
+# Selección de cartas directamente en el campo (objetivos, ataques, sacrificios...)
+signal _fsel_done(result)
+const COL_PICKED := Color("60ff80")
+var _fsel := {}
+var sel_row: HBoxContainer
+var sel_confirm: Button
+var sel_cancel: Button
+
 
 class ZoneLayer:
 	extends Control
@@ -299,6 +307,12 @@ func _build_ui() -> void:
 	prompt_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	prompt_label.add_theme_color_override("font_color", Color("80ffa0"))
 	rv.add_child(prompt_label)
+	sel_row = HBoxContainer.new()
+	sel_row.add_theme_constant_override("separation", 4)
+	sel_row.visible = false
+	rv.add_child(sel_row)
+	sel_confirm = _button(sel_row, "Confirmar", func(): _fsel_finish(true))
+	sel_cancel = _button(sel_row, "Cancelar", func(): _fsel_finish(false))
 	chain_label = Label.new()
 	chain_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	chain_label.add_theme_color_override("font_color", Color("80e0ff"))
@@ -546,9 +560,13 @@ func _ask_dialog(msg: Dictionary) -> void:
 			var opts: Array = msg.options.map(func(o): return _desc(o))
 			resp = OCGResponse.int32(await dialog.ask_options(_hint_text("Elige una opción"), opts))
 		OCG.MSG_SELECT_CARD:
-			_mark_candidates(msg.cards)
-			var cards2: Array = msg.cards.map(func(c): return _entry(c))
-			var sel = await dialog.ask_cards(_hint_text(), cards2, msg.min, msg.max, msg.cancelable)
+			var sel
+			if _on_board(msg.cards):
+				sel = await _field_select(_hint_text(), msg.cards, msg.min, msg.max, msg.cancelable)
+			else:
+				_mark_candidates(msg.cards)
+				var cards2: Array = msg.cards.map(func(c): return _entry(c))
+				sel = await dialog.ask_cards(_hint_text(), cards2, msg.min, msg.max, msg.cancelable)
 			resp = OCGResponse.cancel() if sel == null else OCGResponse.cards(sel.map(func(i): return msg.cards[i].index))
 		OCG.MSG_SELECT_TRIBUTE:
 			_mark_candidates(msg.cards)
@@ -557,13 +575,22 @@ func _ask_dialog(msg: Dictionary) -> void:
 				var total := 0
 				for i in sel: total += int(msg.cards[i].release_param)
 				return total >= msg.min and sel.size() <= msg.max and not sel.is_empty()
-			var sel3 = await dialog.ask_cards(_hint_text("Selecciona los monstruos a sacrificar"), cards3, 1, msg.max, msg.cancelable, validator)
+			var sel3
+			if _on_board(msg.cards):
+				sel3 = await _field_select(_hint_text("Selecciona los monstruos a sacrificar"), msg.cards, 1, msg.max, msg.cancelable, validator)
+			else:
+				sel3 = await dialog.ask_cards(_hint_text("Selecciona los monstruos a sacrificar"), cards3, 1, msg.max, msg.cancelable, validator)
 			resp = OCGResponse.cancel() if sel3 == null else OCGResponse.cards(sel3.map(func(i): return msg.cards[i].index))
 		OCG.MSG_SELECT_UNSELECT_CARD:
 			var all: Array = msg.select_cards + msg.unselect_cards
 			_mark_candidates(all)
 			var pre := range(msg.select_cards.size(), all.size())
-			var idx4: int = await dialog.ask_pick(_hint_text(), all.map(func(c): return _entry(c)), pre,
+			var idx4: int
+			if _on_board(all):
+				idx4 = await _field_select(_hint_text() + "  (mín. %d, máx. %d)" % [msg.min, msg.max], all, 1, 1,
+						msg.cancelable or msg.finishable, Callable(), true, pre, "Terminar" if msg.finishable else "Cancelar")
+			else:
+				idx4 = await dialog.ask_pick(_hint_text(), all.map(func(c): return _entry(c)), pre,
 					"Terminar" if msg.finishable else "", "Cancelar" if msg.cancelable and not msg.finishable else "",
 					"Mín. %d, máx. %d" % [msg.min, msg.max])
 			resp = OCGResponse.select_unselect(idx4) if idx4 >= 0 else OCGResponse.cancel()
@@ -578,8 +605,12 @@ func _ask_dialog(msg: Dictionary) -> void:
 					if i < must_n: return false
 					total += int(msg.cards[i - must_n].param) & 0xffff
 				return total == msg.acc if msg.select_mode == 0 else total >= msg.acc
-			var sel5 = await dialog.ask_cards("%s (suma %d)" % [_hint_text(), msg.acc], all5.map(func(c): return _entry(c, "%d" % (int(c.param) & 0xffff))),
-					msg.min, max(msg.max, all5.size()), false, validator5)
+			var sel5
+			if msg.must_cards.is_empty() and _on_board(msg.cards):
+				sel5 = await _field_select("%s (suma %d)" % [_hint_text(), msg.acc], msg.cards, msg.min, max(msg.max, msg.cards.size()), false, validator5)
+			else:
+				sel5 = await dialog.ask_cards("%s (suma %d)" % [_hint_text(), msg.acc], all5.map(func(c): return _entry(c, "%d" % (int(c.param) & 0xffff))),
+						msg.min, max(msg.max, all5.size()), false, validator5)
 			resp = OCGResponse.cards((sel5 if sel5 else []).map(func(i): return msg.cards[i - must_n].index))
 		OCG.MSG_SELECT_POSITION:
 			resp = OCGResponse.int32(await dialog.ask_position(msg.code, msg.positions))
@@ -683,6 +714,10 @@ func _on_end_turn() -> void:
 func _on_card_clicked(view: CardView) -> void:
 	_on_card_hovered(view)
 	var k := key(view.controller, view.location, view.sequence)
+	if not _fsel.is_empty():
+		if _fsel.keys.has(k):
+			_fsel_click(_fsel.keys[k])
+		return
 	if current_req.is_empty() or _dialog_busy:
 		return
 	if current_req.type in [OCG.MSG_SELECT_PLACE, OCG.MSG_SELECT_DISFIELD]:
@@ -703,6 +738,8 @@ func _on_card_hovered(view: CardView) -> void:
 	if view.face_up:
 		CardImages.ensure(view.code, true)
 	_show_info(view)
+	if view.peek_only:
+		info_name.text += "  (colocada)"
 
 
 func _open_action_menu(actions: Array) -> void:
@@ -718,6 +755,82 @@ func _open_action_menu(actions: Array) -> void:
 func _on_action_chosen(id: int) -> void:
 	if id >= 0 and id < _menu_responses.size():
 		_respond(_menu_responses[id])
+
+
+# ---------------------------------------------------------------- selección en el campo
+
+## True si todas las cartas están en el campo o en la mano (se pueden señalar en el tablero).
+func _on_board(cards: Array) -> bool:
+	if cards.is_empty():
+		return false
+	for c in cards:
+		var loc := int(c.get("location", 0))
+		if loc & OCG.LOCATION_OVERLAY or not loc & (OCG.LOCATION_ONFIELD | OCG.LOCATION_HAND):
+			return false
+		if not views.has(key(int(c.controller), loc, int(c.sequence))):
+			return false
+	return true
+
+
+## Selección haciendo clic en las cartas del tablero. Devuelve Array de índices (o null si se cancela);
+## en modo `pick` devuelve el índice de la carta pulsada o -1 (terminar/cancelar).
+func _field_select(title: String, cards: Array, p_min: int, p_max: int, cancelable: bool,
+		validator := Callable(), pick := false, preselected := [], cancel_text := "Cancelar"):
+	var keys := {}
+	for i in cards.size():
+		keys[key(int(cards[i].controller), int(cards[i].location), int(cards[i].sequence))] = i
+	_fsel = {"keys": keys, "picked": preselected.duplicate(), "min": p_min, "max": p_max,
+			"validator": validator, "pick": pick, "title": title}
+	sel_cancel.text = cancel_text
+	sel_cancel.visible = cancelable
+	sel_confirm.visible = not pick and not (p_max == 1 and p_min <= 1 and not validator.is_valid())
+	sel_row.visible = sel_cancel.visible or sel_confirm.visible
+	Sfx.play("chain")
+	_fsel_update()
+	var result = await _fsel_done
+	_fsel = {}
+	sel_row.visible = false
+	prompt_label.text = ""
+	_refresh_highlights()
+	return result
+
+
+func _fsel_click(i: int) -> void:
+	Sfx.play("select")
+	if _fsel.pick:
+		_fsel_done.emit(i)
+		return
+	var picked: Array = _fsel.picked
+	if i in picked:
+		picked.erase(i)
+	elif picked.size() < _fsel.max:
+		picked.append(i)
+	if _fsel.max == 1 and _fsel.min <= 1 and not _fsel.validator.is_valid():
+		_fsel_done.emit([i])
+		return
+	_fsel_update()
+
+
+func _fsel_update() -> void:
+	var picked: Array = _fsel.picked
+	var ok: bool = picked.size() >= _fsel.min and picked.size() <= _fsel.max
+	if _fsel.validator.is_valid():
+		ok = _fsel.validator.call(picked)
+	sel_confirm.disabled = not ok
+	var extra := "" if _fsel.pick else "  [%d/%d]" % [picked.size(), _fsel.max]
+	prompt_label.text = "%s%s\nHaz clic en las cartas resaltadas del campo." % [_fsel.title, extra]
+	_refresh_highlights()
+
+
+func _fsel_finish(confirm: bool) -> void:
+	if _fsel.is_empty():
+		return
+	if _fsel.pick:
+		_fsel_done.emit(-1)
+	elif confirm:
+		_fsel_done.emit(_fsel.picked.duplicate())
+	else:
+		_fsel_done.emit(null)
 
 
 # ---------------------------------------------------------------- selección de zona
@@ -949,10 +1062,9 @@ func _place_card(c: Dictionary, p: int, loc: int, seq: int, rect: Rect2) -> Card
 	var pos: int = c.get("position", 0)
 	if loc == OCG.LOCATION_MZONE:
 		cv.defense_pos = (pos & OCG.POS_DEFENSE) != 0
-		if p == me and pos & OCG.POS_FACEDOWN:
-			cv.modulate = Color(1, 1, 1, 0.8)
-	elif loc == OCG.LOCATION_SZONE and p == me and pos & OCG.POS_FACEDOWN:
-		cv.modulate = Color(1, 1, 1, 0.8)
+	# Las cartas colocadas propias sólo se revelan al pasar el cursor
+	if loc & OCG.LOCATION_ONFIELD and p == me and pos & OCG.POS_FACEDOWN:
+		cv.peek_only = true
 	cv.clicked.connect(_on_card_clicked)
 	cv.hovered.connect(_on_card_hovered)
 	cv.unhovered.connect(func(_v): cursor.hide_cursor())
@@ -1014,7 +1126,9 @@ func _refresh_highlights() -> void:
 		if not is_instance_valid(cv) or k.begins_with("pile"):
 			continue
 		var col := Color.TRANSPARENT
-		if _actions.has(k):
+		if not _fsel.is_empty() and _fsel.keys.has(k):
+			col = COL_PICKED if _fsel.keys[k] in _fsel.picked else COL_SELECT
+		elif _actions.has(k):
 			col = COL_ACTION
 		elif _select_keys.has(k):
 			col = COL_SELECT
