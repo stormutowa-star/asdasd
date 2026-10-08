@@ -1,10 +1,10 @@
-name: Compilar La Saga de Makuo
+name: Compilar Orange Saiyan
 
 on:
   push:
     paths:
-      - 'makuo-saga/**'
-      - '.github/workflows/compilar-makuo-saga.yml'
+      - 'orange-saiyan/**'
+      - '.github/workflows/compilar-orange-saiyan.yml'
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: makuo-saga
+        working-directory: orange-saiyan
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir -p libs
           VERSION=$(grep '^dragonminez_version=' gradle.properties | cut -d= -f2)
-          curl -sSf -A 'makuo-saga-ci (github.com/stormutowa-star/asdasd)' \
+          curl -sSf -A 'orange-saiyan-ci (github.com/stormutowa-star/asdasd)' \
             'https://api.modrinth.com/v2/project/dragonminez/version?loaders=%5B%22forge%22%5D&game_versions=%5B%221.20.1%22%5D' \
             -o versions.json
           URL=$(python3 - "$VERSION" <<'PY'
@@ -44,7 +44,7 @@ jobs:
           print(primary['url'])
           PY
           )
-          curl -sSfL -A 'makuo-saga-ci' "$URL" -o "libs/dragonminez-${VERSION}.jar"
+          curl -sSfL -A 'orange-saiyan-ci' "$URL" -o "libs/dragonminez-${VERSION}.jar"
           ls -la libs
 
       - uses: gradle/actions/setup-gradle@v4
@@ -56,23 +56,23 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: makuosaga-mod
-          path: makuo-saga/build/libs/makuosaga-*.jar
+          name: orangesaiyan-mod
+          path: orange-saiyan/build/libs/orangesaiyan-*.jar
           if-no-files-found: error
 
-      - name: Guardar el jar en la rama (makuo-saga/dist)
+      - name: Guardar el jar en la rama (orange-saiyan/dist)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p dist
           rm -f dist/*.jar
-          cp build/libs/makuosaga-*.jar dist/
+          cp build/libs/orangesaiyan-*.jar dist/
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add dist
           if git diff --cached --quiet; then
             echo 'El jar no ha cambiado'
           else
-            git commit -m 'Actualizar jar compilado de La Saga de Makuo'
+            git commit -m 'Actualizar jar compilado de Orange Saiyan'
             git pull --rebase origin ${GITHUB_REF_NAME}
             git push origin HEAD:${GITHUB_REF_NAME}
           fi

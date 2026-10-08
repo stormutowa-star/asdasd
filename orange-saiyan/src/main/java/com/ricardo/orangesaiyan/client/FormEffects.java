@@ -1,8 +1,8 @@
-package com.ricardo.makuosaga.client;
+package com.ricardo.orangesaiyan.client;
 
 import com.dragonminez.common.config.ConfigManager;
 import com.dragonminez.common.config.FormConfig;
-import com.ricardo.makuosaga.MakuoSaga;
+import com.ricardo.orangesaiyan.OrangeSaiyan;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
  * FormData#getRgbExtraFormColor() every frame, so changing that cached color animates the cracks
  * without touching DragonMineZ's renderer.
  */
-@Mod.EventBusSubscriber(modid = MakuoSaga.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = OrangeSaiyan.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class FormEffects {
 	private static final String CRACK_LAYER = "orange_cracks";
 	private static final float[] DARK = {0.54F, 0.14F, 0.0F};   // cooling lava #8A2400

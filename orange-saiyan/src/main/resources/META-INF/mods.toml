@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="GPL-3.0"
+
+[[mods]]
+modId="orangesaiyan"
+version="${file.jarVersion}"
+displayName="Orange Saiyan"
+authors="Ricardo"
+credits="Built on DragonMineZ (GPL-3.0)."
+description='''
+Una rama nueva de transformaciones Saiyan para DragonMineZ: Orange Saiyan.
+Primera forma: Super Saiyan Orange, con pelo, ojos y aura naranjas y grietas de lava que palpitan en los brazos.
+'''
+
+[[dependencies.orangesaiyan]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.orangesaiyan]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.orangesaiyan]]
+modId="dragonminez"
+mandatory=true
+versionRange="[2.1.3,)"
+ordering="AFTER"
+side="BOTH"

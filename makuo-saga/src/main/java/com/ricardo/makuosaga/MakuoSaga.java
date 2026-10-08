@@ -1,6 +1,5 @@
 package com.ricardo.makuosaga;
 
-import com.ricardo.makuosaga.world.FormInstaller;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -18,6 +17,5 @@ public class MakuoSaga {
 		ModItems.ITEMS.register(modBus);
 		modBus.addListener(ModEntities::registerAttributes);
 		modBus.addListener(ModItems::addToCreativeTab);
-		FormInstaller.install();
 	}
 }
