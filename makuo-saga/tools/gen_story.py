@@ -190,6 +190,8 @@ for ent, (e_s, e_n) in ENTITIES.items():
     es['entity.makuosaga.' + ent], en['entity.makuosaga.' + ent] = e_s, e_n
 
 extra_es = {
+    'race.dragonminez.saiyan.group.orangesaiyan': 'Orange Saiyan',
+    'race.dragonminez.saiyan.form.orangesaiyan.supersaiyanorange': 'Super Saiyan Orange',
     'item.makuosaga.void_shard': 'Fragmento del Vacío',
     'gui.makuosaga.spacepod.vharos': 'Vharos',
     'entity.dragonminez.questnpc.saien': 'Saien, el último Guardián',
@@ -201,6 +203,8 @@ extra_es = {
     'message.makuosaga.vharos.citadel': '§5La Ciudadela de Makuo§r se alza al norte (X 0, Z -300).',
 }
 extra_en = {
+    'race.dragonminez.saiyan.group.orangesaiyan': 'Orange Saiyan',
+    'race.dragonminez.saiyan.form.orangesaiyan.supersaiyanorange': 'Super Saiyan Orange',
     'item.makuosaga.void_shard': 'Void Shard',
     'gui.makuosaga.spacepod.vharos': 'Vharos',
     'entity.dragonminez.questnpc.saien': 'Saien, the Last Guardian',

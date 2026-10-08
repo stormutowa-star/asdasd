@@ -43,6 +43,17 @@ En un mundo de pruebas, súbete las stats con los comandos de DragonMineZ.
 No uses `/dmzquest startsaga makuo_saga`: acepta las 15 misiones a la vez, sin orden, y varias se completan juntas.
 Si ya lo usaste, `/dmzquest resetsaga makuo_saga` lo deja como estaba.
 
+## Transformación nueva: Super Saiyan Orange
+
+El addon añade a DragonMineZ una rama nueva para los Saiyan, **Orange Saiyan**, con su primera forma:
+**Super Saiyan Orange**. Es como el SSJ1, pero con pelo, ojos y aura naranjas, y grietas de lava que suben
+de las manos a los hombros y palpitan. Su poder (×2.1) está entre el SSJ1 (×1.5) y el SSJ2 (×2.25).
+
+- Se instala sola en `config/dragonminez/races/saiyan/forms/orangesaiyan.json` la primera vez que abres el juego.
+  Si la editas, el addon no la vuelve a sobrescribir.
+- Se desbloquea con el nivel 4 de la skill de transformaciones (`superforms`) y un 25 % de maestría en el SSJ1.
+- Para probarla rápido: `/dmzform set superforms 4` (en creativo no hace falta la maestría).
+
 ## Guía: saber adónde ir
 
 Mientras haces la saga, encima de la barra de objetos aparece qué hacer y, cuando hay un sitio al que ir,
