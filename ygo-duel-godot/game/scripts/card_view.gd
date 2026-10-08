@@ -1,58 +1,74 @@
 class_name CardView
 extends Control
-## Representación de una carta. Usa la imagen si está disponible y si no dibuja una carta genérica
-## con el color de su tipo, nombre, nivel y ATK/DEF.
+## Carta dibujada al estilo GBA.
+##  - Modo "pixel" (campo y mano): marco del color del tipo, ilustración pixelada, estrellas y ATK/DEF.
+##  - Modo "full" (paneles y diálogos): imagen completa de pics/ si existe; si no, el modo pixel.
 
 signal clicked(view: CardView)
 signal hovered(view: CardView)
+signal unhovered(view: CardView)
 
-const CARD_RATIO := 1.4545 # alto / ancho (59 x 86 mm)
+const CARD_RATIO := 1.4545 # alto / ancho
+const GRID_W := 22.0 # anchura en "píxeles GBA" del sprite de carta
 
 var code := 0
-var data := {} # resultado de la consulta al core (o de CardDB)
+var data := {}
 var controller := 0
 var location := 0
 var sequence := 0
-var face_up := true # si el jugador local puede ver la carta
-var show_stats := false # ATK/DEF actuales bajo la carta (monstruos en el campo)
+var face_up := true
+var full_art := false # usar la imagen completa de la carta
+var show_stats := false
 var defense_pos := false
 var highlight := Color.TRANSPARENT
 var selected := false
 var dimmed := false
-var badge := "" # texto pequeño en la esquina (p.ej. orden de selección)
+var badge := ""
 
-var _tex: Texture2D
+var _art: Texture2D
+var _full: Texture2D
 
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_NONE
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	mouse_entered.connect(func(): hovered.emit(self))
+	mouse_exited.connect(func(): unhovered.emit(self))
 
 
 func setup(p_code: int, p_data: Dictionary, p_face_up: bool) -> CardView:
 	code = p_code
-	# Datos base de la BD (nombre, nivel...) sobrescritos con los valores actuales del duelo
 	data = CardDB.get_card(p_code).duplicate()
 	for k in p_data:
 		data[k] = p_data[k]
 	face_up = p_face_up and p_code != 0
+	_art = null
+	_full = null
 	if face_up:
-		_tex = CardImages.get_texture(code)
-		if _tex == null and not CardImages.texture_ready.is_connected(_on_texture_ready):
+		_load_textures()
+		if (_art == null or (full_art and _full == null)) and not CardImages.texture_ready.is_connected(_on_texture_ready):
 			CardImages.texture_ready.connect(_on_texture_ready)
 	queue_redraw()
 	return self
 
 
+func _load_textures() -> void:
+	if full_art:
+		_full = CardImages.get_texture(code)
+		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if _full else CanvasItem.TEXTURE_FILTER_NEAREST
+	_art = CardImages.get_art_texture(code)
+
+
 func set_card_size(w: float) -> void:
-	custom_minimum_size = Vector2(w, w * CARD_RATIO)
+	custom_minimum_size = Vector2(w, round(w * CARD_RATIO))
 	size = custom_minimum_size
 	pivot_offset = size / 2.0
 
 
 func _on_texture_ready(c: int) -> void:
-	if c == code:
-		_tex = CardImages.get_texture(code)
+	if c == code and face_up:
+		_load_textures()
 		queue_redraw()
 
 
@@ -62,117 +78,94 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_MOUSE_ENTER:
-		hovered.emit(self)
-
-
 func _draw() -> void:
-	var w := size.x
-	var h := size.y
 	var center := size / 2.0
 	if defense_pos:
-		# Girada 90º alrededor del centro y algo reducida para que quepa en la zona
-		draw_set_transform_matrix(Transform2D(PI / 2.0, Vector2(0.85, 0.85), 0.0, center) * Transform2D(0.0, -center))
+		draw_set_transform_matrix(Transform2D(PI / 2.0, Vector2(0.86, 0.86), 0.0, center) * Transform2D(0.0, -center))
 	var rect := Rect2(Vector2.ZERO, size)
-	if face_up:
-		if _tex:
-			draw_texture_rect(_tex, rect, false)
-		else:
-			_draw_generic(rect)
+	if not face_up:
+		draw_texture_rect(GBA.tex("card_back"), rect, false)
+	elif full_art and _full:
+		draw_texture_rect(_full, rect, false)
 	else:
-		_draw_back(rect)
+		_draw_pixel_card(rect)
 	if dimmed:
-		draw_rect(rect, Color(0, 0, 0, 0.45))
+		draw_rect(rect, Color(0, 0, 0, 0.5))
 	if highlight.a > 0.0:
-		draw_rect(rect.grow(2), highlight, false, 3.0)
+		var u: float = max(2.0, size.x / GRID_W)
+		draw_rect(rect.grow(u * 0.5), highlight, false, u)
 	if selected:
-		draw_rect(rect, Color(1, 0.85, 0.2, 0.30))
-		draw_rect(rect.grow(3), Color(1, 0.85, 0.2), false, 4.0)
+		draw_rect(rect, Color(1, 0.88, 0.25, 0.28))
+		draw_rect(rect.grow(3), GBA.C_YELLOW, false, 3.0)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
-	var font := get_theme_default_font()
-	if show_stats and face_up and int(data.get("type", 0)) & OCG.TYPE_MONSTER:
-		var txt := "%s/%s" % [_stat(data.get("attack", 0)), _stat(data.get("defense", 0))]
-		if int(data.get("type", 0)) & OCG.TYPE_LINK:
-			txt = "%s/L%d" % [_stat(data.get("attack", 0)), data.get("link", 0)]
-		var fs := 12
-		var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		var y := h - 2
-		var bg := Rect2(Vector2((w - tw) / 2.0 - 3, y - fs - 1), Vector2(tw + 6, fs + 4))
-		draw_rect(bg, Color(0, 0, 0, 0.75))
-		var col := Color.WHITE
-		var atk: int = data.get("attack", 0)
-		var base: int = data.get("base_attack", atk)
-		if atk > base: col = Color(0.5, 1, 0.5)
-		elif atk < base: col = Color(1, 0.5, 0.5)
-		draw_string(font, Vector2((w - tw) / 2.0, y), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 	if badge != "":
-		draw_circle(Vector2(w - 9, 9), 9, Color(0.9, 0.2, 0.2))
-		draw_string(font, Vector2(w - 13, 13), badge, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color.WHITE)
+		draw_rect(Rect2(size.x - 18, -2, 20, 18), GBA.C_RED)
+		draw_rect(Rect2(size.x - 18, -2, 20, 18), GBA.C_WHITE, false, 2.0)
+		draw_string(GBA.font_big, Vector2(size.x - 14, 12), badge, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, GBA.C_WHITE)
 
 
 func _stat(v) -> String:
 	return "?" if int(v) < 0 else str(v)
 
 
-static func type_color(type: int) -> Color:
-	if type & OCG.TYPE_SPELL: return Color("1d9e74")
-	if type & OCG.TYPE_TRAP: return Color("bc5a84")
-	if type & OCG.TYPE_TOKEN: return Color("a0a0a0")
-	if type & OCG.TYPE_LINK: return Color("2b5fa8")
-	if type & OCG.TYPE_XYZ: return Color("2a2a2a")
-	if type & OCG.TYPE_SYNCHRO: return Color("dcdcdc")
-	if type & OCG.TYPE_FUSION: return Color("8e5ab5")
-	if type & OCG.TYPE_RITUAL: return Color("5d8ccf")
-	if type & OCG.TYPE_EFFECT: return Color("c7703a")
-	return Color("c9a45c")
-
-
-func _draw_generic(rect: Rect2) -> void:
+## Sprite de carta de 22x32 "píxeles GBA" escalado al tamaño del control.
+func _draw_pixel_card(rect: Rect2) -> void:
+	if rect.size.x < GRID_W:
+		return
+	var u := rect.size.x / GRID_W
 	var type: int = data.get("type", 0)
-	var base := type_color(type)
-	draw_rect(rect, base)
-	draw_rect(rect, Color(0, 0, 0, 0.6), false, 1.5)
-	var w := rect.size.x
-	var h := rect.size.y
-	var font := get_theme_default_font()
-	var dark_text := (type & OCG.TYPE_SYNCHRO) != 0 or (type & (OCG.TYPE_NORMAL | OCG.TYPE_EFFECT) and not type & (OCG.TYPE_XYZ | OCG.TYPE_LINK) and not type & (OCG.TYPE_SPELL | OCG.TYPE_TRAP))
-	var text_col := Color.BLACK if dark_text else Color.WHITE
-	# Marco del nombre
-	var fs: int = max(8, int(w / 11.0))
-	draw_rect(Rect2(3, 3, w - 6, fs + 6), Color(1, 1, 1, 0.25))
-	var name: String = data.get("name", "???")
-	draw_string(font, Vector2(5, 3 + fs + 1), name, HORIZONTAL_ALIGNMENT_LEFT, w - 10, fs, text_col)
-	# "Arte"
-	var art := Rect2(w * 0.12, h * 0.2, w * 0.76, w * 0.76)
-	draw_rect(art, base.darkened(0.35))
-	draw_rect(art, Color(0, 0, 0, 0.5), false, 1.0)
-	if type & OCG.TYPE_MONSTER:
-		var lv: int = data.get("level", 0)
-		var stars := "★".repeat(min(lv, 12)) if not type & OCG.TYPE_LINK else "LINK-%d" % data.get("link", lv)
-		draw_string(font, Vector2(5, h * 0.2 - 2), stars, HORIZONTAL_ALIGNMENT_RIGHT, w - 10, max(7, fs - 2), Color(1, 0.8, 0.1))
-		var attr := OCG.attribute_name(data.get("attribute", 0))
-		draw_string(font, art.position + Vector2(3, art.size.y / 2.0), attr, HORIZONTAL_ALIGNMENT_CENTER, art.size.x - 6, max(7, fs - 2), Color(1, 1, 1, 0.8))
-		var stats := "ATK %s  DEF %s" % [_stat(data.get("attack", 0)), _stat(data.get("defense", 0))]
-		if type & OCG.TYPE_LINK:
-			stats = "ATK %s" % _stat(data.get("attack", 0))
-		draw_string(font, Vector2(4, h - 5), stats, HORIZONTAL_ALIGNMENT_CENTER, w - 8, max(7, int(w / 15.0)), text_col)
+	var frame := GBA.frame_color(type)
+	var px := func(x: float, y: float, w: float, h: float, c: Color):
+		draw_rect(Rect2(rect.position + Vector2(x * u, y * u), Vector2(w * u, h * u)), c)
+	px.call(0, 0, GRID_W, 32, GBA.C_OUTLINE)
+	px.call(1, 1, GRID_W - 2, 30, frame)
+	px.call(1, 1, GRID_W - 2, 1, frame.lightened(0.35))
+	px.call(1, 1, 1, 30, frame.lightened(0.2))
+	px.call(1, 30, GRID_W - 2, 1, frame.darkened(0.4))
+	px.call(GRID_W - 2, 1, 1, 30, frame.darkened(0.4))
+	# Barra del nombre
+	px.call(2, 2, GRID_W - 4, 2, frame.darkened(0.25))
+	# Atributo (orbe)
+	var attr: int = data.get("attribute", 0)
+	if type & OCG.TYPE_MONSTER and attr:
+		px.call(GRID_W - 5, 2, 2, 2, GBA.ATTR_COLORS.get(attr, Color.GRAY))
+	# Ilustración
+	var art_rect := Rect2(rect.position + Vector2(2 * u, 5 * u), Vector2(18 * u, 15 * u))
+	px.call(2, 5, 18, 15, GBA.C_OUTLINE)
+	if _art:
+		var src := Rect2(0, _art.get_height() * 0.08, _art.get_width(), _art.get_height() * 0.84)
+		draw_texture_rect_region(_art, art_rect.grow(-u * 0.5), src)
 	else:
-		var label := "MAGIA" if type & OCG.TYPE_SPELL else "TRAMPA"
-		draw_string(font, art.position + Vector2(0, art.size.y / 2.0 + 4), label, HORIZONTAL_ALIGNMENT_CENTER, art.size.x, max(8, fs), Color(1, 1, 1, 0.85))
-
-
-func _draw_back(rect: Rect2) -> void:
-	draw_rect(rect, Color("5a3a1e"))
-	draw_rect(rect.grow(-3), Color("8a5a2b"), false, 2.0)
-	var c := rect.get_center()
-	var rx := rect.size.x * 0.32
-	var ry := rect.size.y * 0.3
-	var pts := PackedVector2Array()
-	for i in 33:
-		var a := TAU * i / 32.0
-		pts.append(c + Vector2(cos(a) * rx, sin(a) * ry))
-	draw_colored_polygon(pts, Color("2b1a0e"))
-	draw_polyline(pts, Color("d9a441"), 2.0)
-	draw_circle(c, rx * 0.35, Color("d9a441"))
-	draw_rect(rect, Color(0, 0, 0, 0.7), false, 1.0)
+		px.call(3, 6, 16, 13, frame.darkened(0.5))
+		var label := "?" if type & OCG.TYPE_MONSTER else ("M" if type & OCG.TYPE_SPELL else "T")
+		draw_string(GBA.font_big, art_rect.position + Vector2(0, art_rect.size.y * 0.62), label,
+				HORIZONTAL_ALIGNMENT_CENTER, art_rect.size.x, int(u * 6), Color(1, 1, 1, 0.5))
+	# Estrellas de nivel
+	if type & OCG.TYPE_MONSTER and not type & OCG.TYPE_LINK:
+		var lv: int = min(int(data.get("rank", 0) if type & OCG.TYPE_XYZ else data.get("level", 0)), 12)
+		var star_col := Color("303030") if type & OCG.TYPE_XYZ else GBA.C_YELLOW
+		for i in lv:
+			var sx := GRID_W - 3.5 - i * 1.5
+			if sx < 2: break
+			px.call(sx, 20.5, 1, 1, star_col)
+	# Caja inferior
+	px.call(2, 22, GRID_W - 4, 8, Color(0.04, 0.05, 0.12))
+	var fs := int(max(8.0, u * 3.2))
+	var y1 := rect.position.y + 25.6 * u
+	var y2 := rect.position.y + 29.2 * u
+	var x := rect.position.x + 3 * u
+	var w := (GRID_W - 6) * u
+	if type & OCG.TYPE_MONSTER:
+		var atk_col := GBA.C_WHITE
+		var atk: int = data.get("attack", 0)
+		var base: int = data.get("base_attack", atk)
+		if atk > base: atk_col = GBA.C_GREEN
+		elif atk < base: atk_col = Color("ff8070")
+		draw_string(GBA.font_big, Vector2(x, y1), "A" + _stat(atk), HORIZONTAL_ALIGNMENT_RIGHT, w, fs, atk_col)
+		if type & OCG.TYPE_LINK:
+			draw_string(GBA.font_big, Vector2(x, y2), "L-%d" % int(data.get("link", 0)), HORIZONTAL_ALIGNMENT_RIGHT, w, fs, Color("80b0ff"))
+		else:
+			draw_string(GBA.font_big, Vector2(x, y2), "D" + _stat(data.get("defense", 0)), HORIZONTAL_ALIGNMENT_RIGHT, w, fs, GBA.C_TEXT_DIM)
+	else:
+		var label2 := "MAGIA" if type & OCG.TYPE_SPELL else "TRAMPA"
+		draw_string(GBA.font_big, Vector2(x - u, (y1 + y2) / 2.0), label2, HORIZONTAL_ALIGNMENT_CENTER, w + 2 * u, fs, frame.lightened(0.4))

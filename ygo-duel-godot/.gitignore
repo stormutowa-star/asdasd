@@ -12,9 +12,11 @@ thirdparty/sqlite/
 # Godot
 game/.godot/
 game/export/
-*.import
 
 # Bibliotecas que no se suben (sí se suben las de linux/windows ya compiladas)
 game/bin/*.framework/
 game/bin/*.dylib
 game/bin/~*
+
+# Caché de imágenes de cartas (se descargan al jugar)
+game/pics/

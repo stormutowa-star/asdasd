@@ -18,7 +18,10 @@ var decks := [{}, {}]
 var names := ["Jugador", "CPU"]
 var ai_players := {} # jugador -> OCGAI
 var human_players: Array[int] = [0]
-var event_delay := 0.0 # pausa tras eventos visibles (la interfaz la sube para poder seguir la partida)
+var event_delay := 0.0 # pausa tras eventos visibles (sin animador)
+## Objeto con `animates(type) -> bool` y `animate(msg)` (corrutina): la interfaz anima cada
+## evento y el duelo no continúa hasta que termina la animación.
+var animator: Object = null
 var max_ai_retries := 8
 
 # Estado consultado al core tras cada lote de mensajes
@@ -134,6 +137,8 @@ func _run() -> void:
 				_retries = 0
 				pending_request = msg
 				await _request_response(msg)
+			elif animator != null and animator.animates(msg.type):
+				await animator.animate(msg)
 			elif event_delay > 0.0 and _is_visible_event(msg.type):
 				refresh_field()
 				await get_tree().create_timer(event_delay).timeout

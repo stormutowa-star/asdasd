@@ -2,7 +2,7 @@ extends Node
 ## Autoload "CardDB": base de datos de cartas (.cdb), cadenas del sistema y lectura de mazos .ydk.
 
 const DATA_DIR := "res://data"
-const EXPANSION_DIRS := ["res://data/expansions", "user://expansions"]
+var EXPANSION_DIRS := ["res://data/expansions", "user://expansions"]
 
 var db: YGOCardDatabase
 var system_strings := {}
@@ -13,6 +13,9 @@ var _cache := {}
 
 
 func _ready() -> void:
+	var own := Paths.base_dir.path_join("expansions")
+	if not own in EXPANSION_DIRS:
+		EXPANSION_DIRS.append(own)
 	db = YGOCardDatabase.new()
 	var n := db.load_cdb(DATA_DIR + "/cards.cdb")
 	print("CardDB: %d cartas en cards.cdb" % n)
@@ -82,13 +85,9 @@ func load_deck(path: String) -> Dictionary:
 	return deck
 
 
+## Mazos .ydk de la carpeta Decks/ (ver Paths).
 func deck_paths() -> PackedStringArray:
-	var out := PackedStringArray()
-	for f in _list_files("res://decks", ".ydk"):
-		out.append(f)
-	for f in _list_files("user://decks", ".ydk"):
-		out.append(f)
-	return out
+	return Paths.deck_files()
 
 
 func _load_strings(path: String) -> void:

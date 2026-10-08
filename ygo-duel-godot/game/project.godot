@@ -5,12 +5,17 @@ config_version=5
 [application]
 
 config/name="YGO Duel (ocgcore)"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="YGODuel"
 config/description="Prototipo de simulador de duelos de Yu-Gi-Oh! estilo EDOPro usando ocgcore."
-run/main_scene="res://scenes/main_menu.tscn"
+run/main_scene="res://scenes/boot.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 
 [autoload]
 
+Paths="*res://scripts/paths.gd"
+GBA="*res://scripts/skin.gd"
+Sfx="*res://scripts/sfx.gd"
 CardDB="*res://scripts/card_db.gd"
 CardImages="*res://scripts/card_images.gd"
 

@@ -20,18 +20,13 @@ var _max := 1
 func _init() -> void:
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.06, 0.08, 0.14, 0.95)
-	sb.border_color = Color(0.85, 0.65, 0.2)
-	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(8)
-	sb.set_content_margin_all(14)
-	add_theme_stylebox_override("panel", sb)
+	add_theme_stylebox_override("panel", GBA.window_box(16))
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 8)
 	add_child(v)
 	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 20)
+	_title.add_theme_font_size_override("font_size", 26)
+	_title.add_theme_color_override("font_color", GBA.C_YELLOW)
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_title.custom_minimum_size.x = 420
@@ -171,6 +166,7 @@ func ask_position(code: int, positions: int) -> int:
 		var v := VBoxContainer.new()
 		v.alignment = BoxContainer.ALIGNMENT_END
 		var cv := CardView.new()
+		cv.full_art = true
 		cv.set_card_size(90)
 		cv.setup(code, {}, (pair[0] & OCG.POS_FACEUP) != 0)
 		cv.defense_pos = (pair[0] & OCG.POS_DEFENSE) != 0
@@ -270,9 +266,11 @@ func ask_card_name(title: String) -> int:
 
 func _make_view(c: Dictionary, w: float) -> CardView:
 	var cv := CardView.new()
+	cv.full_art = true
 	cv.set_card_size(w)
 	cv.setup(c.get("code", 0), c.get("data", {}), c.get("face_up", true))
 	cv.hovered.connect(func(v): card_hovered.emit(v))
+	cv.clicked.connect(func(_v): Sfx.play("select"))
 	return cv
 
 
@@ -296,7 +294,7 @@ func _build_card_grid(cards: Array, on_click: Callable) -> void:
 		box.add_child(cv)
 		var lbl := Label.new()
 		lbl.text = c.get("label", OCG.location_name(c.get("location", 0)) if c.has("location") else "")
-		lbl.add_theme_font_size_override("font_size", 11)
+		lbl.add_theme_font_size_override("font_size", 16)
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl.custom_minimum_size.x = 96
 		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
