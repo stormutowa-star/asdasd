@@ -1,0 +1,9 @@
+{
+  "item.greatsword.greatsword": "Gran Espada",
+  "key.greatsword.category": "Gran Espada",
+  "key.greatsword.draw": "Desenfundar / Enfundar Gran Espada",
+  "msg.greatsword.drawn": "Gran espada desenfundada (a dos manos)",
+  "msg.greatsword.sheathed": "Gran espada enfundada en la espalda",
+  "msg.greatsword.need_free_offhand": "Libera la mano secundaria para desenfundar la gran espada",
+  "msg.greatsword.not_holding": "No estás sosteniendo una gran espada"
+}

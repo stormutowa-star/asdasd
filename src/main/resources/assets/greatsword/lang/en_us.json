@@ -1,0 +1,9 @@
+{
+  "item.greatsword.greatsword": "Greatsword",
+  "key.greatsword.category": "Greatsword",
+  "key.greatsword.draw": "Draw / Sheathe Greatsword",
+  "msg.greatsword.drawn": "Greatsword drawn (two-handed)",
+  "msg.greatsword.sheathed": "Greatsword sheathed on back",
+  "msg.greatsword.need_free_offhand": "Free your off-hand to draw the greatsword",
+  "msg.greatsword.not_holding": "You are not holding a greatsword"
+}
