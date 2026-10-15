@@ -1,5 +1,6 @@
 package com.ricardo.jugador2.selftest;
 
+import com.ricardo.jugador2.Jugador2Config;
 import com.ricardo.jugador2.Jugador2Mod;
 import com.ricardo.jugador2.npc.NpcManager;
 import com.ricardo.jugador2.npc.NpcPlayer;
@@ -7,9 +8,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -32,6 +37,8 @@ public final class SelfTestScenario {
     private static int stepIndex;
     private static int ticksInStep;
     private static Vec3 platformCenter;
+    private static Vec3 deathPoint;
+    private static NpcPlayer deadNpc;
 
     private SelfTestScenario() {
     }
@@ -68,6 +75,29 @@ public final class SelfTestScenario {
                             .filter(p -> p.getGameProfile().getName().equals(manager.name()))
                             .count();
                     return copies == 1 && s.getPlayerList().getPlayers().contains(npc);
+                }));
+
+        steps.add(new Step("muere, suelta sus objetos y reaparece con el mismo UUID",
+                Jugador2Config.read().respawnDelayTicks() + 40,
+                () -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    npc.getInventory().add(new ItemStack(Items.COBBLESTONE, 3));
+                    deathPoint = npc.position();
+                    deadNpc = npc;
+                    npc.kill();
+                },
+                s -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    if (npc == null || npc == deadNpc) {
+                        return false;
+                    }
+                    boolean sameUuid = npc.getUUID().equals(manager.profile().getId());
+                    boolean inList = s.getPlayerList().getPlayers().contains(npc);
+                    boolean emptyInventory = npc.getInventory().isEmpty();
+                    boolean droppedItems = !level.getEntitiesOfClass(
+                            ItemEntity.class, AABB.ofSize(deathPoint, 6, 6, 6)).isEmpty();
+                    return sameUuid && inList && emptyInventory && droppedItems;
                 }));
 
         running = true;
