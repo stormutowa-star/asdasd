@@ -2,7 +2,7 @@ package com.ricardo.transformacion.client;
 
 import com.ricardo.transformacion.TransformacionMod;
 
-import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -31,9 +31,8 @@ public final class TransformClient {
 
     private static void addLayers(EntityRenderersEvent.AddLayers event) {
         for (PlayerSkin.Model skin : event.getSkins()) {
-            if (event.getSkin(skin) instanceof PlayerRenderer renderer) {
-                renderer.addLayer(new TransformLayer(renderer, event.getEntityModels(), skin == PlayerSkin.Model.SLIM));
-            }
+            PlayerRenderer renderer = event.getPlayerSkin(skin);
+            renderer.addLayer(new TransformLayer(renderer, event.getEntityModels(), skin == PlayerSkin.Model.SLIM));
         }
     }
 

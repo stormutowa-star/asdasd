@@ -25,7 +25,7 @@ public class TransformItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide && player instanceof ServerPlayer sp) {
-            if (sp.getCooldowns().isOnCooldown(stack)) {
+            if (sp.getCooldowns().isOnCooldown(this)) {
                 return InteractionResultHolder.pass(stack);
             }
             sp.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
