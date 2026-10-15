@@ -2,6 +2,10 @@ package com.ricardo.jugador2.selftest;
 
 import com.ricardo.jugador2.Jugador2Config;
 import com.ricardo.jugador2.Jugador2Mod;
+import com.ricardo.jugador2.nav.Cell;
+import com.ricardo.jugador2.nav.NpcMover;
+import com.ricardo.jugador2.nav.NpcNavigator;
+import com.ricardo.jugador2.nav.WorldBlockAccess;
 import com.ricardo.jugador2.npc.NpcManager;
 import com.ricardo.jugador2.npc.NpcPlayer;
 import net.minecraft.core.BlockPos;
@@ -39,6 +43,8 @@ public final class SelfTestScenario {
     private static Vec3 platformCenter;
     private static Vec3 deathPoint;
     private static NpcPlayer deadNpc;
+    private static NpcMover walkMover;
+    private static BlockPos walkGoal;
 
     private SelfTestScenario() {
     }
@@ -62,6 +68,8 @@ public final class SelfTestScenario {
         steps.add(new Step("NPC en la lista de jugadores", 40,
                 () -> {
                     NpcManager manager = Jugador2Mod.manager();
+                    // Parte de un NPC limpio: el que se restaura al arrancar puede estar en el spawn del mundo.
+                    manager.remove();
                     manager.spawn(manager.profile(), level, platformCenter);
                     manager.spawn(manager.profile(), level, platformCenter);
                 },
@@ -75,6 +83,25 @@ public final class SelfTestScenario {
                             .filter(p -> p.getGameProfile().getName().equals(manager.name()))
                             .count();
                     return copies == 1 && s.getPlayerList().getPlayers().contains(npc);
+                }));
+
+        steps.add(new Step("camina 8 bloques por la ruta", 400,
+                () -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    BlockPos start = npc.blockPosition();
+                    walkGoal = start.offset(8, 0, 0);
+                    List<Cell> path = NpcNavigator.findPath(new WorldBlockAccess(level),
+                            new Cell(start.getX(), start.getY(), start.getZ()),
+                            new Cell(walkGoal.getX(), walkGoal.getY(), walkGoal.getZ()),
+                            Jugador2Config.read().pathSearchNodeLimit());
+                    walkMover = new NpcMover(path == null ? List.of() : path);
+                },
+                s -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    walkMover.tick(npc);
+                    double dx = npc.getX() - (walkGoal.getX() + 0.5);
+                    double dz = npc.getZ() - (walkGoal.getZ() + 0.5);
+                    return Math.sqrt(dx * dx + dz * dz) <= 1.5;
                 }));
 
         steps.add(new Step("muere, suelta sus objetos y reaparece con el mismo UUID",
