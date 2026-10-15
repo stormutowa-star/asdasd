@@ -47,6 +47,7 @@ dependencies {
     implementation minecraft.dependency("net.minecraftforge:forge:${project.mc_version}-${project.forge_version}".toString())
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.14.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
 }
 
 test {
