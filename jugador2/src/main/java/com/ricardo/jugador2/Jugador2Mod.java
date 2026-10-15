@@ -9,6 +9,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -23,6 +24,7 @@ public class Jugador2Mod {
     public Jugador2Mod(FMLJavaModLoadingContext context) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Jugador2Config.SPEC);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStopped);
         MinecraftForge.EVENT_BUS.addListener(this::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
@@ -35,9 +37,16 @@ public class Jugador2Mod {
 
     private void onServerStarted(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
-        manager = new NpcManager(server);
+        manager = new NpcManager(server, Jugador2Config.read());
+        manager.restoreOnStart(server.overworld());
         if (SelfTestScenario.enabled()) {
             SelfTestScenario.start(server);
+        }
+    }
+
+    private void onServerStopping(ServerStoppingEvent event) {
+        if (manager != null) {
+            manager.saveState();
         }
     }
 

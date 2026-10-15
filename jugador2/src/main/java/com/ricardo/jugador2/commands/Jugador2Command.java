@@ -7,14 +7,9 @@ import com.ricardo.jugador2.npc.NpcPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.phys.Vec3;
 
 /** Comandos /jugador2 para operadores (nivel 2): spawn, remove y status. */
 public final class Jugador2Command {
-    // Nombre fijo hasta la Tarea 8, que lo sustituye por el nombre generado para el mundo.
-    private static final String NPC_NAME = "Jugador2";
-
     private Jugador2Command() {
     }
 
@@ -28,9 +23,11 @@ public final class Jugador2Command {
 
     private static int spawn(CommandSourceStack source) {
         NpcManager manager = Jugador2Mod.manager();
-        ServerLevel level = source.getLevel();
-        Vec3 pos = source.getPosition();
-        NpcPlayer npc = manager.spawn(NpcManager.offlineProfile(NPC_NAME), level, pos);
+        NpcPlayer npc = manager.spawn(manager.profile(), source.getLevel(), source.getPosition());
+        if (npc == null) {
+            source.sendFailure(Component.literal("El NPC está esperando para reaparecer"));
+            return 0;
+        }
         source.sendSuccess(() -> Component.literal("NPC activo: " + npc.getGameProfile().getName()), true);
         return 1;
     }

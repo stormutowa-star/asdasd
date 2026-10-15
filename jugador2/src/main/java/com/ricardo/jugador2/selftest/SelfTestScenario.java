@@ -6,7 +6,6 @@ import com.ricardo.jugador2.npc.NpcPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
@@ -24,7 +23,6 @@ import java.util.function.Predicate;
 public final class SelfTestScenario {
     private static final String PREFIX = "[JUGADOR2-SELFTEST] ";
     private static final int PLATFORM_SIZE = 20;
-    private static final String NPC_NAME = "Jugador2";
 
     /** Un paso: se prepara una vez y luego se comprueba cada tick hasta que cumple o agota el límite. */
     private record Step(String name, int timeoutTicks, Runnable setup, Predicate<MinecraftServer> check) {}
@@ -57,18 +55,19 @@ public final class SelfTestScenario {
         steps.add(new Step("NPC en la lista de jugadores", 40,
                 () -> {
                     NpcManager manager = Jugador2Mod.manager();
-                    manager.spawn(NpcManager.offlineProfile(NPC_NAME), level, platformCenter);
-                    manager.spawn(NpcManager.offlineProfile(NPC_NAME), level, platformCenter);
+                    manager.spawn(manager.profile(), level, platformCenter);
+                    manager.spawn(manager.profile(), level, platformCenter);
                 },
                 s -> {
-                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
                     if (npc == null) {
                         return false;
                     }
                     long copies = s.getPlayerList().getPlayers().stream()
-                            .filter(p -> p.getGameProfile().getName().equals(NPC_NAME))
+                            .filter(p -> p.getGameProfile().getName().equals(manager.name()))
                             .count();
-                    return copies == 1 && s.getPlayerList().getPlayers().contains((ServerPlayer) npc);
+                    return copies == 1 && s.getPlayerList().getPlayers().contains(npc);
                 }));
 
         running = true;
