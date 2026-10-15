@@ -1,48 +1,148 @@
 package com.ricardo.jugador2.ai;
 
+import com.ricardo.jugador2.ai.tasks.DefendTask;
+import com.ricardo.jugador2.ai.tasks.EatTask;
+import com.ricardo.jugador2.ai.tasks.FleeTask;
+import com.ricardo.jugador2.ai.tasks.OrderTask;
 import com.ricardo.jugador2.npc.NpcSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/** Elige la tarea del NPC por prioridad. Función pura: el mismo estado da siempre la misma tarea. */
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Elige la tarea del NPC por prioridad y la ejecuta. {@link #choose} es función pura: el mismo estado da siempre la
+ * misma tarea. {@link #tick} mantiene la tarea activa y la reevalúa cada aiDecisionIntervalTicks.
+ */
 public final class NpcBrain {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NpcBrain.class);
     private static final int WOOD_TARGET = 16;
     private static final int STONE_TARGET = 32;
     private static final int COAL_TARGET = 16;
+    private static final int BLOCK_TICKS = 40;
+    private static final long LOG_INTERVAL_MILLIS = 30_000L;
 
-    private NpcBrain() {
+    private final Map<TaskKind, Long> blockedUntil = new EnumMap<>(TaskKind.class);
+    private Task task;
+    private TaskKind kind;
+    private long nextDecisionTick;
+    private long lastFailureLogMillis;
+
+    /** Elige la tarea sin restricciones. */
+    public static TaskKind choose(NpcSnapshot s, NpcSettings cfg) {
+        return choose(s, cfg, EnumSet.noneOf(TaskKind.class));
     }
 
-    public static TaskKind choose(NpcSnapshot s, NpcSettings cfg) {
-        if (s.health() < cfg.fleeHealthThreshold() && s.hostilesWithinRadius() > 0) {
+    /** Elige la tarea de mayor prioridad que no esté bloqueada. Null si todas lo están. */
+    public static TaskKind choose(NpcSnapshot s, NpcSettings cfg, Set<TaskKind> blocked) {
+        if (s.health() < cfg.fleeHealthThreshold() && s.hostilesWithinRadius() > 0 && free(TaskKind.FLEE, blocked)) {
             return TaskKind.FLEE;
         }
-        if (s.food() < cfg.eatHungerThreshold() && s.hasFood()) {
+        if (s.food() < cfg.eatHungerThreshold() && s.hasFood() && free(TaskKind.EAT, blocked)) {
             return TaskKind.EAT;
         }
-        if (s.hostilesWithinRadius() > 0) {
+        if (s.hostilesWithinRadius() > 0 && free(TaskKind.DEFEND, blocked)) {
             return TaskKind.DEFEND;
         }
-        if (s.hasActiveOrder()) {
+        if (s.hasActiveOrder() && free(TaskKind.ORDER, blocked)) {
             return TaskKind.ORDER;
         }
         // Va antes de recolectar: con el inventario lleno el NPC deja de recoger (sección 9 del spec).
-        if (s.inventoryNearlyFull()) {
+        if (s.inventoryNearlyFull() && free(TaskKind.STORE, blocked)) {
             return TaskKind.STORE;
         }
-        if (s.logs() < WOOD_TARGET) {
+        if (s.logs() < WOOD_TARGET && free(TaskKind.GATHER_WOOD, blocked)) {
             return TaskKind.GATHER_WOOD;
         }
-        if (s.stone() < STONE_TARGET) {
+        if (s.stone() < STONE_TARGET && free(TaskKind.GATHER_STONE, blocked)) {
             return TaskKind.GATHER_STONE;
         }
-        if (s.coal() < COAL_TARGET) {
+        if (s.coal() < COAL_TARGET && free(TaskKind.GATHER_COAL, blocked)) {
             return TaskKind.GATHER_COAL;
         }
-        if (s.toolsMissing()) {
+        if (s.toolsMissing() && free(TaskKind.CRAFT, blocked)) {
             return TaskKind.CRAFT;
         }
-        if (s.night() && s.hasBed()) {
+        if (s.night() && s.hasBed() && free(TaskKind.SLEEP, blocked)) {
             return TaskKind.SLEEP;
         }
-        return TaskKind.GATHER_WOOD;
+        return free(TaskKind.GATHER_WOOD, blocked) ? TaskKind.GATHER_WOOD : null;
+    }
+
+    /** Descarta la tarea activa y los bloqueos. Se llama al crear, reaparecer o retirar el NPC. */
+    public void reset() {
+        task = null;
+        kind = null;
+        blockedUntil.clear();
+        nextDecisionTick = 0;
+    }
+
+    /** Un tick del cerebro: reevalúa si toca y avanza la tarea activa. */
+    public void tick(NpcContext ctx) {
+        long now = ctx.server().getTickCount();
+        if (now >= nextDecisionTick) {
+            decide(ctx, now);
+        }
+        if (task == null) {
+            return;
+        }
+        TaskResult result = task.tick(ctx);
+        if (result == TaskResult.RUNNING) {
+            return;
+        }
+        if (result == TaskResult.FAILURE) {
+            blockedUntil.put(kind, now + BLOCK_TICKS);
+            logFailure(kind, ctx);
+        }
+        ctx.movement().stop();
+        ctx.npc().setSprinting(false);
+        task = null;
+        kind = null;
+        nextDecisionTick = now;
+    }
+
+    private void decide(NpcContext ctx, long now) {
+        nextDecisionTick = now + ctx.settings().aiDecisionIntervalTicks();
+        Set<TaskKind> blocked = EnumSet.noneOf(TaskKind.class);
+        blockedUntil.entrySet().removeIf(entry -> entry.getValue() <= now);
+        for (Map.Entry<TaskKind, Long> entry : blockedUntil.entrySet()) {
+            blocked.add(entry.getKey());
+        }
+        TaskKind chosen = choose(SnapshotReader.read(ctx), ctx.settings(), blocked);
+        if (chosen == kind && task != null) {
+            return;
+        }
+        ctx.movement().stop();
+        ctx.npc().setSprinting(false);
+        kind = chosen;
+        task = chosen == null ? null : create(chosen);
+    }
+
+    private static Task create(TaskKind kind) {
+        return switch (kind) {
+            case FLEE -> new FleeTask();
+            case EAT -> new EatTask();
+            case DEFEND -> new DefendTask();
+            case ORDER -> new OrderTask();
+            // Recolección, crafteo, cofre y cama llegan en la siguiente tarea: hasta entonces no se pueden elegir.
+            case GATHER_WOOD, GATHER_STONE, GATHER_COAL, CRAFT, STORE, SLEEP -> ctx -> TaskResult.FAILURE;
+        };
+    }
+
+    private void logFailure(TaskKind failed, NpcContext ctx) {
+        long nowMillis = System.currentTimeMillis();
+        if (nowMillis - lastFailureLogMillis >= LOG_INTERVAL_MILLIS) {
+            lastFailureLogMillis = nowMillis;
+            String detail = ctx.order() == null || ctx.order().failure().isEmpty()
+                    ? "sin ruta o sin objetivo" : ctx.order().failure();
+            LOGGER.info("El NPC no pudo completar {} ({}); elige otra tarea", failed, detail);
+        }
+    }
+
+    private static boolean free(TaskKind kind, Set<TaskKind> blocked) {
+        return !blocked.contains(kind);
     }
 }

@@ -1,8 +1,11 @@
 package com.ricardo.jugador2.selftest;
 
+import com.mojang.authlib.GameProfile;
 import com.ricardo.jugador2.Jugador2Config;
 import com.ricardo.jugador2.Jugador2Mod;
 import com.ricardo.jugador2.actions.NpcActions;
+import com.ricardo.jugador2.ai.OrderState;
+import com.ricardo.jugador2.chat.Come;
 import com.ricardo.jugador2.nav.Cell;
 import com.ricardo.jugador2.nav.NpcNavigator;
 import com.ricardo.jugador2.nav.WorldBlockAccess;
@@ -26,6 +29,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -51,6 +55,8 @@ public final class SelfTestScenario {
     private static BlockPos mineTarget;
     private static NpcActions miner;
     private static Zombie testZombie;
+    private static NpcPlayer commander;
+    private static NpcPlayer fleeing;
 
     private SelfTestScenario() {
     }
@@ -68,6 +74,8 @@ public final class SelfTestScenario {
         ServerLevel level = server.overworld();
         server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, server);
         server.setDifficulty(Difficulty.EASY, true);
+        // El cerebro se enciende en el paso 8: los pasos 1 a 7 comprueban solo el cuerpo y las acciones.
+        Jugador2Mod.manager().setBrainEnabled(false);
         buildPlatform(level);
 
         steps = new ArrayList<>();
@@ -200,6 +208,45 @@ public final class SelfTestScenario {
                     return droppedSeen && sameUuid && inList && emptyInventory;
                 }));
 
+        steps.add(new Step("el NPC va hacia quien le dio la orden", 400,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    placeOnPlatform(level, manager.npc());
+                    commander = NpcPlayer.spawnNew(server, level, new GameProfile(UUID.randomUUID(), "Comandante"),
+                            new Vec3(platformCenter.x - 9.0, platformCenter.y, platformCenter.z));
+                    manager.setBrainEnabled(true);
+                    manager.setOrder(new OrderState(new Come(), commander.getGameProfile().getName()));
+                },
+                s -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    return npc != null && npc.distanceTo(commander) <= 2.0;
+                }));
+
+        steps.add(new Step("defiende al NPC de un zombi cercano", 300,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    removeCommander(server);
+                    discardZombie();
+                    manager.setOrder(null);
+                    testZombie = spawnZombie(level, npc.getX() + 4.0, npc.getY(), npc.getZ());
+                },
+                s -> testZombie.isDeadOrDying() || testZombie.getHealth() < testZombie.getMaxHealth()));
+
+        steps.add(new Step("huye con poca vida y se aleja del zombi", 200,
+                () -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    discardZombie();
+                    placeOnPlatform(level, npc);
+                    npc.setHealth(4.0F);
+                    fleeing = npc;
+                    testZombie = spawnZombie(level, platformCenter.x + 3.0, platformCenter.y, platformCenter.z);
+                },
+                s -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    return npc == fleeing && npc.isAlive() && npc.distanceTo(testZombie) >= 6.0;
+                }));
+
         running = true;
         stepIndex = 0;
         ticksInStep = 0;
@@ -236,6 +283,38 @@ public final class SelfTestScenario {
             System.out.println(PREFIX + "STEP " + (stepIndex + 1) + " " + step.name() + " FAIL timeout");
             finish(server, false, stepIndex + 1);
         }
+    }
+
+    private static Zombie spawnZombie(ServerLevel level, double x, double y, double z) {
+        Zombie zombie = EntityType.ZOMBIE.create(level);
+        zombie.setPos(x, y, z);
+        level.addFreshEntity(zombie);
+        return zombie;
+    }
+
+    private static void discardZombie() {
+        if (testZombie != null) {
+            testZombie.discard();
+            testZombie = null;
+        }
+    }
+
+    private static void removeCommander(MinecraftServer server) {
+        if (commander != null) {
+            server.getPlayerList().remove(commander);
+            commander = null;
+        }
+    }
+
+    /** Vuelve a poner al NPC en la plataforma. Antes carga sus chunks: tras la muerte pudieron descargarse. */
+    private static void placeOnPlatform(ServerLevel level, NpcPlayer npc) {
+        for (int cx = 0; cx <= 1; cx++) {
+            for (int cz = 0; cz <= 1; cz++) {
+                level.getChunk(cx, cz);
+            }
+        }
+        npc.teleportTo(level, platformCenter.x, platformCenter.y, platformCenter.z, 0.0F, 0.0F);
+        level.getChunkSource().move(npc);
     }
 
     private static void finish(MinecraftServer server, boolean passed, int failedStep) {

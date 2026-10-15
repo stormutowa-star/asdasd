@@ -1,10 +1,14 @@
 package com.ricardo.jugador2.npc;
 
 import com.mojang.authlib.GameProfile;
+import com.ricardo.jugador2.actions.NpcActions;
+import com.ricardo.jugador2.ai.Movement;
+import com.ricardo.jugador2.ai.NpcBrain;
+import com.ricardo.jugador2.ai.NpcContext;
+import com.ricardo.jugador2.ai.OrderState;
+import com.ricardo.jugador2.ai.WorldView;
 import com.ricardo.jugador2.nav.Cell;
-import com.ricardo.jugador2.nav.NpcMover;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +16,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -19,16 +25,22 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Dueño del NPC de un servidor: su identidad (nombre y UUID, fijados una vez por mundo), su estado entre
- * reinicios y el jugador en marcha. Un NPC por servidor.
+ * Dueño del NPC de un servidor: su identidad (nombre y UUID, fijados una vez por mundo), su estado entre reinicios,
+ * el jugador en marcha y su cerebro. Un NPC por servidor.
  */
 public final class NpcManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NpcManager.class);
     private final MinecraftServer server;
     private final NpcSettings settings;
     private final NpcSavedData data;
     private final NpcLifecycle lifecycle;
+    private final Movement movement = new Movement();
+    private final NpcBrain brain = new NpcBrain();
+    private final NpcSuspension suspension = new NpcSuspension();
     private NpcPlayer npc;
-    private NpcMover mover = NpcMover.idle();
+    private NpcActions actions;
+    private OrderState order;
+    private boolean brainEnabled = true;
 
     public NpcManager(MinecraftServer server, NpcSettings settings) {
         this.server = server;
@@ -61,17 +73,11 @@ public final class NpcManager {
         if (lifecycle.phase() == NpcLifecycle.Phase.DEAD) {
             return null;
         }
-        npc = NpcPlayer.spawnNew(server, level, profile, pos);
-        mover = NpcMover.idle();
+        attach(NpcPlayer.spawnNew(server, level, profile, pos));
         lifecycle.activate();
         data.setActive(true);
         saveState();
         return npc;
-    }
-
-    /** Pone al NPC a seguir la ruta. Al terminarla, o si no puede avanzar, queda quieto. */
-    public void followPath(List<Cell> path) {
-        mover = new NpcMover(path);
     }
 
     /** Retira el NPC de la lista de jugadores y lo desactiva: no reaparecerá al arrancar. */
@@ -81,6 +87,7 @@ public final class NpcManager {
             server.getPlayerList().remove(npc);
             npc = null;
         }
+        order = null;
         lifecycle.deactivate();
         data.setActive(false);
         saveState();
@@ -99,11 +106,11 @@ public final class NpcManager {
             return;
         }
         if (lifecycle.phase() == NpcLifecycle.Phase.ALIVE) {
-            npc = NpcPlayer.spawnNew(server, level, profile(), Vec3.atBottomCenterOf(level.getSharedSpawnPos()));
+            attach(NpcPlayer.spawnNew(server, level, profile(), Vec3.atBottomCenterOf(level.getSharedSpawnPos())));
         }
     }
 
-    /** Llamado al morir el NPC: guarda su punto de reaparición y empieza la espera. */
+    /** Llamado al morir el NPC: guarda su punto de reaparición, olvida la orden y empieza la espera. */
     public void onNpcDeath(NpcPlayer dead) {
         if (dead != npc) {
             return;
@@ -112,6 +119,7 @@ public final class NpcManager {
         if (bed != null) {
             data.setRespawnPoint(dead.getRespawnDimension().location().toString(), bed);
         }
+        order = null;
         lifecycle.onDeath();
         saveState();
     }
@@ -135,29 +143,64 @@ public final class NpcManager {
         return "NPC: " + npc.getGameProfile().getName() + " en " + npc.blockPosition().toShortString();
     }
 
+    /** Activa o pausa el cerebro. Con el cerebro pausado el NPC solo sigue la ruta que se le haya dado. */
+    public void setBrainEnabled(boolean enabled) {
+        brainEnabled = enabled;
+    }
+
+    /** Orden activa del NPC, o null si no tiene ninguna. */
+    public void setOrder(OrderState order) {
+        this.order = order;
+    }
+
+    /** Pone al NPC a seguir la ruta. Al terminarla, o si no puede avanzar, queda quieto. */
+    public void followPath(List<Cell> path) {
+        movement.follow(path);
+    }
+
+    /** Un tick del NPC: retira el cuerpo muerto, reaparece si toca, y ejecuta la IA y el movimiento. */
     public void tick() {
         if (npc != null && npc.isDeadOrDying()) {
             // Se retira en el tick siguiente a la muerte, no dentro del evento, para no interferir con los objetos que suelta.
             server.getPlayerList().remove(npc);
             npc = null;
+            order = null;
             saveState();
         }
         if (lifecycle.tick() == NpcLifecycle.Action.RESPAWN) {
             respawn();
         }
-        if (npc != null) {
-            // El NPC no tiene cliente que mande su movimiento: el mod pone la entrada en cada tick y el juego hace la física.
-            mover.tick(npc);
+        if (npc == null) {
+            return;
         }
-        // La IA se conecta en las tareas 6 a 12.
+        long now = server.getTickCount();
+        try {
+            if (brainEnabled && !suspension.isSuspended(now)) {
+                brain.tick(new NpcContext(server, npc, actions, settings, order, movement));
+            }
+            movement.tick(npc);
+        } catch (RuntimeException e) {
+            // Una excepción en la IA deja inactivo a este NPC un rato; el servidor sigue funcionando.
+            suspension.suspend(now);
+            brain.reset();
+            movement.stop();
+            LOGGER.error("La IA del NPC falló; queda inactiva {} ticks", NpcSuspension.TICKS, e);
+        }
     }
 
     private void respawn() {
         ServerLevel level = respawnLevel();
-        npc = NpcPlayer.spawnNew(server, level, profile(), respawnPosition(level));
-        mover = NpcMover.idle();
+        attach(NpcPlayer.spawnNew(server, level, profile(), respawnPosition(level)));
         npc.getFoodData().setFoodLevel(20);
         saveState();
+    }
+
+    /** Un cuerpo nuevo: sus acciones, su movimiento y su cerebro empiezan de cero. */
+    private void attach(NpcPlayer player) {
+        npc = player;
+        actions = new NpcActions(player);
+        movement.stop();
+        brain.reset();
     }
 
     /** Dimensión del punto de reaparición guardado; si no hay, o ya no existe, el overworld. */
@@ -177,22 +220,10 @@ public final class NpcManager {
     /** Punto guardado si el cuerpo cabe allí; si no, el spawn compartido del mundo. */
     private Vec3 respawnPosition(ServerLevel level) {
         BlockPos saved = data.respawnPos();
-        if (saved != null && isStandable(level, saved)) {
+        if (saved != null && WorldView.isStandable(level, saved)) {
             return Vec3.atBottomCenterOf(saved);
         }
         return Vec3.atBottomCenterOf(level.getSharedSpawnPos());
-    }
-
-    /** Suelo sólido bajo los pies y dos celdas libres: sitio donde cabe el cuerpo. */
-    private static boolean isStandable(ServerLevel level, BlockPos feet) {
-        BlockPos below = feet.below();
-        return level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)
-                && isFree(level, feet)
-                && isFree(level, feet.above());
-    }
-
-    private static boolean isFree(ServerLevel level, BlockPos pos) {
-        return level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
     }
 
     private Set<String> onlineNames() {
