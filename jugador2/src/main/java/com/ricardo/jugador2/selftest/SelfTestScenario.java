@@ -523,13 +523,23 @@ public final class SelfTestScenario {
 
     /** Vuelve a poner al NPC en la plataforma. Antes carga sus chunks: tras la muerte pudieron descargarse. */
     private static void placeOnPlatform(ServerLevel level, NpcPlayer npc) {
-        for (int cx = 0; cx <= 1; cx++) {
-            for (int cz = 0; cz <= 1; cz++) {
+        loadArena(level);
+        npc.teleportTo(level, platformCenter.x, platformCenter.y, platformCenter.z, 0.0F, 0.0F);
+        level.getChunkSource().move(npc);
+    }
+
+    /**
+     * Carga los chunks de la plataforma y de su margen. Sin ellos el mapa de alturas no es real: en un mundo nuevo
+     * la plataforma salía enterrada, en una cueva, en vez de sobre el terreno como en un jugador real.
+     */
+    private static void loadArena(ServerLevel level) {
+        int first = Math.floorDiv(-2, 16);
+        int last = Math.floorDiv(PLATFORM_SIZE + 1, 16);
+        for (int cx = first; cx <= last; cx++) {
+            for (int cz = first; cz <= last; cz++) {
                 level.getChunk(cx, cz);
             }
         }
-        npc.teleportTo(level, platformCenter.x, platformCenter.y, platformCenter.z, 0.0F, 0.0F);
-        level.getChunkSource().move(npc);
     }
 
     private static void finish(MinecraftServer server, boolean passed, int failedStep) {
@@ -546,6 +556,7 @@ public final class SelfTestScenario {
     private static void buildPlatform(ServerLevel level) {
         int x0 = 0;
         int z0 = 0;
+        loadArena(level);
         int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x0 + PLATFORM_SIZE / 2, z0 + PLATFORM_SIZE / 2);
         int y = surface + 5;
         // Un mundo que ya sirvió a una prueba anterior trae bloques de ella: se limpia el volumen entero primero.
