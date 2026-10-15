@@ -23,6 +23,7 @@ public final class OrderTask implements Task {
     private static final double COME_DISTANCE = 2.0;
     private static final double FOLLOW_DISTANCE = 3.0;
     private static final double GOTO_DISTANCE = 1.5;
+    private static final int GOTO_REACH = 16;
     private static final int MINE_RADIUS = 32;
 
     private int ticksSincePlan = REPLAN_TICKS;
@@ -54,7 +55,7 @@ public final class OrderTask implements Task {
         if (ctx.npc().distanceTo(target) <= stopDistance) {
             ctx.movement().stop();
             if (finishOnArrival) {
-                order.finish();
+                order.finish("Ya estoy aquí");
                 return TaskResult.SUCCESS;
             }
             return TaskResult.RUNNING;
@@ -63,12 +64,18 @@ public final class OrderTask implements Task {
     }
 
     private TaskResult goTo(NpcContext ctx, OrderState order, BlockPos goal) {
-        if (ctx.npc().position().distanceTo(Vec3.atBottomCenterOf(goal)) <= GOTO_DISTANCE) {
+        // Un punto en el aire se cambia por el suelo que hay debajo, donde el NPC puede estar de pie.
+        BlockPos spot = WorldView.standableNear(ctx.npc().serverLevel(), goal, GOTO_REACH);
+        if (spot == null) {
+            order.fail("no encuentro suelo en " + goal.toShortString());
+            return TaskResult.FAILURE;
+        }
+        if (ctx.npc().position().distanceTo(Vec3.atBottomCenterOf(spot)) <= GOTO_DISTANCE) {
             ctx.movement().stop();
-            order.finish();
+            order.finish("Llegué");
             return TaskResult.SUCCESS;
         }
-        return replan(ctx, order, goal) ? TaskResult.RUNNING : TaskResult.FAILURE;
+        return replan(ctx, order, spot) ? TaskResult.RUNNING : TaskResult.FAILURE;
     }
 
     private TaskResult mine(NpcContext ctx, OrderState order, String block) {
@@ -83,7 +90,7 @@ public final class OrderTask implements Task {
         }
         TaskResult result = mining.tick(ctx);
         if (result == TaskResult.SUCCESS) {
-            order.finish();
+            order.finish("Listo");
         } else if (result == TaskResult.FAILURE) {
             order.fail("no puedo minar " + block);
         }

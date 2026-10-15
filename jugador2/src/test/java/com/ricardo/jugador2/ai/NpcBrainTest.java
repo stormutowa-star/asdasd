@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class NpcBrainTest {
     private static final NpcSettings CFG = NpcSettings.defaults();
@@ -26,12 +27,13 @@ class NpcBrainTest {
         int logs = 16;
         int stone = 32;
         int coal = 16;
+        boolean pickaxe = true;
         boolean toolsMissing = false;
         boolean full = false;
 
         NpcSnapshot build() {
             return new NpcSnapshot(health, food, hasFood, hostiles, order, night, bed,
-                    logs, stone, coal, toolsMissing, full);
+                    logs, stone, coal, pickaxe, toolsMissing, full);
         }
     }
 
@@ -145,5 +147,23 @@ class NpcBrainTest {
         s.night = true;
         s.bed = false;
         assertNotEquals(TaskKind.SLEEP, NpcBrain.choose(s.build(), CFG));
+    }
+
+    @Test
+    void withoutAnyPickaxeCraftsBeforeGatheringStoneOrCoal() {
+        // Sin pico no sale piedra ni carbón: con madera de sobra, el pico de madera va primero.
+        Snap s = base();
+        s.pickaxe = false;
+        s.toolsMissing = true;
+        s.logs = 16;
+        s.stone = 0;
+        s.coal = 0;
+        assertEquals(TaskKind.CRAFT, NpcBrain.choose(s.build(), CFG));
+    }
+
+    @Test
+    void withNothingLeftToDoIdles() {
+        // Con todo cubierto no hay tarea: el NPC se queda quieto en vez de talar sin fin.
+        assertNull(NpcBrain.choose(base().build(), CFG));
     }
 }

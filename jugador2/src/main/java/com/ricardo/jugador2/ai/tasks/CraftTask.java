@@ -28,13 +28,12 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Craftea un pico de piedra con las recetas del juego: pone una mesa si no hay una cerca, hace palos a partir de
- * tablones y tablones a partir de troncos cuando faltan. Cada receta consume sus ingredientes solo si el
- * inventario los tiene todos.
+ * Craftea el pico que le falta con las recetas del juego: el de madera si no tiene ninguno, y el de piedra después.
+ * Pone una mesa si no hay una cerca, hace palos a partir de tablones y tablones a partir de troncos cuando faltan.
+ * Cada receta consume sus ingredientes solo si el inventario los tiene todos.
  */
 public final class CraftTask implements Task {
     private static final int TABLE_RANGE = 4;
-    private static final int HOTBAR = 9;
     private static final Direction[] SIDES = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
     private static final Predicate<ItemStack> PLANKS = stack -> stack.is(ItemTags.PLANKS);
 
@@ -46,6 +45,7 @@ public final class CraftTask implements Task {
                 || WorldView.count(inventory, Items.DIAMOND_PICKAXE) > 0) {
             return TaskResult.SUCCESS;
         }
+        boolean hasPickaxe = WorldView.count(inventory, ItemTags.PICKAXES) > 0;
         ServerLevel level = npc.serverLevel();
         boolean tableNearby = WorldView.findNearestBlock(level, npc.blockPosition(),
                 state -> state.is(Blocks.CRAFTING_TABLE), TABLE_RANGE) != null;
@@ -59,6 +59,11 @@ public final class CraftTask implements Task {
         if (WorldView.count(inventory, Items.STICK) < 2) {
             return craftOne(ctx, is(Items.STICK), false) || craftOne(ctx, PLANKS, false)
                     ? TaskResult.RUNNING : TaskResult.FAILURE;
+        }
+        // Sin pico no hay piedra que sacar: el de madera basta para empezar. Este tick termina la tarea; el cerebro
+        // vuelve a decidir y, con piedra en el inventario, la siguiente tarea hace el de piedra.
+        if (!hasPickaxe) {
+            return craftOne(ctx, is(Items.WOODEN_PICKAXE), true) ? TaskResult.SUCCESS : TaskResult.FAILURE;
         }
         return craftOne(ctx, is(Items.STONE_PICKAXE), true) ? TaskResult.RUNNING : TaskResult.FAILURE;
     }
@@ -149,7 +154,7 @@ public final class CraftTask implements Task {
     private static boolean placeTable(NpcContext ctx) {
         NpcPlayer npc = ctx.npc();
         ServerLevel level = npc.serverLevel();
-        int slot = moveToHotbar(npc.getInventory(), Items.CRAFTING_TABLE);
+        int slot = WorldView.moveToHotbar(npc.getInventory(), stack -> stack.is(Items.CRAFTING_TABLE));
         if (slot < 0) {
             return false;
         }
@@ -161,20 +166,5 @@ public final class CraftTask implements Task {
             }
         }
         return false;
-    }
-
-    /** Lleva un objeto del inventario a la barra de acceso rápido y devuelve su ranura, o -1 si no lo hay. */
-    private static int moveToHotbar(Inventory inventory, Item item) {
-        int from = WorldView.findSlot(inventory, stack -> stack.is(item));
-        if (from < 0) {
-            return -1;
-        }
-        if (from < HOTBAR) {
-            return from;
-        }
-        ItemStack displaced = inventory.getItem(HOTBAR - 1);
-        inventory.setItem(HOTBAR - 1, inventory.getItem(from));
-        inventory.setItem(from, displaced);
-        return HOTBAR - 1;
     }
 }

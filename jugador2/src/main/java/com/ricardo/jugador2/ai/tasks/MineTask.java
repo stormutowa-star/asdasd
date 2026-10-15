@@ -1,5 +1,6 @@
 package com.ricardo.jugador2.ai.tasks;
 
+import com.ricardo.jugador2.ai.MiningBudget;
 import com.ricardo.jugador2.ai.NpcContext;
 import com.ricardo.jugador2.ai.Task;
 import com.ricardo.jugador2.ai.TaskResult;
@@ -24,6 +25,7 @@ public final class MineTask implements Task {
     private final BlockPos target;
     private boolean started;
     private int plans;
+    private MiningBudget budget;
 
     public MineTask(BlockPos target) {
         this.target = target.immutable();
@@ -55,9 +57,25 @@ public final class MineTask implements Task {
                 return TaskResult.FAILURE;
             }
             started = true;
+            budget = new MiningBudget(progressPerTick(ctx));
             return TaskResult.RUNNING;
         }
-        return ctx.actions().continueMining() ? TaskResult.SUCCESS : TaskResult.RUNNING;
+        if (ctx.actions().continueMining()) {
+            return TaskResult.SUCCESS;
+        }
+        // Si el aviso de rotura no llega a surtir efecto, el bloque no cae nunca: se da por no alcanzado.
+        if (budget.spend()) {
+            ctx.actions().stopMining(target);
+            started = false;
+            return TaskResult.FAILURE;
+        }
+        return TaskResult.RUNNING;
+    }
+
+    /** Fracción del bloque que la herramienta elegida rompe en cada tick. */
+    private float progressPerTick(NpcContext ctx) {
+        NpcPlayer npc = ctx.npc();
+        return npc.serverLevel().getBlockState(target).getDestroyProgress(npc, npc.serverLevel(), target);
     }
 
     /** Elige en la barra la herramienta que más rápido rompe el bloque; con las manos si ninguna sirve. */

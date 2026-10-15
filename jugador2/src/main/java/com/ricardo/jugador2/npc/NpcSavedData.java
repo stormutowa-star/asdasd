@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
@@ -21,6 +22,9 @@ public final class NpcSavedData extends SavedData {
     private int ticksUntilRespawn;
     private String respawnDimension;
     private BlockPos respawnPos;
+    private String bodyDimension;
+    private Vec3 bodyPos;
+    private float bodyHealth;
 
     private NpcSavedData() {
     }
@@ -57,6 +61,21 @@ public final class NpcSavedData extends SavedData {
         return respawnPos;
     }
 
+    /** Dimensión donde estaba el cuerpo al guardar; null si nunca se guardó. */
+    public String bodyDimension() {
+        return bodyDimension;
+    }
+
+    /** Posición del cuerpo al guardar; null si nunca se guardó. */
+    public Vec3 bodyPos() {
+        return bodyPos;
+    }
+
+    /** Vida del cuerpo al guardar. */
+    public float bodyHealth() {
+        return bodyHealth;
+    }
+
     /** Fija la identidad del NPC en este mundo. Se llama una sola vez, en el primer arranque. */
     public void initialize(String name, UUID uuid) {
         this.name = name;
@@ -81,7 +100,15 @@ public final class NpcSavedData extends SavedData {
         setDirty();
     }
 
-    private static NpcSavedData load(CompoundTag tag, HolderLookup.Provider registries) {
+    /** Guarda dónde está el cuerpo del NPC y con cuánta vida, para retomarlo igual al reiniciar el servidor. */
+    public void saveBody(String dimension, Vec3 pos, float health) {
+        this.bodyDimension = dimension;
+        this.bodyPos = pos;
+        this.bodyHealth = health;
+        setDirty();
+    }
+
+    static NpcSavedData load(CompoundTag tag, HolderLookup.Provider registries) {
         NpcSavedData data = new NpcSavedData();
         if (tag.contains("name")) {
             data.name = tag.getString("name");
@@ -98,6 +125,11 @@ public final class NpcSavedData extends SavedData {
             data.respawnDimension = tag.getString("respawnDimension");
             int[] pos = tag.getIntArray("respawnPos");
             data.respawnPos = new BlockPos(pos[0], pos[1], pos[2]);
+        }
+        if (tag.contains("bodyDimension")) {
+            data.bodyDimension = tag.getString("bodyDimension");
+            data.bodyPos = new Vec3(tag.getDouble("bodyX"), tag.getDouble("bodyY"), tag.getDouble("bodyZ"));
+            data.bodyHealth = tag.getFloat("bodyHealth");
         }
         return data;
     }
@@ -116,6 +148,13 @@ public final class NpcSavedData extends SavedData {
         if (respawnDimension != null && respawnPos != null) {
             tag.putString("respawnDimension", respawnDimension);
             tag.putIntArray("respawnPos", new int[] {respawnPos.getX(), respawnPos.getY(), respawnPos.getZ()});
+        }
+        if (bodyDimension != null && bodyPos != null) {
+            tag.putString("bodyDimension", bodyDimension);
+            tag.putDouble("bodyX", bodyPos.x);
+            tag.putDouble("bodyY", bodyPos.y);
+            tag.putDouble("bodyZ", bodyPos.z);
+            tag.putFloat("bodyHealth", bodyHealth);
         }
         return tag;
     }

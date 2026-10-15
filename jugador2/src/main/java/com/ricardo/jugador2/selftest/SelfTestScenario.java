@@ -8,6 +8,7 @@ import com.ricardo.jugador2.ai.OrderState;
 import com.ricardo.jugador2.ai.TaskResult;
 import com.ricardo.jugador2.ai.WorldView;
 import com.ricardo.jugador2.ai.tasks.CraftTask;
+import com.ricardo.jugador2.ai.tasks.EatTask;
 import com.ricardo.jugador2.ai.tasks.StoreTask;
 import com.ricardo.jugador2.chat.Come;
 import com.ricardo.jugador2.nav.Cell;
@@ -20,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.Difficulty;
@@ -30,8 +32,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
@@ -71,6 +77,9 @@ public final class SelfTestScenario {
     private static CraftTask crafter;
     private static StoreTask storer;
     private static BlockPos chestPos;
+    private static BlockPos bedPos;
+    private static BlockPos leaflessLog;
+    private static EatTask eater;
 
     private SelfTestScenario() {
     }
@@ -261,7 +270,7 @@ public final class SelfTestScenario {
                     return npc == fleeing && npc.isAlive() && npc.distanceTo(testZombie) >= 6.0;
                 }));
 
-        steps.add(new Step("recoge madera de dos troncos cercanos", 1200,
+        steps.add(new Step("recoge madera de dos troncos de un árbol cercano", 1200,
                 () -> {
                     NpcManager manager = Jugador2Mod.manager();
                     NpcPlayer npc = manager.npc();
@@ -269,8 +278,7 @@ public final class SelfTestScenario {
                     manager.setOrder(null);
                     npc.getInventory().clearContent();
                     for (int dz = 0; dz < 2; dz++) {
-                        level.setBlock(BlockPos.containing(platformCenter.x - 4.0, platformCenter.y, platformCenter.z + dz),
-                                Blocks.OAK_LOG.defaultBlockState(), 3);
+                        placeTreeLog(level, BlockPos.containing(platformCenter.x - 4.0, platformCenter.y, platformCenter.z + dz));
                     }
                     manager.setBrainEnabled(true);
                 },
@@ -286,6 +294,8 @@ public final class SelfTestScenario {
                     npc.getInventory().setItem(0, new ItemStack(Items.COBBLESTONE, 3));
                     npc.getInventory().setItem(1, new ItemStack(Items.STICK, 2));
                     npc.getInventory().setItem(2, new ItemStack(Items.CRAFTING_TABLE, 1));
+                    // La piedra solo sale con pico: el de madera ya lo tiene, como en una partida real.
+                    npc.getInventory().setItem(3, new ItemStack(Items.WOODEN_PICKAXE, 1));
                     crafter = new CraftTask();
                 },
                 s -> crafter.tick(Jugador2Mod.manager().context()) == TaskResult.SUCCESS));
@@ -311,7 +321,104 @@ public final class SelfTestScenario {
                     manager.setOrder(null);
                     manager.setBrainEnabled(true);
                     // La orden llega como un mensaje de chat de Forge, igual que la de un jugador real.
-                    String text = manager.name() + ", ve a 3 -59 3";
+                    String text = manager.name() + ", ve a 3 " + (int) platformCenter.y + " 3";
+                    MinecraftForge.EVENT_BUS.post(new ServerChatEvent(npc, text, Component.literal(text)));
+                },
+                s -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    return npc != null && npc.position().distanceTo(new Vec3(3.5, platformCenter.y, 3.5)) <= 1.5;
+                }));
+
+        steps.add(new Step("sin pico, con tres troncos fabrica el de madera", 600,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    discardZombie();
+                    manager.setOrder(null);
+                    placeOnPlatform(level, npc);
+                    npc.getInventory().clearContent();
+                    npc.getInventory().setItem(0, new ItemStack(Items.OAK_LOG, 3));
+                    manager.setBrainEnabled(true);
+                },
+                s -> WorldView.count(Jugador2Mod.manager().npc().getInventory(), ItemTags.PICKAXES) > 0));
+
+        steps.add(new Step("muere y reaparece junto a su cama, no en el spawn del mundo",
+                Jugador2Config.read().respawnDelayTicks() + 200,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setBrainEnabled(false);
+                    manager.setOrder(null);
+                    manager.followPath(List.of());
+                    bedPos = BlockPos.containing(platformCenter.x + 4.0, platformCenter.y, platformCenter.z - 5.0);
+                    placeBed(level, bedPos);
+                    npc.setRespawnPosition(level.dimension(), bedPos, 0.0F, true, false);
+                    deadNpc = npc;
+                    npc.kill();
+                },
+                s -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    return npc != null && npc != deadNpc
+                            && npc.position().distanceTo(Vec3.atBottomCenterOf(bedPos)) <= 2.0;
+                }));
+
+        steps.add(new Step("come la comida que lleva fuera de la barra", 200,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setBrainEnabled(false);
+                    manager.followPath(List.of());
+                    npc.getInventory().clearContent();
+                    npc.getFoodData().setFoodLevel(6);
+                    npc.getInventory().setItem(12, new ItemStack(Items.BREAD, 1));
+                    eater = new EatTask();
+                },
+                s -> {
+                    eater.tick(Jugador2Mod.manager().context());
+                    return Jugador2Mod.manager().npc().getFoodData().getFoodLevel() >= 7;
+                }));
+
+        steps.add(new Step("no insiste en un tronco al que no llega y corta el siguiente", 600,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setOrder(null);
+                    manager.followPath(List.of());
+                    placeOnPlatform(level, npc);
+                    npc.getInventory().clearContent();
+                    // Más cerca que el árbol de verdad, pero en el aire: no hay ningún sitio desde el que alcanzarlo.
+                    placeTreeLog(level, BlockPos.containing(platformCenter.x + 2.0, platformCenter.y + 3.0, platformCenter.z + 2.0));
+                    placeTreeLog(level, BlockPos.containing(platformCenter.x - 6.0, platformCenter.y, platformCenter.z + 4.0));
+                    manager.setBrainEnabled(true);
+                },
+                s -> WorldView.count(Jugador2Mod.manager().npc().getInventory(), ItemTags.LOGS) >= 1));
+
+        steps.add(new Step("no corta un tronco sin hojas, de una construcción", 600,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setOrder(null);
+                    manager.followPath(List.of());
+                    placeOnPlatform(level, npc);
+                    npc.getInventory().clearContent();
+                    // Tronco sin hojas a 3 bloques del NPC, más cerca que el árbol: no es un árbol, así que no se toca.
+                    leaflessLog = BlockPos.containing(platformCenter.x + 3.0, platformCenter.y, platformCenter.z);
+                    level.setBlock(leaflessLog, Blocks.OAK_LOG.defaultBlockState(), 3);
+                    placeTreeLog(level, BlockPos.containing(platformCenter.x - 6.0, platformCenter.y, platformCenter.z - 4.0));
+                    manager.setBrainEnabled(true);
+                },
+                s -> WorldView.count(Jugador2Mod.manager().npc().getInventory(), ItemTags.LOGS) >= 1
+                        && level.getBlockState(leaflessLog).is(BlockTags.LOGS)));
+
+        steps.add(new Step("va a un punto en el aire y se queda de pie en el suelo de debajo", 400,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setOrder(null);
+                    manager.followPath(List.of());
+                    placeOnPlatform(level, npc);
+                    manager.setBrainEnabled(true);
+                    String text = manager.name() + ", ve a 3 " + (int) (platformCenter.y + 6.0) + " 3";
                     MinecraftForge.EVENT_BUS.post(new ServerChatEvent(npc, text, Component.literal(text)));
                 },
                 s -> {
@@ -367,6 +474,20 @@ public final class SelfTestScenario {
             }
         }
         return false;
+    }
+
+    /** Tronco con hojas encima: lo que el NPC toma por un árbol. */
+    private static void placeTreeLog(ServerLevel level, BlockPos log) {
+        level.setBlock(log, Blocks.OAK_LOG.defaultBlockState(), 3);
+        level.setBlock(log.above(), Blocks.OAK_LEAVES.defaultBlockState(), 3);
+        level.setBlock(log.above(2), Blocks.OAK_LEAVES.defaultBlockState(), 3);
+    }
+
+    /** Cama roja de dos mitades: el pie en foot y la cabeza al este. */
+    private static void placeBed(ServerLevel level, BlockPos foot) {
+        BlockState bed = Blocks.RED_BED.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.EAST);
+        level.setBlock(foot, bed.setValue(BedBlock.PART, BedPart.FOOT), 3);
+        level.setBlock(foot.east(), bed.setValue(BedBlock.PART, BedPart.HEAD), 3);
     }
 
     private static Zombie spawnZombie(ServerLevel level, double x, double y, double z) {

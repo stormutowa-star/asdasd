@@ -24,4 +24,27 @@ class OrderStateTest {
         order.onTargetMissing("Steve");
         assertEquals(OrderState.Status.FAILED, order.status());
     }
+
+    @Test
+    void failureIsSaidOnceWithItsReason() {
+        OrderState order = new OrderState(new Come(), "Steve");
+        order.fail("no encuentro ruta hasta 19, -59, 10");
+        assertEquals("No puedo: no encuentro ruta hasta 19, -59, 10", order.takeReply());
+        assertEquals("", order.takeReply());
+    }
+
+    @Test
+    void arrivalIsSaid() {
+        OrderState order = new OrderState(new Come(), "Steve");
+        order.finish("Ya estoy aquí");
+        assertEquals("Ya estoy aquí", order.takeReply());
+    }
+
+    @Test
+    void silentFinishSaysNothing() {
+        // Parar la orden ya la contesta el comando; el NPC no añade nada más.
+        OrderState order = new OrderState(new Come(), "Steve");
+        order.finish();
+        assertEquals("", order.takeReply());
+    }
 }

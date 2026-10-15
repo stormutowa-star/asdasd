@@ -2,7 +2,9 @@ package com.ricardo.jugador2.ai;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
@@ -12,28 +14,82 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-/** Consultas al mundo y al inventario que usan las tareas. Solo lectura. */
+/** Consultas al mundo y al inventario que usan las tareas. Solo lectura, salvo {@link #moveToHotbar}. */
 public final class WorldView {
+    /** Hojas a este alcance de un tronco para contarlo como árbol natural. */
+    private static final int TREE_LEAF_REACH = 3;
+    private static final int HOTBAR = 9;
+
     private WorldView() {
     }
 
     /** Bloque más cercano a origin que cumple match, dentro de un cubo de radius bloques. Null si no hay ninguno. */
     public static BlockPos findNearestBlock(ServerLevel level, BlockPos origin, Predicate<BlockState> match, int radius) {
+        return findNearest(level, origin, radius, Set.of(), (pos, state) -> match.test(state));
+    }
+
+    /**
+     * Bloque más cercano a origin que cumple match, dentro de un cubo de radius bloques y fuera de skip. Null si no hay.
+     * match recibe la posición además del estado, para mirar alrededor del bloque.
+     */
+    public static BlockPos findNearest(ServerLevel level, BlockPos origin, int radius, Set<BlockPos> skip,
+                                       BiPredicate<BlockPos, BlockState> match) {
         BlockPos best = null;
         double bestDistance = Double.MAX_VALUE;
         for (BlockPos pos : BlockPos.betweenClosed(origin.offset(-radius, -radius, -radius),
                 origin.offset(radius, radius, radius))) {
-            if (match.test(level.getBlockState(pos))) {
-                double distance = pos.distSqr(origin);
-                if (distance < bestDistance) {
-                    bestDistance = distance;
-                    best = pos.immutable();
-                }
+            double distance = pos.distSqr(origin);
+            if (distance < bestDistance && !skip.contains(pos) && match.test(pos, level.getBlockState(pos))) {
+                bestDistance = distance;
+                best = pos.immutable();
             }
         }
         return best;
+    }
+
+    /**
+     * Tronco de un árbol natural: madera sin tallar con hojas a menos de TREE_LEAF_REACH bloques. Un tronco que
+     * un jugador puso para construir, o uno tallado, no tiene hojas pegadas, así que el NPC no lo corta.
+     */
+    public static boolean isTreeLog(ServerLevel level, BlockPos pos, BlockState state) {
+        return state.is(BlockTags.LOGS) && !isStripped(state) && hasLeavesNear(level, pos);
+    }
+
+    private static boolean isStripped(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath().startsWith("stripped_");
+    }
+
+    private static boolean hasLeavesNear(ServerLevel level, BlockPos pos) {
+        for (BlockPos near : BlockPos.betweenClosed(pos.offset(-TREE_LEAF_REACH, -TREE_LEAF_REACH, -TREE_LEAF_REACH),
+                pos.offset(TREE_LEAF_REACH, TREE_LEAF_REACH, TREE_LEAF_REACH))) {
+            if (level.getBlockState(near).is(BlockTags.LEAVES)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Lleva a la barra el primer objeto que cumple match y devuelve su ranura de barra, o -1 si no hay ninguno. Si estaba
+     * fuera de la barra, cambia de sitio con el objeto de la última ranura de la barra, como al pasar objetos a mano.
+     */
+    public static int moveToHotbar(Inventory inventory, Predicate<ItemStack> match) {
+        int from = findSlot(inventory, match);
+        if (from < 0) {
+            return -1;
+        }
+        if (from < HOTBAR) {
+            return from;
+        }
+        int target = HOTBAR - 1;
+        ItemStack displaced = inventory.getItem(target);
+        inventory.setItem(target, inventory.getItem(from));
+        inventory.setItem(from, displaced);
+        return target;
     }
 
     /** Sitio donde cabe el cuerpo: suelo sólido bajo los pies y dos celdas libres. */

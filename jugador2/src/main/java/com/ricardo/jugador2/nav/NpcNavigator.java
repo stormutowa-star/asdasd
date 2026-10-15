@@ -16,20 +16,23 @@ import java.util.Set;
 public final class NpcNavigator {
     private static final int[][] LATERAL = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     private static final int MAX_DROP = 3;
+    /** Hasta dónde se busca el suelo bajo una meta que está en el aire. */
+    private static final int MAX_SNAP = 32;
 
     private NpcNavigator() {
     }
 
     /**
-     * Ruta de start a goal, ambos incluidos. Devuelve null si no hay ruta o si se expanden
-     * más de maxNodes nodos.
+     * Ruta de start a goal, ambos incluidos. Si la meta está en el aire, la ruta termina en el suelo que hay debajo.
+     * Devuelve null si no hay ruta, si no hay suelo bajo la meta o si se expanden más de maxNodes nodos.
      */
-    public static List<Cell> findPath(BlockAccess world, Cell start, Cell goal, int maxNodes) {
+    public static List<Cell> findPath(BlockAccess world, Cell start, Cell requested, int maxNodes) {
+        Cell goal = snapToFloor(world, requested);
+        if (goal == null) {
+            return null;
+        }
         if (start.equals(goal)) {
             return List.of(start);
-        }
-        if (!canStand(world, goal.x(), goal.y(), goal.z())) {
-            return null;
         }
 
         PriorityQueue<Node> open = new PriorityQueue<>((a, b) -> Integer.compare(a.f(), b.f()));
@@ -108,6 +111,17 @@ public final class NpcNavigator {
     private static boolean canStand(BlockAccess world, int x, int y, int z) {
         return isOpen(world, x, y, z) && isOpen(world, x, y + 1, z)
                 && world.isSolid(x, y - 1, z) && !world.isHazard(x, y - 1, z);
+    }
+
+    /** La celda pedida si se puede estar de pie en ella; si no, la primera de pie que hay debajo, hasta MAX_SNAP bloques. */
+    private static Cell snapToFloor(BlockAccess world, Cell requested) {
+        for (int drop = 0; drop <= MAX_SNAP; drop++) {
+            int y = requested.y() - drop;
+            if (canStand(world, requested.x(), y, requested.z())) {
+                return new Cell(requested.x(), y, requested.z());
+            }
+        }
+        return null;
     }
 
     private static int heuristic(Cell a, Cell b) {

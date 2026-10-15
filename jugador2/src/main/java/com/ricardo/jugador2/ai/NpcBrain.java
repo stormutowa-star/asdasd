@@ -26,6 +26,8 @@ public final class NpcBrain {
     private static final int WOOD_TARGET = 16;
     private static final int STONE_TARGET = 32;
     private static final int COAL_TARGET = 16;
+    /** Troncos para el primer pico: mesa, palos y pico de madera caben en tres. */
+    private static final int PICKAXE_LOGS = 3;
     private static final int BLOCK_TICKS = 40;
     private static final long LOG_INTERVAL_MILLIS = 30_000L;
 
@@ -58,13 +60,17 @@ public final class NpcBrain {
         if (s.inventoryNearlyFull() && free(TaskKind.STORE, blocked)) {
             return TaskKind.STORE;
         }
+        // Sin ningún pico no sale piedra ni carbón: el de madera va antes que recolectar más madera.
+        if (!s.hasPickaxe() && s.logs() >= PICKAXE_LOGS && free(TaskKind.CRAFT, blocked)) {
+            return TaskKind.CRAFT;
+        }
         if (s.logs() < WOOD_TARGET && free(TaskKind.GATHER_WOOD, blocked)) {
             return TaskKind.GATHER_WOOD;
         }
-        if (s.stone() < STONE_TARGET && free(TaskKind.GATHER_STONE, blocked)) {
+        if (s.hasPickaxe() && s.stone() < STONE_TARGET && free(TaskKind.GATHER_STONE, blocked)) {
             return TaskKind.GATHER_STONE;
         }
-        if (s.coal() < COAL_TARGET && free(TaskKind.GATHER_COAL, blocked)) {
+        if (s.hasPickaxe() && s.coal() < COAL_TARGET && free(TaskKind.GATHER_COAL, blocked)) {
             return TaskKind.GATHER_COAL;
         }
         if (s.toolsMissing() && free(TaskKind.CRAFT, blocked)) {
@@ -73,7 +79,8 @@ public final class NpcBrain {
         if (s.night() && s.hasBed() && free(TaskKind.SLEEP, blocked)) {
             return TaskKind.SLEEP;
         }
-        return free(TaskKind.GATHER_WOOD, blocked) ? TaskKind.GATHER_WOOD : null;
+        // Nada pendiente: sin tarea, el NPC se queda quieto hasta que cambie el estado.
+        return null;
     }
 
     /** Descarta la tarea activa y los bloqueos. Se llama al crear, reaparecer o retirar el NPC. */

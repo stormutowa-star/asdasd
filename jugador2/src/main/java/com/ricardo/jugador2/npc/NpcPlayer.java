@@ -32,6 +32,14 @@ public final class NpcPlayer extends ServerPlayer {
         }
     }
 
+    /** Como {@link #spawnNew}, pero con la vida que tenía el cuerpo al cerrar el servidor, para retomarlo igual. */
+    public static NpcPlayer restore(MinecraftServer server, ServerLevel level, GameProfile profile, Vec3 pos,
+                                    float health) {
+        NpcPlayer npc = spawnNew(server, level, profile, pos);
+        npc.setHealth(Math.max(1.0F, Math.min(health, npc.getMaxHealth())));
+        return npc;
+    }
+
     /** Crea el jugador, lo registra en la lista de jugadores y lo coloca en {@code pos} con vida completa. */
     public static NpcPlayer spawnNew(MinecraftServer server, ServerLevel level, GameProfile profile, Vec3 pos) {
         NpcPlayer npc = new NpcPlayer(server, level, profile);

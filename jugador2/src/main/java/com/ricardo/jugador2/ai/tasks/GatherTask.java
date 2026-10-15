@@ -13,11 +13,14 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.function.Predicate;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.BiPredicate;
 
 /**
  * Recolecta un bloque del tipo pedido: mina el más cercano a 32 bloques, o si no hay ninguno camina a un punto
- * al azar entre 24 y 48 bloques para buscar. Termina en cuanto mina un bloque o llega al punto de búsqueda.
+ * al azar entre 24 y 48 bloques para buscar. Si no llega a un bloque, lo descarta y prueba con el siguiente. Termina
+ * en cuanto mina un bloque o llega al punto de búsqueda.
  */
 public final class GatherTask implements Task {
     public enum Resource { WOOD, STONE, COAL }
@@ -30,7 +33,9 @@ public final class GatherTask implements Task {
     private static final int COLLECT_TICKS = 60;
 
     private final Resource resource;
+    private final Set<BlockPos> unreachable = new HashSet<>();
     private MineTask mining;
+    private BlockPos target;
     private boolean exploring;
     private boolean collecting;
     private int collectTicks;
@@ -53,9 +58,11 @@ public final class GatherTask implements Task {
                 return TaskResult.RUNNING;
             }
             if (result == TaskResult.FAILURE) {
+                // No llega a este bloque: se descarta y el siguiente tick busca el más cercano que sí alcanza.
+                unreachable.add(target);
                 mining = null;
             }
-            return result;
+            return TaskResult.RUNNING;
         }
         if (exploring) {
             if (ctx.movement().isDone() || ctx.movement().isStuck()) {
@@ -66,15 +73,13 @@ public final class GatherTask implements Task {
             return TaskResult.RUNNING;
         }
         NpcPlayer npc = ctx.npc();
-        BlockPos found = WorldView.findNearestBlock(npc.serverLevel(), npc.blockPosition(), matcher(resource),
-                SEARCH_RADIUS);
+        ServerLevel level = npc.serverLevel();
+        BlockPos found = WorldView.findNearest(level, npc.blockPosition(), SEARCH_RADIUS, unreachable,
+                matcher(level, resource));
         if (found != null) {
+            target = found;
             mining = new MineTask(found);
-            TaskResult result = mining.tick(ctx);
-            if (result != TaskResult.RUNNING) {
-                mining = null;
-            }
-            return result;
+            return TaskResult.RUNNING;
         }
         BlockPos goal = explorationGoal(ctx);
         if (goal == null || !ctx.walkTo(goal)) {
@@ -123,11 +128,11 @@ public final class GatherTask implements Task {
         return best;
     }
 
-    private static Predicate<BlockState> matcher(Resource resource) {
+    private static BiPredicate<BlockPos, BlockState> matcher(ServerLevel level, Resource resource) {
         return switch (resource) {
-            case WOOD -> state -> state.is(BlockTags.LOGS);
-            case STONE -> state -> state.is(BlockTags.BASE_STONE_OVERWORLD);
-            case COAL -> state -> state.is(Blocks.COAL_ORE) || state.is(Blocks.DEEPSLATE_COAL_ORE);
+            case WOOD -> (pos, state) -> WorldView.isTreeLog(level, pos, state);
+            case STONE -> (pos, state) -> state.is(BlockTags.BASE_STONE_OVERWORLD);
+            case COAL -> (pos, state) -> state.is(Blocks.COAL_ORE) || state.is(Blocks.DEEPSLATE_COAL_ORE);
         };
     }
 

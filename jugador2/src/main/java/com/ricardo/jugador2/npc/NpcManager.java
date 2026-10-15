@@ -114,8 +114,18 @@ public final class NpcManager {
             return;
         }
         if (lifecycle.phase() == NpcLifecycle.Phase.ALIVE) {
-            attach(NpcPlayer.spawnNew(server, level, profile(), Vec3.atBottomCenterOf(level.getSharedSpawnPos())));
+            attach(restoredBody(level));
         }
+    }
+
+    /** El cuerpo como estaba al cerrar el servidor: mismo sitio y misma vida. Sin datos, en el spawn del mundo. */
+    private NpcPlayer restoredBody(ServerLevel fallback) {
+        ServerLevel level = levelOf(data.bodyDimension());
+        Vec3 pos = data.bodyPos();
+        if (level == null || pos == null) {
+            return NpcPlayer.spawnNew(server, fallback, profile(), Vec3.atBottomCenterOf(fallback.getSharedSpawnPos()));
+        }
+        return NpcPlayer.restore(server, level, profile(), pos, data.bodyHealth());
     }
 
     /** Llamado al morir el NPC: guarda su punto de reaparición, olvida la orden y empieza la espera. */
@@ -132,9 +142,15 @@ public final class NpcManager {
         saveState();
     }
 
-    /** Guarda el estado del NPC en los datos del mundo. Se llama al cerrar el servidor. */
+    /**
+     * Guarda el estado del NPC en los datos del mundo. Se llama al cerrar el servidor. El cuerpo se guarda solo si
+     * está vivo: un cuerpo muerto no tiene a dónde volver.
+     */
     public void saveState() {
         data.saveLifecycle(lifecycle);
+        if (npc != null && !npc.isDeadOrDying()) {
+            data.saveBody(npc.serverLevel().dimension().location().toString(), npc.position(), npc.getHealth());
+        }
     }
 
     public NpcPlayer npc() {
@@ -242,6 +258,13 @@ public final class NpcManager {
             movement.stop();
             LOGGER.error("La IA del NPC falló; queda inactiva {} ticks", NpcSuspension.TICKS, e);
         }
+        // Lo que la orden deja dicho (llegó, no puede) lo dice el NPC en el chat, como un jugador.
+        if (order != null) {
+            String reply = order.takeReply();
+            if (!reply.isEmpty()) {
+                say(reply);
+            }
+        }
     }
 
     private void respawn() {
@@ -261,23 +284,31 @@ public final class NpcManager {
 
     /** Dimensión del punto de reaparición guardado; si no hay, o ya no existe, el overworld. */
     private ServerLevel respawnLevel() {
-        String dimension = data.respawnDimension();
-        if (dimension != null) {
-            ResourceKey<net.minecraft.world.level.Level> key =
-                    ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimension));
-            ServerLevel level = server.getLevel(key);
-            if (level != null) {
-                return level;
-            }
-        }
-        return server.overworld();
+        ServerLevel level = levelOf(data.respawnDimension());
+        return level != null ? level : server.overworld();
     }
 
-    /** Punto guardado si el cuerpo cabe allí; si no, el spawn compartido del mundo. */
+    /** El nivel con ese identificador de dimensión, o null si no hay ninguno (o si el nombre es null). */
+    private ServerLevel levelOf(String dimension) {
+        if (dimension == null) {
+            return null;
+        }
+        ResourceKey<net.minecraft.world.level.Level> key =
+                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimension));
+        return server.getLevel(key);
+    }
+
+    /**
+     * Un sitio libre junto a la cama guardada, como hace el juego con una cama real; si no hay, el spawn compartido del
+     * mundo. La cama misma no sirve: el cuerpo no cabe dentro de ella.
+     */
     private Vec3 respawnPosition(ServerLevel level) {
-        BlockPos saved = data.respawnPos();
-        if (saved != null && WorldView.isStandable(level, saved)) {
-            return Vec3.atBottomCenterOf(saved);
+        BlockPos bed = data.respawnPos();
+        if (bed != null) {
+            BlockPos spot = WorldView.standableBeside(level, bed, bed);
+            if (spot != null) {
+                return Vec3.atBottomCenterOf(spot);
+            }
         }
         return Vec3.atBottomCenterOf(level.getSharedSpawnPos());
     }

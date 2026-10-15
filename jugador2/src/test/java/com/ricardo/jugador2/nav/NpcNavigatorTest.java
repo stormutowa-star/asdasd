@@ -135,9 +135,18 @@ class NpcNavigatorTest {
     }
 
     @Test
-    void floatingGoalReturnsNull() {
+    void floatingGoalSnapsDownToTheFloor() {
+        // La meta (4,5,0) está en el aire: el suelo bajo ella es (4,0,0), así que el NPC para de pie en (4,1,0).
         GridWorld world = new GridWorld().floor(0, 4, 0, 0);
-        assertNull(NpcNavigator.findPath(world, new Cell(0, 1, 0), new Cell(4, 5, 0), 1000));
+        List<Cell> path = NpcNavigator.findPath(world, new Cell(0, 1, 0), new Cell(4, 5, 0), 1000);
+        assertNotNull(path);
+        assertEquals(new Cell(4, 1, 0), path.get(path.size() - 1));
+    }
+
+    @Test
+    void floatingGoalWithoutFloorBelowReturnsNull() {
+        GridWorld world = new GridWorld().floor(0, 4, 0, 0);
+        assertNull(NpcNavigator.findPath(world, new Cell(0, 1, 0), new Cell(4, 40, 0), 1000));
     }
 
     @Test

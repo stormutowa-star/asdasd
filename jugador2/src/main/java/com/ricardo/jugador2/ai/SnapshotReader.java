@@ -25,7 +25,8 @@ public final class SnapshotReader {
         Inventory inventory = npc.getInventory();
         long time = level.getDayTime() % DAY_LENGTH;
         boolean night = time >= NIGHT_START && time < NIGHT_END;
-        boolean hasPickaxe = WorldView.count(inventory, Items.STONE_PICKAXE) > 0
+        boolean hasPickaxe = WorldView.count(inventory, ItemTags.PICKAXES) > 0;
+        boolean hasStonePickaxe = WorldView.count(inventory, Items.STONE_PICKAXE) > 0
                 || WorldView.count(inventory, Items.IRON_PICKAXE) > 0
                 || WorldView.count(inventory, Items.DIAMOND_PICKAXE) > 0;
         boolean hasBed = night && WorldView.findNearestBlock(level, npc.blockPosition(),
@@ -41,7 +42,8 @@ public final class SnapshotReader {
                 WorldView.count(inventory, ItemTags.LOGS),
                 WorldView.count(inventory, Items.COBBLESTONE),
                 WorldView.count(inventory, Items.COAL),
-                !hasPickaxe,
+                hasPickaxe,
+                !hasStonePickaxe,
                 WorldView.emptySlots(inventory) <= NEARLY_FULL_SLOTS);
     }
 }
