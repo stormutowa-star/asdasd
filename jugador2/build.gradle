@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[7.0.3,8)'
+}
+
+version = '1.0.0'
+group = 'com.ricardo.jugador2'
+
+base {
+    archivesName = 'jugador2'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+minecraft {
+    mappings channel: 'official', version: project.mc_version
+
+    // workingDir se define en cada run: un configureEach lo sobrescribiría.
+    runs {
+        register('client') {
+            workingDir = layout.projectDirectory.dir('run')
+        }
+
+        register('server') {
+            workingDir = layout.projectDirectory.dir('run')
+            args '--nogui'
+        }
+
+        // Escenario automático en juego (ver selftest/SelfTestScenario).
+        register('selftest') {
+            workingDir = layout.projectDirectory.dir('run/selftest')
+            args '--nogui'
+        }
+    }
+}
+
+repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+
+dependencies {
+    implementation minecraft.dependency("net.minecraftforge:forge:${project.mc_version}-${project.forge_version}".toString())
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.14.4'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
