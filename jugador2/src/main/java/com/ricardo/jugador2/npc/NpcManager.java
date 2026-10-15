@@ -7,9 +7,17 @@ import com.ricardo.jugador2.ai.NpcBrain;
 import com.ricardo.jugador2.ai.NpcContext;
 import com.ricardo.jugador2.ai.OrderState;
 import com.ricardo.jugador2.ai.WorldView;
+import com.ricardo.jugador2.chat.Come;
+import com.ricardo.jugador2.chat.Follow;
+import com.ricardo.jugador2.chat.GoTo;
+import com.ricardo.jugador2.chat.Help;
+import com.ricardo.jugador2.chat.Mine;
+import com.ricardo.jugador2.chat.ParsedOrder;
+import com.ricardo.jugador2.chat.Stop;
 import com.ricardo.jugador2.nav.Cell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -158,6 +166,49 @@ public final class NpcManager {
         return new NpcContext(server, npc, actions, settings, order, movement);
     }
 
+    /**
+     * Orden de un jugador, por el chat o por un comando: la guarda como orden activa y responde en el chat, como
+     * lo haría un jugador. Seguir a alguien que no está conectado no crea la orden.
+     */
+    public void handleOrder(ParsedOrder parsed, String issuer) {
+        switch (parsed) {
+            case Help help -> say("Órdenes: ven, sigue a <jugador>, ve a <x> <y> <z>, mina <bloque>, para");
+            case Stop stop -> {
+                stopOrder();
+                say("Vale, paro");
+            }
+            case Follow follow -> {
+                if (server.getPlayerList().getPlayerByName(follow.player()) == null) {
+                    say(follow.player() + " no está conectado");
+                } else {
+                    setOrder(new OrderState(follow, issuer));
+                    say("Sigo a " + follow.player());
+                }
+            }
+            case Come come -> {
+                setOrder(new OrderState(come, issuer));
+                say("Voy");
+            }
+            case GoTo goTo -> {
+                setOrder(new OrderState(goTo, issuer));
+                say("Voy a " + goTo.x() + " " + goTo.y() + " " + goTo.z());
+            }
+            case Mine mine -> {
+                setOrder(new OrderState(mine, issuer));
+                say("Mino " + mine.block());
+            }
+        }
+    }
+
+    /** Cancela la orden activa: el NPC deja de andar y vuelve a sus tareas autónomas. */
+    public void stopOrder() {
+        if (order != null) {
+            order.finish();
+        }
+        order = null;
+        movement.stop();
+    }
+
     /** Pone al NPC a seguir la ruta. Al terminarla, o si no puede avanzar, queda quieto. */
     public void followPath(List<Cell> path) {
         movement.follow(path);
@@ -229,6 +280,11 @@ public final class NpcManager {
             return Vec3.atBottomCenterOf(saved);
         }
         return Vec3.atBottomCenterOf(level.getSharedSpawnPos());
+    }
+
+    /** Mensaje del NPC en el chat: como un jugador normal, con su nombre entre corchetes angulares. */
+    private void say(String text) {
+        server.getPlayerList().broadcastSystemMessage(Component.literal("<" + name() + "> " + text), false);
     }
 
     private Set<String> onlineNames() {

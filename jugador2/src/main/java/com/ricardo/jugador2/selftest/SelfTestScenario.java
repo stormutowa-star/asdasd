@@ -16,6 +16,7 @@ import com.ricardo.jugador2.nav.WorldBlockAccess;
 import com.ricardo.jugador2.npc.NpcManager;
 import com.ricardo.jugador2.npc.NpcPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -32,6 +33,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -300,6 +303,21 @@ public final class SelfTestScenario {
                 },
                 s -> storer.tick(Jugador2Mod.manager().context()) == TaskResult.SUCCESS
                         && containerHas(level.getBlockEntity(chestPos), Items.STONE)));
+
+        steps.add(new Step("obedece una orden dada por el chat", 400,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setOrder(null);
+                    manager.setBrainEnabled(true);
+                    // La orden llega como un mensaje de chat de Forge, igual que la de un jugador real.
+                    String text = manager.name() + ", ve a 3 -59 3";
+                    MinecraftForge.EVENT_BUS.post(new ServerChatEvent(npc, text, Component.literal(text)));
+                },
+                s -> {
+                    NpcPlayer npc = Jugador2Mod.manager().npc();
+                    return npc != null && npc.position().distanceTo(new Vec3(3.5, platformCenter.y, 3.5)) <= 1.5;
+                }));
 
         running = true;
         stepIndex = 0;

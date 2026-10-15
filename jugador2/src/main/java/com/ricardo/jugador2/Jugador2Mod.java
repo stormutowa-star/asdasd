@@ -1,5 +1,6 @@
 package com.ricardo.jugador2;
 
+import com.ricardo.jugador2.chat.OrderParser;
 import com.ricardo.jugador2.commands.Jugador2Command;
 import com.ricardo.jugador2.npc.NpcManager;
 import com.ricardo.jugador2.npc.NpcPlayer;
@@ -7,6 +8,7 @@ import com.ricardo.jugador2.selftest.SelfTestScenario;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -31,6 +33,7 @@ public class Jugador2Mod {
         MinecraftForge.EVENT_BUS.addListener(this::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(this::onLivingDeath);
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerChat);
     }
 
     /** Gestor del NPC del servidor en marcha, o null si no hay servidor. */
@@ -73,6 +76,15 @@ public class Jugador2Mod {
         if (manager != null && event.getEntity() instanceof NpcPlayer npc) {
             manager.onNpcDeath(npc);
         }
+    }
+
+    /** Una orden empieza por el nombre del NPC. El mensaje sigue visible para todos, como cualquier chat. */
+    private void onServerChat(ServerChatEvent event) {
+        if (manager == null || manager.npc() == null) {
+            return;
+        }
+        OrderParser.parse(manager.name(), event.getRawText())
+                .ifPresent(order -> manager.handleOrder(order, event.getPlayer().getGameProfile().getName()));
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
