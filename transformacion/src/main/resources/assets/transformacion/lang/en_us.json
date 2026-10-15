@@ -1,0 +1,6 @@
+{
+  "item.transformacion.transformacion": "Transformation",
+  "itemGroup.transformacion": "Transformation",
+  "message.transformacion.on": "Transformation activated!",
+  "message.transformacion.off": "Transformation deactivated"
+}
