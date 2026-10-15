@@ -417,6 +417,15 @@ public final class SelfTestScenario {
         int z0 = 0;
         int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, x0 + PLATFORM_SIZE / 2, z0 + PLATFORM_SIZE / 2);
         int y = surface + 5;
+        // Un mundo que ya sirvió a una prueba anterior trae bloques de ella: se limpia el volumen entero primero.
+        for (int x = x0 - 2; x < x0 + PLATFORM_SIZE + 2; x++) {
+            for (int z = z0 - 2; z < z0 + PLATFORM_SIZE + 2; z++) {
+                for (int dy = -3; dy < 8; dy++) {
+                    level.setBlock(new BlockPos(x, y + dy, z), Blocks.AIR.defaultBlockState(), 3);
+                }
+            }
+        }
+        System.out.println(PREFIX + "PLATFORM y=" + y);
         for (int x = x0; x < x0 + PLATFORM_SIZE; x++) {
             for (int z = z0; z < z0 + PLATFORM_SIZE; z++) {
                 level.setBlock(new BlockPos(x, y - 1, z), Blocks.STONE.defaultBlockState(), 3);

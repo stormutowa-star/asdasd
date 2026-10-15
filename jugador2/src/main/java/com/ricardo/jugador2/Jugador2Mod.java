@@ -14,7 +14,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -26,7 +25,7 @@ public class Jugador2Mod {
     private static NpcManager manager;
 
     public Jugador2Mod(FMLJavaModLoadingContext context) {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Jugador2Config.SPEC);
+        context.registerConfig(ModConfig.Type.COMMON, Jugador2Config.SPEC);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStopped);

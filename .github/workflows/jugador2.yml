@@ -1,0 +1,52 @@
+name: Compilar Jugador 2
+
+on:
+  push:
+    branches:
+      - claude/gracious-mayer-yfybjh
+    paths:
+      - 'jugador2/**'
+      - '.github/workflows/jugador2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jugador2
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Dar permiso de ejecución al wrapper
+        run: chmod +x gradlew
+
+      - name: Pruebas unitarias
+        run: ./gradlew test --no-daemon --console=plain
+
+      - name: Escenario en juego
+        shell: bash
+        env:
+          JUGADOR2_SELFTEST: "1"
+        run: |
+          set -o pipefail
+          mkdir -p run/selftest && echo "eula=true" > run/selftest/eula.txt
+          timeout 1200 ./gradlew runSelftest --no-daemon --console=plain | tee selftest.log
+          grep -q "RESULT PASS" selftest.log && ! grep -q "RESULT FAIL" selftest.log
+
+      - name: Compilar el jar
+        run: ./gradlew build --no-daemon --console=plain
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jugador2-mod
+          path: jugador2/build/libs/jugador2-1.0.0.jar
+          if-no-files-found: error
