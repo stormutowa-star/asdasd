@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[52,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="transformacion"
+version="1.2.0"
+displayName="Transformacion"
+authors="Ricardo"
+description='''Un item que transforma al jugador: pelo largo, enormes alas oscuras, abrigo con gemas, guanteletes con pinchos y rostro nuevo, todo en estilo Minecraft.
+Clic derecho para activar o desactivar la transformacion.'''
+
+[[dependencies.transformacion]]
+    modId="forge"
+    mandatory=true
+    versionRange="[52,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.transformacion]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.1,1.22)"
+    ordering="NONE"
+    side="BOTH"
