@@ -56,7 +56,8 @@ import java.util.function.Predicate;
  */
 public final class SelfTestScenario {
     private static final String PREFIX = "[JUGADOR2-SELFTEST] ";
-    private static final int PLATFORM_SIZE = 20;
+    /** Lado de la plataforma. Con 20 bloques el NPC se acorrala en el borde al huir y no llega a estar a 6 del zombi. */
+    private static final int PLATFORM_SIZE = 40;
 
     /** Un paso: se prepara una vez y luego se comprueba cada tick hasta que cumple o agota el límite. */
     private record Step(String name, int timeoutTicks, Runnable setup, Predicate<MinecraftServer> check) {}
@@ -264,7 +265,7 @@ public final class SelfTestScenario {
                     placeOnPlatform(level, npc);
                     npc.setHealth(4.0F);
                     fleeing = npc;
-                    testZombie = spawnZombie(level, platformCenter.x + 3.0, platformCenter.y, platformCenter.z);
+                    testZombie = spawnZombie(level, platformCenter.x + 4.0, platformCenter.y, platformCenter.z);
                 },
                 s -> {
                     NpcPlayer npc = Jugador2Mod.manager().npc();
@@ -541,7 +542,7 @@ public final class SelfTestScenario {
         server.halt(false);
     }
 
-    /** Plataforma de piedra de 20×20, con aire encima, varios bloques por encima del terreno. */
+    /** Plataforma de piedra de PLATFORM_SIZE × PLATFORM_SIZE, con aire encima, varios bloques por encima del terreno. */
     private static void buildPlatform(ServerLevel level) {
         int x0 = 0;
         int z0 = 0;
