@@ -35,6 +35,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
@@ -476,11 +477,15 @@ public final class SelfTestScenario {
         return false;
     }
 
-    /** Tronco con hojas encima: lo que el NPC toma por un árbol. */
+    /**
+     * Tronco con hojas encima: lo que el NPC toma por un árbol. Las hojas van persistentes, o el juego las deshace al
+     * azar: una hoja sin distancia calculada se quita en cuanto le toca un tick aleatorio, aunque tenga un tronco al lado.
+     */
     private static void placeTreeLog(ServerLevel level, BlockPos log) {
+        BlockState leaves = Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true);
         level.setBlock(log, Blocks.OAK_LOG.defaultBlockState(), 3);
-        level.setBlock(log.above(), Blocks.OAK_LEAVES.defaultBlockState(), 3);
-        level.setBlock(log.above(2), Blocks.OAK_LEAVES.defaultBlockState(), 3);
+        level.setBlock(log.above(), leaves, 3);
+        level.setBlock(log.above(2), leaves, 3);
     }
 
     /** Cama roja de dos mitades: el pie en foot y la cabeza al este. */
