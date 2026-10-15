@@ -14,6 +14,24 @@ public final class NpcPlayer extends ServerPlayer {
         super(server, level, profile, ClientInformation.createDefault());
     }
 
+    /**
+     * El servidor tickea a un jugador real en dos sitios: el nivel llama a {@code tick()} (modo de juego, temporizadores,
+     * menús) y la conexión del jugador llama a {@code doTick()} (física, vida, comida, uso de objetos). El NPC no tiene
+     * conexión que haga la segunda llamada, así que la hace aquí. También renueva el ticket del chunk cada 10 ticks,
+     * como un jugador real al moverse, porque el servidor solo tickea entidades de chunks con ticket de jugador.
+     */
+    @Override
+    public void tick() {
+        super.tick();
+        // Un NPC muerto no tickea su cuerpo: así no recoge sus propios objetos antes de que el gestor lo retire.
+        if (!isDeadOrDying()) {
+            doTick();
+        }
+        if (getServer().getTickCount() % 10 == 0) {
+            serverLevel().getChunkSource().move(this);
+        }
+    }
+
     /** Crea el jugador, lo registra en la lista de jugadores y lo coloca en {@code pos} con vida completa. */
     public static NpcPlayer spawnNew(MinecraftServer server, ServerLevel level, GameProfile profile, Vec3 pos) {
         NpcPlayer npc = new NpcPlayer(server, level, profile);
@@ -22,6 +40,9 @@ public final class NpcPlayer extends ServerPlayer {
                 npc,
                 new CommonListenerCookie(profile, 0, npc.clientInformation(), false));
         npc.teleportTo(level, pos.x, pos.y, pos.z, 0f, 0f);
+        // El servidor solo tickea a un jugador si su chunk tiene ticket de jugador, y ese ticket lo pone el propio
+        // tick: sin esta llamada el NPC nunca tickea (ni minar, ni comer, ni atacar).
+        npc.serverLevel().getChunkSource().move(npc);
         npc.setHealth(npc.getMaxHealth());
         return npc;
     }

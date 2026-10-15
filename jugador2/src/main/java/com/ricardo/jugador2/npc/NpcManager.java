@@ -1,6 +1,8 @@
 package com.ricardo.jugador2.npc;
 
 import com.mojang.authlib.GameProfile;
+import com.ricardo.jugador2.nav.Cell;
+import com.ricardo.jugador2.nav.NpcMover;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -12,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,6 +28,7 @@ public final class NpcManager {
     private final NpcSavedData data;
     private final NpcLifecycle lifecycle;
     private NpcPlayer npc;
+    private NpcMover mover = NpcMover.idle();
 
     public NpcManager(MinecraftServer server, NpcSettings settings) {
         this.server = server;
@@ -58,10 +62,16 @@ public final class NpcManager {
             return null;
         }
         npc = NpcPlayer.spawnNew(server, level, profile, pos);
+        mover = NpcMover.idle();
         lifecycle.activate();
         data.setActive(true);
         saveState();
         return npc;
+    }
+
+    /** Pone al NPC a seguir la ruta. Al terminarla, o si no puede avanzar, queda quieto. */
+    public void followPath(List<Cell> path) {
+        mover = new NpcMover(path);
     }
 
     /** Retira el NPC de la lista de jugadores y lo desactiva: no reaparecerá al arrancar. */
@@ -135,12 +145,17 @@ public final class NpcManager {
         if (lifecycle.tick() == NpcLifecycle.Action.RESPAWN) {
             respawn();
         }
+        if (npc != null) {
+            // El NPC no tiene cliente que mande su movimiento: el mod pone la entrada en cada tick y el juego hace la física.
+            mover.tick(npc);
+        }
         // La IA se conecta en las tareas 6 a 12.
     }
 
     private void respawn() {
         ServerLevel level = respawnLevel();
         npc = NpcPlayer.spawnNew(server, level, profile(), respawnPosition(level));
+        mover = NpcMover.idle();
         npc.getFoodData().setFoodLevel(20);
         saveState();
     }

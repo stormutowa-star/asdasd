@@ -1,22 +1,16 @@
 package com.ricardo.jugador2.nav;
 
 import com.ricardo.jugador2.npc.NpcPlayer;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
 /**
- * Sigue una ruta de celdas. Cada tick gira hacia el siguiente nodo, fija la velocidad horizontal, aplica
- * gravedad, salta cuando el nodo está un bloque más arriba y mueve al NPC con colisiones. El servidor no
- * aplica por sí solo la entrada de movimiento a un jugador sin cliente, por eso el movimiento se hace aquí.
+ * Sigue una ruta de celdas. Cada tick gira hacia el siguiente nodo, pone la entrada de avance y salta cuando el nodo
+ * está un bloque más arriba. La física (gravedad, fricción, colisiones) la calcula el juego, como con un jugador real,
+ * porque el NPC tickea su cuerpo completo (ver NpcPlayer.tick).
  */
 public final class NpcMover {
     private static final double NODE_REACHED = 0.5;
-    private static final double WALK_SPEED = 0.1;
-    private static final double JUMP_VELOCITY = 0.42;
-    private static final double GRAVITY = 0.08;
-    private static final double VERTICAL_DRAG = 0.98;
     private static final double PROGRESS_EPSILON = 0.01;
     private static final int STUCK_TICKS = 40;
 
@@ -30,6 +24,11 @@ public final class NpcMover {
         this.path = List.copyOf(path);
     }
 
+    /** Sin ruta: el NPC se queda quieto y el juego le aplica la gravedad como a cualquier jugador. */
+    public static NpcMover idle() {
+        return new NpcMover(List.of());
+    }
+
     public boolean isDone() {
         return next >= path.size();
     }
@@ -39,8 +38,7 @@ public final class NpcMover {
     }
 
     public void tick(NpcPlayer npc) {
-        double vx = 0.0;
-        double vz = 0.0;
+        float forward = 0.0F;
         boolean jump = false;
         if (!isDone() && !isStuck()) {
             advanceTarget(npc);
@@ -49,22 +47,12 @@ public final class NpcMover {
             Cell target = path.get(next);
             double dx = target.x() + 0.5 - npc.getX();
             double dz = target.z() + 0.5 - npc.getZ();
-            double length = Math.sqrt(dx * dx + dz * dz);
-            if (length > 1e-6) {
-                vx = dx / length * WALK_SPEED;
-                vz = dz / length * WALK_SPEED;
-                npc.setYRot((float) Math.toDegrees(Math.atan2(-dx, dz)));
-            }
+            npc.setYRot((float) Math.toDegrees(Math.atan2(-dx, dz)));
+            forward = 1.0F;
             jump = target.y() > npc.getBlockY() && npc.onGround();
         }
-
-        Vec3 v = npc.getDeltaMovement();
-        double vy = npc.onGround() ? Math.max(v.y, 0.0) : (v.y - GRAVITY) * VERTICAL_DRAG;
-        if (jump) {
-            vy = JUMP_VELOCITY;
-        }
-        npc.setDeltaMovement(vx, vy, vz);
-        npc.move(MoverType.SELF, npc.getDeltaMovement());
+        npc.zza = forward;
+        npc.setJumping(jump);
     }
 
     /** Avanza al siguiente nodo cuando llega a él, y lleva la cuenta de si se acerca. */
