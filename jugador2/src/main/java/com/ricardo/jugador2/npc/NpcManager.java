@@ -153,6 +153,11 @@ public final class NpcManager {
         this.order = order;
     }
 
+    /** Contexto con el que la IA ejecuta una tarea sobre el NPC actual. Lo usa el escenario de prueba. */
+    public NpcContext context() {
+        return new NpcContext(server, npc, actions, settings, order, movement);
+    }
+
     /** Pone al NPC a seguir la ruta. Al terminarla, o si no puede avanzar, queda quieto. */
     public void followPath(List<Cell> path) {
         movement.follow(path);

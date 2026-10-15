@@ -1,9 +1,13 @@
 package com.ricardo.jugador2.ai;
 
+import com.ricardo.jugador2.ai.tasks.CraftTask;
 import com.ricardo.jugador2.ai.tasks.DefendTask;
 import com.ricardo.jugador2.ai.tasks.EatTask;
 import com.ricardo.jugador2.ai.tasks.FleeTask;
+import com.ricardo.jugador2.ai.tasks.GatherTask;
 import com.ricardo.jugador2.ai.tasks.OrderTask;
+import com.ricardo.jugador2.ai.tasks.SleepTask;
+import com.ricardo.jugador2.ai.tasks.StoreTask;
 import com.ricardo.jugador2.npc.NpcSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,8 +131,12 @@ public final class NpcBrain {
             case EAT -> new EatTask();
             case DEFEND -> new DefendTask();
             case ORDER -> new OrderTask();
-            // Recolección, crafteo, cofre y cama llegan en la siguiente tarea: hasta entonces no se pueden elegir.
-            case GATHER_WOOD, GATHER_STONE, GATHER_COAL, CRAFT, STORE, SLEEP -> ctx -> TaskResult.FAILURE;
+            case GATHER_WOOD -> new GatherTask(GatherTask.Resource.WOOD);
+            case GATHER_STONE -> new GatherTask(GatherTask.Resource.STONE);
+            case GATHER_COAL -> new GatherTask(GatherTask.Resource.COAL);
+            case CRAFT -> new CraftTask();
+            case STORE -> new StoreTask();
+            case SLEEP -> new SleepTask();
         };
     }
 

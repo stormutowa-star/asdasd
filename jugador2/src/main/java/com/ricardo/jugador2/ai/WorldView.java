@@ -56,6 +56,26 @@ public final class WorldView {
         return null;
     }
 
+    /**
+     * Sitio donde cabe el cuerpo junto a target: a un lado del bloque, a su altura o una celda más arriba o abajo.
+     * Devuelve el más cercano a from, o null si no hay ninguno.
+     */
+    public static BlockPos standableBeside(ServerLevel level, BlockPos target, BlockPos from) {
+        BlockPos best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            for (int dy = -1; dy <= 1; dy++) {
+                BlockPos candidate = target.relative(side).offset(0, dy, 0);
+                double distance = candidate.distSqr(from);
+                if (distance < bestDistance && isStandable(level, candidate)) {
+                    bestDistance = distance;
+                    best = candidate;
+                }
+            }
+        }
+        return best;
+    }
+
     /** Enemigo vivo más cercano a from dentro de radius bloques. Null si no hay ninguno. */
     public static LivingEntity nearestHostile(ServerLevel level, LivingEntity from, double radius) {
         LivingEntity best = null;

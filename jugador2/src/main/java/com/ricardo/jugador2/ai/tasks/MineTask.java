@@ -7,6 +7,8 @@ import com.ricardo.jugador2.ai.WorldView;
 import com.ricardo.jugador2.npc.NpcPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -16,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 public final class MineTask implements Task {
     private static final double REACH = 3.5;
     private static final int MAX_PLANS = 5;
+    private static final int HOTBAR = 9;
     private static final int[][] SIDES = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
     private final BlockPos target;
@@ -47,6 +50,7 @@ public final class MineTask implements Task {
         ctx.movement().stop();
         ctx.actions().lookAt(Vec3.atCenterOf(target));
         if (!started) {
+            selectBestTool(ctx);
             if (!ctx.actions().startMining(target)) {
                 return TaskResult.FAILURE;
             }
@@ -54,6 +58,22 @@ public final class MineTask implements Task {
             return TaskResult.RUNNING;
         }
         return ctx.actions().continueMining() ? TaskResult.SUCCESS : TaskResult.RUNNING;
+    }
+
+    /** Elige en la barra la herramienta que más rápido rompe el bloque; con las manos si ninguna sirve. */
+    private void selectBestTool(NpcContext ctx) {
+        Inventory inventory = ctx.npc().getInventory();
+        BlockState state = ctx.npc().serverLevel().getBlockState(target);
+        int best = inventory.selected;
+        float bestSpeed = inventory.getItem(best).getDestroySpeed(state);
+        for (int slot = 0; slot < HOTBAR; slot++) {
+            float speed = inventory.getItem(slot).getDestroySpeed(state);
+            if (speed > bestSpeed) {
+                bestSpeed = speed;
+                best = slot;
+            }
+        }
+        ctx.actions().selectHotbarSlot(best);
     }
 
     /** Ruta hasta el sitio libre más cercano junto al bloque, a su altura o una celda más arriba o abajo. */

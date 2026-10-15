@@ -5,6 +5,10 @@ import com.ricardo.jugador2.Jugador2Config;
 import com.ricardo.jugador2.Jugador2Mod;
 import com.ricardo.jugador2.actions.NpcActions;
 import com.ricardo.jugador2.ai.OrderState;
+import com.ricardo.jugador2.ai.TaskResult;
+import com.ricardo.jugador2.ai.WorldView;
+import com.ricardo.jugador2.ai.tasks.CraftTask;
+import com.ricardo.jugador2.ai.tasks.StoreTask;
 import com.ricardo.jugador2.chat.Come;
 import com.ricardo.jugador2.nav.Cell;
 import com.ricardo.jugador2.nav.NpcNavigator;
@@ -15,14 +19,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.Container;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -57,6 +65,9 @@ public final class SelfTestScenario {
     private static Zombie testZombie;
     private static NpcPlayer commander;
     private static NpcPlayer fleeing;
+    private static CraftTask crafter;
+    private static StoreTask storer;
+    private static BlockPos chestPos;
 
     private SelfTestScenario() {
     }
@@ -247,6 +258,49 @@ public final class SelfTestScenario {
                     return npc == fleeing && npc.isAlive() && npc.distanceTo(testZombie) >= 6.0;
                 }));
 
+        steps.add(new Step("recoge madera de dos troncos cercanos", 1200,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    discardZombie();
+                    manager.setOrder(null);
+                    npc.getInventory().clearContent();
+                    for (int dz = 0; dz < 2; dz++) {
+                        level.setBlock(BlockPos.containing(platformCenter.x - 4.0, platformCenter.y, platformCenter.z + dz),
+                                Blocks.OAK_LOG.defaultBlockState(), 3);
+                    }
+                    manager.setBrainEnabled(true);
+                },
+                s -> WorldView.count(Jugador2Mod.manager().npc().getInventory(), ItemTags.LOGS) >= 2));
+
+        steps.add(new Step("craftea un pico de piedra con mesa, palos y piedra", 300,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.setBrainEnabled(false);
+                    manager.followPath(List.of());
+                    npc.getInventory().clearContent();
+                    npc.getInventory().setItem(0, new ItemStack(Items.COBBLESTONE, 3));
+                    npc.getInventory().setItem(1, new ItemStack(Items.STICK, 2));
+                    npc.getInventory().setItem(2, new ItemStack(Items.CRAFTING_TABLE, 1));
+                    crafter = new CraftTask();
+                },
+                s -> crafter.tick(Jugador2Mod.manager().context()) == TaskResult.SUCCESS));
+
+        steps.add(new Step("guarda la piedra en el cofre", 300,
+                () -> {
+                    NpcManager manager = Jugador2Mod.manager();
+                    NpcPlayer npc = manager.npc();
+                    manager.followPath(List.of());
+                    chestPos = BlockPos.containing(platformCenter.x - 4.0, platformCenter.y, platformCenter.z - 3.0);
+                    level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
+                    npc.getInventory().clearContent();
+                    npc.getInventory().setItem(0, new ItemStack(Items.STONE, 40));
+                    storer = new StoreTask();
+                },
+                s -> storer.tick(Jugador2Mod.manager().context()) == TaskResult.SUCCESS
+                        && containerHas(level.getBlockEntity(chestPos), Items.STONE)));
+
         running = true;
         stepIndex = 0;
         ticksInStep = 0;
@@ -283,6 +337,18 @@ public final class SelfTestScenario {
             System.out.println(PREFIX + "STEP " + (stepIndex + 1) + " " + step.name() + " FAIL timeout");
             finish(server, false, stepIndex + 1);
         }
+    }
+
+    private static boolean containerHas(BlockEntity entity, Item item) {
+        if (!(entity instanceof Container container)) {
+            return false;
+        }
+        for (int slot = 0; slot < container.getContainerSize(); slot++) {
+            if (container.getItem(slot).is(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static Zombie spawnZombie(ServerLevel level, double x, double y, double z) {
