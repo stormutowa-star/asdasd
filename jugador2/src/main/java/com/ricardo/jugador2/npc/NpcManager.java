@@ -24,8 +24,10 @@ public final class NpcManager {
 
     /** Crea el NPC si no existe; si ya existe, devuelve el mismo. */
     public NpcPlayer spawn(GameProfile profile, ServerLevel level, Vec3 pos) {
-        // Stub de la Tarea 7, paso 1: el escenario debe fallar aquí antes de implementarlo.
-        throw new UnsupportedOperationException("spawn pendiente");
+        if (npc == null) {
+            npc = NpcPlayer.spawnNew(server, level, profile, pos);
+        }
+        return npc;
     }
 
     /** Retira el NPC de la lista de jugadores. Devuelve false si no había NPC. */
