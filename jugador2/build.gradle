@@ -28,10 +28,12 @@ minecraft {
             args '--nogui'
         }
 
-        // Escenario automático en juego (ver selftest/SelfTestScenario).
+        // Escenario automático en juego (ver selftest/SelfTestScenario). Un run con nombre propio no hereda
+        // mainClass ni argumentos de lanzamiento: se copian del run 'server' de forge_userdev.
         register('selftest') {
             workingDir = layout.projectDirectory.dir('run/selftest')
-            args '--nogui'
+            mainClass = 'net.minecraftforge.bootstrap.ForgeBootstrap'
+            args '--launchTarget', 'forge_userdev_server', '--gameDir', '.', '--nogui'
         }
     }
 }
