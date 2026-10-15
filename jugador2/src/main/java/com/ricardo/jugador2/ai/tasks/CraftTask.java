@@ -60,10 +60,13 @@ public final class CraftTask implements Task {
             return craftOne(ctx, is(Items.STICK), false) || craftOne(ctx, PLANKS, false)
                     ? TaskResult.RUNNING : TaskResult.FAILURE;
         }
-        // Sin pico no hay piedra que sacar: el de madera basta para empezar. Este tick termina la tarea; el cerebro
-        // vuelve a decidir y, con piedra en el inventario, la siguiente tarea hace el de piedra.
+        // Sin pico no hay piedra que sacar: el de madera basta para empezar. Si faltan tablones para él, se hacen de un
+        // tronco. Al craftearlo la tarea termina; el cerebro decide otra vez y la siguiente hace el de piedra.
         if (!hasPickaxe) {
-            return craftOne(ctx, is(Items.WOODEN_PICKAXE), true) ? TaskResult.SUCCESS : TaskResult.FAILURE;
+            if (craftOne(ctx, is(Items.WOODEN_PICKAXE), true)) {
+                return TaskResult.SUCCESS;
+            }
+            return craftOne(ctx, PLANKS, false) ? TaskResult.RUNNING : TaskResult.FAILURE;
         }
         return craftOne(ctx, is(Items.STONE_PICKAXE), true) ? TaskResult.RUNNING : TaskResult.FAILURE;
     }

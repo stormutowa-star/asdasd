@@ -277,6 +277,9 @@ public final class SelfTestScenario {
                     NpcPlayer npc = manager.npc();
                     discardZombie();
                     manager.setOrder(null);
+                    // Tras huir el NPC puede estar al borde o abajo: sin plataforma no hay ruta a los troncos.
+                    manager.followPath(List.of());
+                    placeOnPlatform(level, npc);
                     npc.getInventory().clearContent();
                     for (int dz = 0; dz < 2; dz++) {
                         placeTreeLog(level, BlockPos.containing(platformCenter.x - 4.0, platformCenter.y, platformCenter.z + dz));
@@ -387,8 +390,9 @@ public final class SelfTestScenario {
                     manager.followPath(List.of());
                     placeOnPlatform(level, npc);
                     npc.getInventory().clearContent();
-                    // Más cerca que el árbol de verdad, pero en el aire: no hay ningún sitio desde el que alcanzarlo.
-                    placeTreeLog(level, BlockPos.containing(platformCenter.x + 2.0, platformCenter.y + 3.0, platformCenter.z + 2.0));
+                    // Más cerca que el árbol de verdad, pero en el aire y fuera de alcance desde el suelo: no hay ningún
+                    // sitio desde el que alcanzarlo.
+                    placeTreeLog(level, BlockPos.containing(platformCenter.x + 3.0, platformCenter.y + 3.0, platformCenter.z + 3.0));
                     placeTreeLog(level, BlockPos.containing(platformCenter.x - 6.0, platformCenter.y, platformCenter.z + 4.0));
                     manager.setBrainEnabled(true);
                 },

@@ -105,7 +105,11 @@ public final class GatherTask implements Task {
             return TaskResult.RUNNING;
         }
         if (ctx.movement().isDone() || ctx.movement().isStuck()) {
-            BlockPos spot = WorldView.standableNear(level, item.blockPosition(), 1);
+            // El sitio del objeto suele tener hojas o un tronco encima, así que no cabe el cuerpo: se busca junto a él.
+            BlockPos spot = WorldView.standableBeside(level, item.blockPosition(), npc.blockPosition());
+            if (spot == null) {
+                spot = WorldView.standableNear(level, item.blockPosition(), 1);
+            }
             if (spot == null || !ctx.walkTo(spot)) {
                 collecting = false;
                 return TaskResult.SUCCESS;
