@@ -11,10 +11,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
@@ -59,10 +59,12 @@ public class MarioEntity extends PathfinderMob implements RangedAttackMob {
     @Override
     public void performRangedAttack(LivingEntity target, float power) {
         double dx = target.getX() - this.getX();
-        double dy = target.getY(0.5D) - this.getY(0.5D);
+        double dy = target.getY(0.5D) - this.getEyeY();
         double dz = target.getZ() - this.getZ();
-        SmallFireball fireball = new SmallFireball(this.level(), this, dx, dy, dz);
+        SmallFireball fireball = new SmallFireball(EntityType.SMALL_FIREBALL, this.level());
+        fireball.setOwner(this);
         fireball.setPos(this.getX(), this.getEyeY() - 0.1D, this.getZ());
+        fireball.shoot(dx, dy, dz, 1.1F, 0.0F);
         this.level().addFreshEntity(fireball);
         this.playSound(SoundEvents.BLAZE_SHOOT, 1.0F, 1.0F);
     }
