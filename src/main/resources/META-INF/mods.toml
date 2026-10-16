@@ -3,21 +3,21 @@ loaderVersion="[52,)"
 license="All Rights Reserved"
 
 [[mods]]
-modId="akagane"
+modId="mario"
 version="1.0.0"
-displayName="Akagane"
+displayName="Mario"
 authors="Ricardo"
-description='''Zanpakuto original: Akagane (Oro Rojo).
-Shikai, Gyakuzan, Bankai Guren no Kiba y Guren Retsudan.'''
+description='''Personaje Mario para Minecraft: modelo detallado, salta y lanza bolas de fuego a los monstruos.
+Se obtiene con el huevo de creacion en la pestana creativa "Mario".'''
 
-[[dependencies.akagane]]
+[[dependencies.mario]]
     modId="forge"
     mandatory=true
     versionRange="[52,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.akagane]]
+[[dependencies.mario]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.21.1,1.22)"

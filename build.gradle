@@ -6,10 +6,10 @@ plugins {
 }
 
 version = '1.0.0'
-group = 'com.ricardo.akagane'
+group = 'com.ricardo.mario'
 
 base {
-    archivesName = 'akagane'
+    archivesName = 'mario'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
