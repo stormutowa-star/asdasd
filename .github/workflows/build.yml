@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -68,3 +68,21 @@ jobs:
           name: mario-mod
           path: build/libs/mario-*.jar
           if-no-files-found: error
+
+      - name: Publicar el jar en la rama mario-jar
+        if: github.ref == 'refs/heads/mario'
+        run: |
+          mkdir -p /tmp/jarout
+          for f in build/libs/mario-*.jar; do
+            case "$f" in *-sources.jar|*-javadoc.jar|*-slim.jar) continue;; esac
+            cp "$f" /tmp/jarout/
+          done
+          ls -la /tmp/jarout
+          cd /tmp/jarout
+          git init -q
+          git checkout -q -b mario-jar
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -qm "Jar compilado de ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" mario-jar
