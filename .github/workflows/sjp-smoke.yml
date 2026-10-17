@@ -46,7 +46,7 @@ jobs:
           echo "time set 18000" >&3
           echo "gamerule doDaylightCycle false" >&3
           sleep 3
-          echo "fill -6 100 -6 6 100 6 minecraft:stone" >&3
+          echo "fill -20 100 -20 20 100 20 minecraft:stone" >&3
           sleep 2
           echo "summon mario:mario 0 101 0" >&3
           sleep 1
@@ -55,6 +55,7 @@ jobs:
           for i in $(seq 1 60); do
             echo "execute if entity @e[type=mario:mario_coin] run say COIN_SEEN" >&3
             echo "data get entity @e[type=mario:mario,limit=1] Pos" >&3
+            echo "data get entity @e[type=mario:mario,limit=1] Health" >&3
             echo "data get entity @e[type=minecraft:zombie,limit=1] Health" >&3
             sleep 1
           done
