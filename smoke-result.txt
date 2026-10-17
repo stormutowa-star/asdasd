@@ -1,0 +1,163 @@
+== Arranque
+[17Oct2026 12:04:30.374] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (7.933s)! For help, type "help"
+== Coins vistas: 2
+== Lecturas (Pos / Health):
+[17Oct2026 12:04:40.305] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: [0.5d, 101.79673560066871d, 0.5d]
+[17Oct2026 12:04:40.305] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: 30.0f
+[17Oct2026 12:04:40.305] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 20.0f
+[17Oct2026 12:04:41.300] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: [1.2063300244436594d, 107.23140760018308d, 0.5d]
+[17Oct2026 12:04:41.301] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: 30.0f
+[17Oct2026 12:04:41.301] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 14.119999f
+[17Oct2026 12:04:42.295] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: [2.1158417454734315d, 101.36080000519752d, 0.4086723201283073d]
+[17Oct2026 12:04:42.295] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: 22.0f
+[17Oct2026 12:04:42.295] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 13.119999f
+[17Oct2026 12:04:43.294] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: [4.049622820521588d, 101.36080000519752d, -0.0748132969138207d]
+[17Oct2026 12:04:43.294] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: 14.0f
+[17Oct2026 12:04:43.294] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 13.119999f
+[17Oct2026 12:04:44.294] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: [6.211554032470107d, 101.96479271438923d, -1.446339430783503d]
+[17Oct2026 12:04:44.294] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: entity.mario.mario has the following entity data: 6.0f
+[17Oct2026 12:04:44.295] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 8.199999f
+[17Oct2026 12:04:45.294] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 7.199999f
+[17Oct2026 12:04:46.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 6.199999f
+[17Oct2026 12:04:47.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 5.199999f
+[17Oct2026 12:04:48.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:49.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:50.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:51.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:52.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:53.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:54.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:55.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:56.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:57.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:58.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:04:59.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:00.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:01.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:02.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:03.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:04.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:05.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:06.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:07.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:08.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:09.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:10.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:11.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:12.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:13.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:14.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:15.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:16.344] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:17.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:18.343] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:19.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:20.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:21.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:22.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:23.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:24.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:25.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:26.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:27.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:28.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:29.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:30.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:31.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:32.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:33.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:34.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:35.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:36.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:37.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:38.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+[17Oct2026 12:05:39.393] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Zombie has the following entity data: 4.199999f
+== Errores y excepciones:
+25:[17Oct2026 12:04:20.655] [main/ERROR] [net.minecraft.server.dedicated.Settings/]: Failed to load properties from file: server.properties
+26:java.nio.file.NoSuchFileException: server.properties
+27:	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?]
+28:	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?]
+29:	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?]
+71:[17Oct2026 12:04:22.443] [Server thread/WARN] [net.minecraftforge.common.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false. 
+72:[17Oct2026 12:04:22.443] [Server thread/WARN] [net.minecraftforge.common.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false. 
+== Final de gradle:
+[12:05:35] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:35] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:35] [Server thread/INFO] [minecraft/MinecraftServer]: Zombie has the following entity data: 4.199999f
+[12:05:36] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:36] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:36] [Server thread/INFO] [minecraft/MinecraftServer]: Zombie has the following entity data: 4.199999f
+[12:05:37] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:37] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:37] [Server thread/INFO] [minecraft/MinecraftServer]: Zombie has the following entity data: 4.199999f
+[12:05:38] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:38] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:38] [Server thread/INFO] [minecraft/MinecraftServer]: Zombie has the following entity data: 4.199999f
+[12:05:39] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:39] [Server thread/INFO] [minecraft/MinecraftServer]: No entity was found
+[12:05:39] [Server thread/INFO] [minecraft/MinecraftServer]: Zombie has the following entity data: 4.199999f
+[12:05:40] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping the server
+[12:05:40] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[12:05:40] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+[12:05:40] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+[12:05:40] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[12:05:41] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+[12:05:41] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+[12:05:41] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[12:05:41] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[12:05:41] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[12:05:41] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+You have 1 new message from ForgeGradle.
+
+---   Message 1/1   ---
+Welcome to ForgeGradle 7.0!
+
+Here are some release highlights:
+- Now requires Gradle 9.3.0.
+- A new message board that will display any new messages (only on the next
+  successful build) from ForgeGradle, including release highlights and
+  project-wide warnings.
+- Complete rewrite of the plugin and underlying code.
+- Complete overhaul of DSL objects and registrations.
+- Slimmed down the plugin, which now delegates many actions to separate tools.
+- Support for declaring defaults in settings.gradle (experimental).
+- Support for all Forge versions that are supported by ForgeGradle 6.
+  - Minecraft 1.20.6+ are natively supported with no additional setup.
+  - Minecraft 1.13.2 - 1.20.4 (along with certain versions of 1.12.2) are
+    supported alongside the usage of the Renamer plugin (experimental).
+
+A couple of important things to note:
+- Many plugins that worked with ForgeGradle 6, such as Parchments Librarian,
+  do not work with ForgeGradle 7. For most cases (such as parchment), we have
+  implemented native support.
+- Many things that ForgeGradle 6 and older used to do are now decentralized
+  away from the plugin. This means that your project will need to apply
+  net.minecraftforge.jarjar if you wish to use Forges Jar-in-Jar system.
+  If you are on an older version (1.20.4 and older), you will need the
+  net.minecraftforge.renamer plugin. Many of these come with our provided
+  MDK, so this should not be an issue for you.
+- If you come across any lingering bugs, please report them to our GitHub
+  issue tracker. Please do not use Discord as a means to report issues, as
+  they will get lost in the discussion very easily.
+- If you would like to see additional examples of ForgeGradle 7 usages,
+  please see our MDKExamples repo (https://github.com/MinecraftForge/MDKExamples).
+  If would like to request a specific usage for ForgeGradle 7, please file an
+  issue on the GitHub issue tracker for it.
+
+For our GitHub issue tracker, see https://github.com/MinecraftForge/ForgeGradle/issues
+
+Proper documentation for ForgeGradle 7 is coming soon. For now, feel free to
+ask any questions you may have on the following platforms:
+- Forums (https://forums.minecraftforge.net/)
+- Discord (https://discord.minecraftforge.net/)
+
+This message will not display again until ForgeGradle 7.1 or the below file is
+deleted:
+/home/runner/.gradle/caches/minecraftforge/forgegradle/messages/7_0_WELCOME_1
+--- End of Message ---
+
+[Incubating] Problems report is available at: file:///home/runner/work/asdasd/asdasd/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 4m 16s
+4 actionable tasks: 4 executed
+Configuration cache entry stored.
