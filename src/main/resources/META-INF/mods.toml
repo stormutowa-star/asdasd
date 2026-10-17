@@ -4,10 +4,11 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="mario"
-version="1.0.0"
+version="1.1.0"
 displayName="Mario"
 authors="Ricardo"
 description='''Personaje Mario para Minecraft: modelo detallado, salta y lanza bolas de fuego a los monstruos.
+Al pelear de cerca hace el Super Jump Punch: salta con un golpe ascendente y suelta monedas en cada impacto.
 Se obtiene con el huevo de creacion en la pestana creativa "Mario".'''
 
 [[dependencies.mario]]

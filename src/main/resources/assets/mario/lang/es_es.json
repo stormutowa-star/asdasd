@@ -1,5 +1,6 @@
 {
   "entity.mario.mario": "Mario",
   "item.mario.mario_spawn_egg": "Huevo de Mario",
+  "item.mario.mario_coin": "Moneda de Mario",
   "itemGroup.mario": "Mario"
 }

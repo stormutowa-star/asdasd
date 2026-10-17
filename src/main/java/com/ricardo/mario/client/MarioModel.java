@@ -24,6 +24,33 @@ public class MarioModel<T extends MarioEntity> extends HierarchicalModel<T> {
     public static final ModelLayerLocation LAYER =
             new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MarioMod.MODID, "mario"), "main");
 
+    // Curvas de interpolacion entre poses: la animacion no es lineal (arranca, frena, rebota)
+    private static final int EASE_LINEAR = 0;
+    private static final int EASE_IN_OUT = 1;
+    private static final int EASE_OUT = 2;
+
+    // Super Jump Punch: tiempos en ticks desde que empieza (agachado -> impacto -> apice -> caida).
+    // Cada pose es {altura del cuerpo, brazo derecho, brazo izquierdo, pierna derecha, pierna izquierda, cabeza}.
+    // Altura positiva = hacia abajo (aplastado); negativa = estirado hacia arriba.
+    private static final float[] JUMP_TIMES = {0.0F, 6.0F, 9.0F, 13.0F, 18.0F};
+    private static final float[][] JUMP_POSES = {
+            {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F},          // reposo
+            {3.0F, 0.9F, -0.5F, -0.35F, -0.35F, 0.15F},   // agachado: anticipacion, puno hacia atras
+            {-1.5F, -2.9F, 1.0F, -0.9F, -0.4F, -0.35F},   // impacto: estirado y puno arriba
+            {-1.0F, -2.75F, 1.1F, -1.0F, -0.6F, -0.25F},  // apice: el puno se asienta (seguimiento)
+            {0.0F, -1.2F, 0.5F, -0.2F, -0.2F, 0.1F}       // caida: brazos sueltos
+    };
+    private static final int[] JUMP_EASES = {EASE_IN_OUT, EASE_OUT, EASE_IN_OUT, EASE_IN_OUT};
+
+    // Aterrizaje: tiempos medidos desde el tick en que toca el suelo
+    private static final float[] LAND_TIMES = {0.0F, 2.0F, 6.0F};
+    private static final float[][] LAND_POSES = {
+            {0.0F, -1.2F, 0.5F, -0.2F, -0.2F, 0.1F},      // justo al tocar: sigue la caida
+            {4.0F, -0.3F, 0.2F, 0.2F, 0.2F, 0.25F},       // impacto: aplastado contra el suelo
+            {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F}          // recuperado
+    };
+    private static final int[] LAND_EASES = {EASE_OUT, EASE_IN_OUT};
+
     private final ModelPart root;
     private final ModelPart head;
     private final ModelPart body;
@@ -100,6 +127,7 @@ public class MarioModel<T extends MarioEntity> extends HierarchicalModel<T> {
         this.head.yRot = netHeadYaw * ((float) Math.PI / 180F);
         this.head.xRot = headPitch * ((float) Math.PI / 180F);
         this.head.y = 8.0F + Mth.sin(ageInTicks * 0.067F) * 0.25F;
+        this.root.y = 0.0F;
 
         float swing = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.rightLeg.xRot = swing;
@@ -113,5 +141,56 @@ public class MarioModel<T extends MarioEntity> extends HierarchicalModel<T> {
             this.rightArm.xRot = -swing * 0.6F;
             this.leftArm.xRot = swing * 0.6F;
         }
+
+        int punchTick = entity.getPunchTick();
+        if (punchTick >= 0) {
+            // ageInTicks = tickCount + parte fraccionaria del tick: asi la animacion se ve fluida a 60 fps
+            float t = punchTick + (ageInTicks - entity.tickCount);
+            this.applyJumpPose(entity.getLandedTick(), t);
+        }
+    }
+
+    /** Pone la pose del Super Jump Punch: antes de tocar el suelo usa la linea de tiempo del salto; despues, la del aterrizaje. */
+    private void applyJumpPose(int landedTick, float t) {
+        float[] pose = landedTick < 0
+                ? samplePose(t, JUMP_TIMES, JUMP_POSES, JUMP_EASES)
+                : samplePose(t - landedTick, LAND_TIMES, LAND_POSES, LAND_EASES);
+        this.root.y = pose[0];
+        this.rightArm.xRot = pose[1];
+        this.leftArm.xRot = pose[2];
+        this.rightLeg.xRot = pose[3];
+        this.leftLeg.xRot = pose[4];
+        this.head.xRot += pose[5];
+    }
+
+    /** Interpola entre poses clave: cada tramo usa su curva de easing. */
+    private static float[] samplePose(float t, float[] times, float[][] poses, int[] eases) {
+        int last = times.length - 1;
+        if (t <= times[0]) {
+            return poses[0].clone();
+        }
+        if (t >= times[last]) {
+            return poses[last].clone();
+        }
+        for (int i = 0; i < last; i++) {
+            if (t < times[i + 1]) {
+                float f = ease(eases[i], (t - times[i]) / (times[i + 1] - times[i]));
+                float[] out = new float[poses[i].length];
+                for (int j = 0; j < out.length; j++) {
+                    out[j] = Mth.lerp(f, poses[i][j], poses[i + 1][j]);
+                }
+                return out;
+            }
+        }
+        return poses[last].clone();
+    }
+
+    private static float ease(int type, float x) {
+        float p = Mth.clamp(x, 0.0F, 1.0F);
+        return switch (type) {
+            case EASE_OUT -> 1.0F - (1.0F - p) * (1.0F - p) * (1.0F - p);
+            case EASE_IN_OUT -> -(Mth.cos((float) Math.PI * p) - 1.0F) * 0.5F;
+            default -> p;
+        };
     }
 }

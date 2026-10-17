@@ -32,8 +32,20 @@ public class MarioMod {
             .clientTrackingRange(10)
             .build(MODID + ":mario"));
 
+    /** Moneda del Super Jump Punch: solo visual, sale disparada al golpear a un monstruo. */
+    public static final RegistryObject<EntityType<MarioCoinEntity>> COIN_ENTITY = ENTITY_TYPES.register("mario_coin", () -> EntityType.Builder
+            .<MarioCoinEntity>of(MarioCoinEntity::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
+            .clientTrackingRange(8)
+            .updateInterval(10)
+            .build(MODID + ":mario_coin"));
+
     public static final RegistryObject<Item> MARIO_SPAWN_EGG = ITEMS.register("mario_spawn_egg",
             () -> new MarioSpawnItem(new Item.Properties().stacksTo(16)));
+
+    /** Dibujo de la moneda (la entidad de la moneda lo usa al girar). */
+    public static final RegistryObject<Item> COIN_ITEM = ITEMS.register("mario_coin",
+            () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("mario_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.mario"))

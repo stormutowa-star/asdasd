@@ -4,7 +4,7 @@ import com.ricardo.mario.MarioMod;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-/** Registros que solo existen en el cliente (modelo y renderer). */
+/** Registros que solo existen en el cliente (modelo y renderers). */
 public final class MarioClient {
 
     private MarioClient() {
@@ -21,5 +21,6 @@ public final class MarioClient {
 
     private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(MarioMod.MARIO.get(), MarioRenderer::new);
+        event.registerEntityRenderer(MarioMod.COIN_ENTITY.get(), MarioCoinRenderer::new);
     }
 }
