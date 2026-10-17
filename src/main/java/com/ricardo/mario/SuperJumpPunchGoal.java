@@ -198,6 +198,8 @@ public class SuperJumpPunchGoal extends Goal {
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, reach, Monster::isAlive);
 
         for (Monster monster : monsters) {
+            // Cada golpe cuenta: se quita la invulnerabilidad temporal para que los golpes seguidos hagan dano
+            monster.invulnerableTime = 0;
             monster.hurt(this.mario.damageSources().mobAttack(this.mario), damage);
             double lift = finalHit ? 1.1D : 0.55D;
             double push = finalHit ? 0.45D : 0.0D;
