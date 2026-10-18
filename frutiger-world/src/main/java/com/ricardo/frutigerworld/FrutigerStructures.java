@@ -182,7 +182,7 @@ public final class FrutigerStructures {
 
     /** Pabellón de burbuja: cúpula de cristal aqua con franjas de brillo blancas, suelo de cuarzo y farolas marinas. */
     public static boolean dome(WorldGenLevel level, BlockPos origin, RandomSource random) {
-        final int r = 5;
+        final int r = 4;
         int side = random.nextInt(4);
         Site s = prepare(level, origin, r, 10, side);
         if (s == null) {
@@ -192,10 +192,10 @@ public final class FrutigerStructures {
         for (int dx = -r; dx <= r; dx++) {
             for (int dz = -r; dz <= r; dz++) {
                 int d2 = dx * dx + dz * dz;
-                if (d2 <= 25) {
+                if (d2 <= 16) {
                     s.set(dx, 0, dz, ((dx + dz) & 1) == 0 ? QUARTZ : WHITE);
                 }
-                if (d2 >= 21 && d2 <= 26) {
+                if (d2 >= 12 && d2 <= 17) {
                     s.set(dx, 1, dz, WHITE);
                     s.set(dx, 2, dz, QUARTZ);
                 }
@@ -206,7 +206,7 @@ public final class FrutigerStructures {
             for (int dy = 0; dy <= r; dy++) {
                 for (int dz = -r; dz <= r; dz++) {
                     int d2 = dx * dx + dy * dy + dz * dz;
-                    if (d2 >= 16 && d2 <= 25) {
+                    if (d2 >= 9 && d2 <= 16) {
                         s.set(dx, 3 + dy, dz, (dx == dz && dy >= 2) ? SHEEN_GLASS : AQUA_GLASS);
                     }
                 }

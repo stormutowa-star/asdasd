@@ -57,9 +57,12 @@ jobs:
           mkdir -p mods
           cp "$GITHUB_WORKSPACE/frutiger-world/build/libs/frutigerworld-1.0.0.jar" mods/
           echo "-Dfrutigerworld.debug=true" >> user_jvm_args.txt
+          trap '' PIPE
           LOG="$GITHUB_WORKSPACE/frutiger-world/dist/servidor.log"
-          ./run.sh nogui > "$LOG" 2>&1 &
+          mkfifo consola
+          ./run.sh nogui < consola > "$LOG" 2>&1 &
           PID=$!
+          exec 9> consola
           RES=sin-terminar
           for i in $(seq 1 90); do
             if grep -q 'Done (' "$LOG"; then RES=OK; break; fi
@@ -67,9 +70,33 @@ jobs:
             if ! kill -0 "$PID" 2>/dev/null; then RES=SALIDA-PREMATURA; break; fi
             sleep 10
           done
+          if [ "$RES" = OK ]; then
+            # Carga forzada de 48x48 chunks (2304) para medir colocaciones con una muestra grande
+            CMDS=""
+            for X in -384 -256 -128 0 128 256; do
+              for Z in -384 -256 -128 0 128 256; do
+                CMDS="${CMDS}forceload add $X $Z $((X + 127)) $((Z + 127))"$'\n'
+              done
+            done
+            printf '%s' "$CMDS" >&9 2>/dev/null || true
+            sleep 60
+            prev=-1
+            for i in $(seq 1 30); do
+              cur=$(grep -c '\[frutigerworld\]' "$LOG" || true)
+              [ "$cur" = "$prev" ] && break
+              prev=$cur
+              sleep 20
+            done
+            printf 'stop\n' >&9 2>/dev/null || true
+          fi
+          for i in $(seq 1 45); do
+            kill -0 "$PID" 2>/dev/null || break
+            sleep 2
+          done
           pkill -TERM -f BootstrapLauncher || true
-          sleep 20
+          sleep 5
           pkill -KILL -f BootstrapLauncher || true
+          exec 9>&-
           echo "$RES" > "$GITHUB_WORKSPACE/frutiger-world/dist/servidor.resultado"
           echo "Resultado del servidor: $RES"
 
