@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ENE",
+    "NCN",
+    "ENE"
+  ],
+  "key": {
+    "E": { "item": "minecraft:ender_eye" },
+    "N": { "item": "minecraft:netherite_ingot" },
+    "C": { "item": "minecraft:echo_shard" }
+  },
+  "result": { "id": "keinloree:decode_core", "count": 1 }
+}

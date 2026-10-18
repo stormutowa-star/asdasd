@@ -1,0 +1,13 @@
+{
+  "itemGroup.keinloree": "Kein Loree",
+  "item.keinloree.decode_core": "Decode Core",
+  "item.keinloree.kein_loree_egg": "Kein Loree Spawn Egg",
+  "item.keinloree.droid_egg": "Loree Droid Spawn Egg",
+  "item.keinloree.commander_egg": "Loree Commander Spawn Egg",
+  "item.keinloree.warlord_egg": "Loree Warlord Spawn Egg",
+  "entity.keinloree.kein_loree": "Kein Loree",
+  "entity.keinloree.droid": "Loree Droid",
+  "entity.keinloree.loree_commander": "Loree Commander",
+  "entity.keinloree.loree_warlord": "Loree Warlord",
+  "entity.keinloree.laser_marker": "Decode marker"
+}

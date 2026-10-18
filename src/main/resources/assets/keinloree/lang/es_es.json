@@ -1,0 +1,13 @@
+{
+  "itemGroup.keinloree": "Kein Loree",
+  "item.keinloree.decode_core": "Núcleo de Decodificación",
+  "item.keinloree.kein_loree_egg": "Huevo de Kein Loree",
+  "item.keinloree.droid_egg": "Huevo de Droide Loree",
+  "item.keinloree.commander_egg": "Huevo de Comandante Loree",
+  "item.keinloree.warlord_egg": "Huevo de Ejecutor Loree",
+  "entity.keinloree.kein_loree": "Kein Loree",
+  "entity.keinloree.droid": "Droide Loree",
+  "entity.keinloree.loree_commander": "Comandante Loree",
+  "entity.keinloree.loree_warlord": "Ejecutor Loree",
+  "entity.keinloree.laser_marker": "Marca de decodificación"
+}
