@@ -1,6 +1,6 @@
 Compilacion: success
 Servidor: OK
-Commit: 6d18a08188b8828ab799dbd93e85fb0bade63c3c  Run: 4
+Commit: 6c40365c54d888a33c6d1ae16dcbe0cbb428b9ac  Run: 5
 
 === Cabecera del log de compilacion ===
 Downloading https://services.gradle.org/distributions/gradle-9.3.0-bin.zip
@@ -128,11 +128,11 @@ Maven POM
 Metadata
   metadata[forge]
   metadata[forge][variants]
-Minecraft Maven has finished, took 2:00.965
+Minecraft Maven has finished, took 2:12.073
 
 > Task :processTestResources NO-SOURCE
-> Task :processResources
 > Task :compileJava
+> Task :processResources
 > Task :classes
 > Task :compileTestJava NO-SOURCE
 > Task :testClasses UP-TO-DATE
@@ -189,11 +189,39 @@ This message will not display again until ForgeGradle 7.1 or the below file is
 deleted:
 /home/runner/.gradle/caches/minecraftforge/forgegradle/messages/7_0_WELCOME_1
 --- End of Message ---
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792292158608.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792292458982.json
 
-BUILD SUCCESSFUL in 2m 25s
+BUILD SUCCESSFUL in 2m 45s
 3 actionable tasks: 3 executed
 Configuration cache entry stored.
 
+=== Estructuras colocadas/descartadas (conteo) ===
+      3 bubble_cluster colocada
+      2 dome descartada
+      4 fountain colocada
+      3 lookout colocada
+      7 palm_grove colocada
+      1 turbine colocada
+
 === Mensajes del servidor ===
-59:[02:58:43] [Server thread/INFO] [minecraft/DedicatedServer]: Done (3.859s)! For help, type "help"
+52:[03:03:58] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -3 74 16 -> colocada
+56:[03:03:59] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en 33 71 -15 -> colocada
+57:[03:03:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -17 71 10 -> colocada
+58:[03:03:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -27 72 4 -> colocada
+59:[03:03:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -8 65 -19 -> colocada
+61:[03:04:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -9 63 -48 -> colocada
+62:[03:04:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 57 74 4 -> colocada
+63:[03:04:00] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -38 66 37 -> colocada
+64:[03:04:00] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -22 68 49 -> colocada
+66:[03:04:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -57 74 -3 -> colocada
+67:[03:04:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -62 75 13 -> colocada
+68:[03:04:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -13 64 -51 -> descartada
+70:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en 68 87 -46 -> descartada
+71:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 66 72 -18 -> colocada
+72:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 69 73 -16 -> colocada
+73:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 78 73 22 -> colocada
+74:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -51 74 -26 -> colocada
+75:[03:04:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -21 67 75 -> colocada
+76:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en 51 75 74 -> colocada
+77:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 60 75 68 -> colocada
+79:[03:04:01] [Server thread/INFO] [minecraft/DedicatedServer]: Done (4.062s)! For help, type "help"
