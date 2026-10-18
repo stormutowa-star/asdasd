@@ -55,7 +55,7 @@ public class LooreWarlord extends LooreCommander {
             this.holdPose(POSE_CHARGE, 12);
             Fx.ring(level, this.position().add(0.0D, 0.1D, 0.0D), 4.0D, 40, Fx.GREEN, 0.0D);
             Fx.burst(level, Fx.CODE, this.position(), 24, 2.0D, 0.2D);
-            Fx.sound(level, this.position(), SoundEvents.GENERIC_EXPLODE, 0.8F, 0.6F);
+            Fx.sound(level, this.position(), SoundEvents.GENERIC_EXPLODE.value(), 0.8F, 0.6F);
             for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, Geo.box(this.position(), 4.0D, 2.0D, 4.0D),
                     x -> x != this && x.isAlive() && !(x instanceof LooreMob))) {
                 this.strike(e, 10.0F, 0.9D);

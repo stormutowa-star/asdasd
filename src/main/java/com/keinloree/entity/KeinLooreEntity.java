@@ -327,7 +327,7 @@ public class KeinLooreEntity extends LooreMob {
         this.abCooldown = cooldown;
         this.fieldOn = false;
         this.hitIds.clear();
-        this.setNoPhysics(false);
+        this.noPhysics = false;
         this.setNoGravity(this.techno);
         this.setLorePose(this.techno ? POSE_FLY : POSE_IDLE);
     }
@@ -562,7 +562,7 @@ public class KeinLooreEntity extends LooreMob {
     private void abDescend(ServerLevel level) {
         if (this.abTick == 1) {
             this.setNoGravity(true);
-            this.setNoPhysics(true);
+            this.noPhysics = true;
             this.setLorePose(POSE_FLY);
         }
         this.flyToward(this.descendGoal, 0.7D);
