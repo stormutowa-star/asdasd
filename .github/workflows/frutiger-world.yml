@@ -56,6 +56,7 @@ jobs:
           printf 'level-type=frutigerworld:frutiger_world\nonline-mode=false\nmax-players=2\nview-distance=6\nsimulation-distance=6\nspawn-protection=0\n' > server.properties
           mkdir -p mods
           cp "$GITHUB_WORKSPACE/frutiger-world/build/libs/frutigerworld-1.0.0.jar" mods/
+          echo "-Dfrutigerworld.debug=true" >> user_jvm_args.txt
           LOG="$GITHUB_WORKSPACE/frutiger-world/dist/servidor.log"
           ./run.sh nogui > "$LOG" 2>&1 &
           PID=$!
@@ -101,6 +102,9 @@ jobs:
             echo
             echo "=== Final del log de compilacion ==="
             tail -n 120 dist/build.log 2>/dev/null
+            echo
+            echo "=== Estructuras colocadas/descartadas (conteo) ==="
+            grep -o -E '\[frutigerworld\] [a-z_]+ en .* -> [a-z]+' dist/servidor.log 2>/dev/null | awk '{print $2, $NF}' | sort | uniq -c
             echo
             echo "=== Mensajes del servidor ==="
             grep -n -E 'ERROR|Exception|Caused by|frutigerworld|Done \(|Unknown|world type' dist/servidor.log 2>/dev/null | head -n 300
