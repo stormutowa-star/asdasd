@@ -7,7 +7,7 @@ modId="frutigerworld"
 version="1.0.0"
 displayName="Frutiger World"
 authors="Ricardo"
-description='''Mundo Frutiger Aero para Minecraft 1.21.1. Aparece como tipo de mundo "Frutiger World" al crear un mundo: cielo aqua, cristal azul, pabellones de burbuja, fuentes, torres miradores, palmeras, racimos de burbujas y aerogeneradores.'''
+description='''Mundo Frutiger Aero para Minecraft 1.21.1. Aparece como tipo de mundo "Frutiger World" al crear un mundo: cielo aqua, agua turquesa, burbujas en el aire, pabellones de burbuja, fuentes, torres miradores, torres de burbujas, palmeras y aerogeneradores.'''
 
 [[dependencies.frutigerworld]]
     modId="forge"
