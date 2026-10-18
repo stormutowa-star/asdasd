@@ -1,6 +1,6 @@
 Compilacion: success
 Servidor: OK
-Commit: 6c40365c54d888a33c6d1ae16dcbe0cbb428b9ac  Run: 5
+Commit: a57ff89d1eb325e4a6ba620f666967d1ff4661d5  Run: 6
 
 === Cabecera del log de compilacion ===
 Downloading https://services.gradle.org/distributions/gradle-9.3.0-bin.zip
@@ -128,11 +128,11 @@ Maven POM
 Metadata
   metadata[forge]
   metadata[forge][variants]
-Minecraft Maven has finished, took 2:12.073
+Minecraft Maven has finished, took 3:18.875
 
 > Task :processTestResources NO-SOURCE
-> Task :compileJava
 > Task :processResources
+> Task :compileJava
 > Task :classes
 > Task :compileTestJava NO-SOURCE
 > Task :testClasses UP-TO-DATE
@@ -189,39 +189,323 @@ This message will not display again until ForgeGradle 7.1 or the below file is
 deleted:
 /home/runner/.gradle/caches/minecraftforge/forgegradle/messages/7_0_WELCOME_1
 --- End of Message ---
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792292458982.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792327886060.json
 
-BUILD SUCCESSFUL in 2m 45s
+BUILD SUCCESSFUL in 4m 5s
 3 actionable tasks: 3 executed
 Configuration cache entry stored.
 
 === Estructuras colocadas/descartadas (conteo) ===
-      3 bubble_cluster colocada
-      2 dome descartada
-      4 fountain colocada
-      3 lookout colocada
-      7 palm_grove colocada
-      1 turbine colocada
+    120 bubble_cluster colocada
+     42 dome colocada
+     36 dome descartada
+     40 fountain colocada
+     40 fountain descartada
+     40 lookout colocada
+     31 lookout descartada
+    214 palm_grove colocada
+     76 palm_grove descartada
+     30 turbine colocada
+     12 turbine descartada
 
 === Mensajes del servidor ===
-52:[03:03:58] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -3 74 16 -> colocada
-56:[03:03:59] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en 33 71 -15 -> colocada
-57:[03:03:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -17 71 10 -> colocada
-58:[03:03:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -27 72 4 -> colocada
-59:[03:03:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -8 65 -19 -> colocada
-61:[03:04:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -9 63 -48 -> colocada
-62:[03:04:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 57 74 4 -> colocada
-63:[03:04:00] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -38 66 37 -> colocada
-64:[03:04:00] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -22 68 49 -> colocada
-66:[03:04:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -57 74 -3 -> colocada
-67:[03:04:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -62 75 13 -> colocada
-68:[03:04:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -13 64 -51 -> descartada
-70:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en 68 87 -46 -> descartada
-71:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 66 72 -18 -> colocada
-72:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 69 73 -16 -> colocada
-73:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 78 73 22 -> colocada
-74:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -51 74 -26 -> colocada
-75:[03:04:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -21 67 75 -> colocada
-76:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en 51 75 74 -> colocada
-77:[03:04:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 60 75 68 -> colocada
-79:[03:04:01] [Server thread/INFO] [minecraft/DedicatedServer]: Done (4.062s)! For help, type "help"
+52:[12:55:53] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -1 64 -45 -> descartada
+53:[12:55:53] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -13 65 -42 -> colocada
+54:[12:55:53] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 2 64 -31 -> descartada
+58:[12:55:54] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en 43 65 -27 -> colocada
+59:[12:55:54] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 47 61 -6 -> descartada
+61:[12:55:54] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 1 63 6 -> descartada
+62:[12:55:54] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 0 73 -64 -> colocada
+65:[12:55:55] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 31 55 18 -> descartada
+66:[12:55:55] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 36 58 28 -> descartada
+67:[12:55:55] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -33 67 -58 -> colocada
+68:[12:55:55] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -45 64 -52 -> colocada
+69:[12:55:55] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -45 63 -38 -> descartada
+70:[12:55:55] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -40 64 -73 -> colocada
+72:[12:55:55] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 51 64 -46 -> colocada
+73:[12:55:55] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 58 63 -26 -> descartada
+74:[12:55:55] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en 37 69 -80 -> colocada
+75:[12:55:55] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en 43 68 -80 -> colocada
+76:[12:55:55] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 40 65 -73 -> colocada
+77:[12:55:56] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en 53 67 -79 -> colocada
+79:[12:55:56] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en 77 63 -37 -> colocada
+80:[12:55:56] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -8 67 -90 -> colocada
+82:[12:55:56] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -30 55 43 -> descartada
+83:[12:55:57] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -55 63 22 -> colocada
+84:[12:55:57] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -34 67 -88 -> colocada
+86:[12:55:57] [Server thread/INFO] [minecraft/DedicatedServer]: Done (6.892s)! For help, type "help"
+88:[12:55:59] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -387 70 -384 -> colocada
+89:[12:55:59] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -383 67 -373 -> colocada
+90:[12:55:59] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -354 70 -390 -> colocada
+91:[12:55:59] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -365 69 -390 -> colocada
+92:[12:55:59] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -377 78 -413 -> colocada
+93:[12:55:59] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -346 69 -370 -> colocada
+94:[12:56:00] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -370 70 -330 -> colocada
+95:[12:56:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -328 67 -381 -> colocada
+96:[12:56:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -424 69 -390 -> colocada
+97:[12:56:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -431 68 -397 -> colocada
+98:[12:56:00] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -419 76 -419 -> colocada
+99:[12:56:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -360 66 -302 -> colocada
+100:[12:56:00] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -352 71 -431 -> colocada
+101:[12:56:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -359 65 -281 -> descartada
+102:[12:56:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -364 66 -282 -> colocada
+103:[12:56:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -393 56 -283 -> descartada
+104:[12:56:01] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -323 68 -407 -> colocada
+105:[12:56:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -382 64 -257 -> colocada
+106:[12:56:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -322 70 -327 -> colocada
+107:[12:56:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -337 63 -248 -> colocada
+108:[12:56:01] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -326 64 -307 -> colocada
+109:[12:56:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -321 60 -263 -> descartada
+110:[12:56:01] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -402 65 -238 -> colocada
+111:[12:56:02] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -322 63 -236 -> descartada
+112:[12:56:02] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -310 67 -384 -> colocada
+113:[12:56:02] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -310 68 -350 -> colocada
+114:[12:56:02] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -305 68 -343 -> colocada
+115:[12:56:02] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -320 62 -272 -> descartada
+116:[12:56:02] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -293 66 -330 -> colocada
+117:[12:56:02] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -303 67 -325 -> colocada
+118:[12:56:02] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -304 66 -404 -> colocada
+119:[12:56:02] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -298 64 -239 -> colocada
+120:[12:56:02] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -288 68 -363 -> colocada
+121:[12:56:02] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -282 67 -350 -> colocada
+122:[12:56:02] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -280 74 -349 -> colocada
+123:[12:56:03] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -429 64 -290 -> colocada
+124:[12:56:03] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -285 64 -238 -> descartada
+125:[12:56:03] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -283 67 -228 -> colocada
+126:[12:56:03] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -260 63 -307 -> descartada
+127:[12:56:03] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -270 55 -317 -> descartada
+128:[12:56:03] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -365 67 -212 -> colocada
+129:[12:56:03] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -251 62 -331 -> descartada
+130:[12:56:04] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -387 48 -213 -> descartada
+131:[12:56:04] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -372 67 -214 -> descartada
+133:[12:56:04] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -344 66 -201 -> colocada
+134:[12:56:04] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -388 69 -180 -> colocada
+135:[12:56:04] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -370 64 -188 -> colocada
+136:[12:56:04] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -355 63 -183 -> descartada
+137:[12:56:05] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -381 65 -147 -> colocada
+138:[12:56:05] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -372 58 -150 -> colocada
+139:[12:56:05] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -362 63 -143 -> colocada
+140:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -378 63 -102 -> colocada
+141:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -312 60 -185 -> descartada
+142:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -312 59 -122 -> colocada
+143:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -314 69 -112 -> descartada
+144:[12:56:06] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -297 61 -135 -> descartada
+145:[12:56:06] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -284 56 -146 -> descartada
+146:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -263 64 -128 -> descartada
+147:[12:56:06] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -260 64 -107 -> colocada
+148:[12:56:06] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -250 63 -144 -> descartada
+149:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -251 64 -113 -> colocada
+150:[12:56:06] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -252 65 -116 -> colocada
+152:[12:56:07] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -225 56 -133 -> descartada
+153:[12:56:07] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -415 67 -89 -> colocada
+154:[12:56:07] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -217 75 -394 -> descartada
+155:[12:56:07] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -398 64 -68 -> colocada
+156:[12:56:07] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -359 63 -75 -> descartada
+157:[12:56:07] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -351 65 -68 -> colocada
+158:[12:56:07] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -416 66 -49 -> colocada
+159:[12:56:08] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -221 63 -418 -> descartada
+160:[12:56:08] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -224 64 -422 -> colocada
+161:[12:56:08] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -388 68 -7 -> descartada
+162:[12:56:08] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -370 70 8 -> colocada
+163:[12:56:08] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -218 72 -202 -> colocada
+164:[12:56:08] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -316 71 -83 -> colocada
+165:[12:56:09] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -373 68 22 -> colocada
+166:[12:56:09] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -350 73 19 -> colocada
+167:[12:56:09] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -326 72 22 -> colocada
+168:[12:56:09] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -320 71 16 -> colocada
+169:[12:56:09] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -285 70 -30 -> colocada
+170:[12:56:09] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -271 65 -85 -> colocada
+171:[12:56:09] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -239 68 -96 -> colocada
+173:[12:56:10] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -392 68 32 -> descartada
+174:[12:56:10] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -350 71 38 -> colocada
+175:[12:56:10] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -420 71 -125 -> descartada
+176:[12:56:10] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -358 57 87 -> colocada
+177:[12:56:10] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -395 64 109 -> colocada
+178:[12:56:11] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -425 69 -83 -> colocada
+179:[12:56:11] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -322 69 34 -> colocada
+180:[12:56:11] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -317 67 35 -> colocada
+181:[12:56:11] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -298 61 35 -> colocada
+182:[12:56:11] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -387 69 146 -> colocada
+183:[12:56:11] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -310 70 53 -> colocada
+184:[12:56:12] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -317 87 153 -> colocada
+185:[12:56:12] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -275 64 35 -> colocada
+186:[12:56:12] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -301 107 120 -> descartada
+187:[12:56:12] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -288 73 69 -> colocada
+188:[12:56:12] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -288 107 91 -> descartada
+189:[12:56:12] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -267 66 41 -> descartada
+190:[12:56:12] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -262 78 69 -> colocada
+191:[12:56:12] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -273 87 144 -> colocada
+192:[12:56:12] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -268 122 98 -> colocada
+193:[12:56:12] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -255 76 54 -> colocada
+194:[12:56:12] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -241 83 79 -> colocada
+195:[12:56:12] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -229 76 78 -> colocada
+196:[12:56:12] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -237 84 81 -> colocada
+198:[12:56:12] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -228 95 109 -> colocada
+199:[12:56:13] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -359 64 170 -> colocada
+200:[12:56:13] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -417 67 -43 -> colocada
+201:[12:56:13] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -359 63 184 -> descartada
+202:[12:56:13] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -432 67 -30 -> colocada
+203:[12:56:13] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -365 63 206 -> descartada
+204:[12:56:13] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -355 64 197 -> colocada
+205:[12:56:13] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -341 67 203 -> descartada
+206:[12:56:13] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -220 68 -40 -> colocada
+207:[12:56:13] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -410 67 219 -> colocada
+208:[12:56:13] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -374 63 255 -> descartada
+209:[12:56:14] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -377 63 263 -> colocada
+210:[12:56:14] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -331 72 197 -> colocada
+211:[12:56:14] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -331 71 206 -> colocada
+212:[12:56:14] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -321 80 171 -> colocada
+213:[12:56:14] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -371 67 287 -> colocada
+214:[12:56:14] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -305 74 249 -> colocada
+215:[12:56:14] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -274 87 160 -> colocada
+216:[12:56:14] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -294 73 248 -> colocada
+217:[12:56:14] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -275 81 196 -> colocada
+218:[12:56:14] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -280 78 219 -> colocada
+219:[12:56:15] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -257 88 163 -> colocada
+220:[12:56:15] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -259 80 203 -> colocada
+221:[12:56:15] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -246 82 215 -> colocada
+222:[12:56:15] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -252 76 249 -> colocada
+224:[12:56:15] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -236 80 178 -> colocada
+225:[12:56:15] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -239 83 197 -> colocada
+226:[12:56:15] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -411 72 289 -> colocada
+227:[12:56:15] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -427 52 130 -> descartada
+228:[12:56:15] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -429 55 113 -> descartada
+229:[12:56:16] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -220 74 84 -> colocada
+230:[12:56:16] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -378 70 321 -> colocada
+231:[12:56:16] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -214 62 57 -> colocada
+232:[12:56:16] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -390 70 350 -> colocada
+233:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -329 63 288 -> descartada
+234:[12:56:17] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -331 69 320 -> colocada
+235:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -331 67 374 -> colocada
+236:[12:56:17] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -326 68 395 -> colocada
+237:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -418 69 222 -> colocada
+238:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -425 71 209 -> colocada
+239:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -428 68 254 -> colocada
+240:[12:56:17] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -312 65 367 -> colocada
+241:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -310 66 374 -> colocada
+242:[12:56:17] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -301 67 354 -> colocada
+243:[12:56:17] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -281 65 292 -> colocada
+244:[12:56:17] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -300 67 368 -> descartada
+245:[12:56:17] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -289 70 395 -> colocada
+246:[12:56:17] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -297 68 391 -> colocada
+247:[12:56:17] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -274 63 321 -> colocada
+248:[12:56:17] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -257 67 296 -> colocada
+249:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -272 60 316 -> descartada
+250:[12:56:18] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -250 66 359 -> colocada
+251:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -247 67 384 -> descartada
+252:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -244 71 415 -> colocada
+254:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -226 63 337 -> colocada
+255:[12:56:18] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -237 65 363 -> colocada
+256:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -238 67 387 -> colocada
+257:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -203 66 -319 -> colocada
+258:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -196 67 -314 -> colocada
+259:[12:56:18] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -203 71 -264 -> colocada
+260:[12:56:18] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -226 70 402 -> colocada
+261:[12:56:18] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -226 69 400 -> colocada
+262:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -200 76 -242 -> colocada
+263:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -195 74 -252 -> colocada
+264:[12:56:18] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -197 77 -400 -> colocada
+265:[12:56:18] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -217 71 266 -> colocada
+266:[12:56:18] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -181 70 -294 -> colocada
+267:[12:56:19] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -184 79 -375 -> colocada
+268:[12:56:19] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -187 82 -402 -> descartada
+269:[12:56:19] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -179 79 -225 -> colocada
+270:[12:56:19] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -424 70 264 -> colocada
+271:[12:56:19] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -417 73 281 -> colocada
+272:[12:56:19] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -171 69 -294 -> colocada
+273:[12:56:19] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -163 95 -366 -> colocada
+274:[12:56:19] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -172 97 -401 -> descartada
+275:[12:56:19] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -224 69 290 -> colocada
+276:[12:56:19] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -146 100 -387 -> colocada
+277:[12:56:19] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -150 101 -404 -> colocada
+278:[12:56:19] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -155 76 -245 -> colocada
+279:[12:56:19] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -422 68 307 -> descartada
+280:[12:56:19] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -426 71 315 -> colocada
+281:[12:56:19] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -131 90 -348 -> colocada
+282:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -127 96 -371 -> colocada
+283:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -116 73 -331 -> colocada
+284:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -122 104 -405 -> colocada
+285:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -115 64 -265 -> colocada
+286:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -128 67 -253 -> colocada
+288:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -104 96 -394 -> colocada
+289:[12:56:20] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -112 78 -345 -> descartada
+290:[12:56:20] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -195 75 -173 -> colocada
+291:[12:56:20] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -101 65 -314 -> colocada
+292:[12:56:20] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -193 63 -140 -> descartada
+293:[12:56:20] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -187 78 -209 -> colocada
+294:[12:56:21] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -208 63 -126 -> colocada
+295:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -205 66 -110 -> colocada
+296:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -166 80 -219 -> colocada
+297:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -181 68 -160 -> descartada
+298:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -185 61 -105 -> descartada
+299:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -173 69 -128 -> colocada
+300:[12:56:21] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -144 72 -135 -> colocada
+301:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -115 78 -161 -> colocada
+302:[12:56:21] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -114 78 -151 -> colocada
+304:[12:56:21] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -103 71 -146 -> colocada
+305:[12:56:22] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -196 66 -64 -> colocada
+306:[12:56:22] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -201 68 9 -> colocada
+307:[12:56:22] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -159 65 -34 -> colocada
+308:[12:56:22] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en -144 63 -39 -> descartada
+309:[12:56:22] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -138 64 -47 -> colocada
+310:[12:56:22] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -125 56 -33 -> descartada
+311:[12:56:23] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -104 64 -86 -> colocada
+312:[12:56:23] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -112 59 -24 -> descartada
+314:[12:56:23] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -199 66 48 -> colocada
+315:[12:56:23] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -204 89 120 -> colocada
+316:[12:56:23] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -189 62 68 -> colocada
+317:[12:56:23] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -181 72 106 -> colocada
+318:[12:56:23] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -190 88 156 -> colocada
+319:[12:56:23] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -167 67 103 -> colocada
+320:[12:56:24] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -416 67 429 -> colocada
+321:[12:56:24] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -414 68 417 -> colocada
+322:[12:56:24] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -309 72 422 -> colocada
+323:[12:56:24] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -291 72 425 -> colocada
+324:[12:56:24] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -98 63 35 -> descartada
+325:[12:56:24] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -102 64 57 -> descartada
+326:[12:56:24] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -115 71 135 -> colocada
+327:[12:56:24] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -103 63 94 -> colocada
+329:[12:56:24] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -196 75 217 -> colocada
+330:[12:56:25] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -186 78 209 -> colocada
+331:[12:56:25] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -162 80 165 -> colocada
+332:[12:56:25] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -164 63 225 -> colocada
+333:[12:56:25] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -139 72 239 -> colocada
+334:[12:56:25] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -135 70 249 -> descartada
+335:[12:56:25] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -133 72 240 -> colocada
+336:[12:56:25] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -115 70 198 -> colocada
+337:[12:56:25] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -113 69 285 -> colocada
+338:[12:56:25] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -111 69 195 -> colocada
+340:[12:56:25] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -222 92 398 -> colocada
+341:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -198 64 323 -> colocada
+342:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -204 58 351 -> descartada
+343:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -201 65 374 -> colocada
+344:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -158 70 294 -> colocada
+345:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -156 77 295 -> colocada
+346:[12:56:26] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -158 66 360 -> colocada
+347:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -148 70 379 -> colocada
+348:[12:56:26] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -129 72 294 -> colocada
+349:[12:56:26] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en -152 68 402 -> descartada
+350:[12:56:27] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -126 71 401 -> descartada
+352:[12:56:27] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -106 84 324 -> colocada
+353:[12:56:27] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -87 64 -315 -> colocada
+354:[12:56:27] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -96 65 -294 -> colocada
+355:[12:56:27] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -81 69 -371 -> colocada
+356:[12:56:28] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -80 63 -350 -> colocada
+357:[12:56:28] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -73 63 -324 -> colocada
+358:[12:56:28] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -78 64 -369 -> descartada
+359:[12:56:28] [Worker-Main-2/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -75 86 -397 -> colocada
+360:[12:56:28] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -54 66 -359 -> colocada
+361:[12:56:28] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -49 62 -343 -> descartada
+362:[12:56:28] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -89 69 -29 -> colocada
+363:[12:56:28] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -90 63 35 -> colocada
+364:[12:56:28] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -81 59 37 -> descartada
+365:[12:56:28] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -28 63 -282 -> descartada
+366:[12:56:29] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -25 64 -264 -> colocada
+367:[12:56:29] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] dome en -22 63 -326 -> descartada
+368:[12:56:29] [Worker-Main-1/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en -27 63 -319 -> descartada
+369:[12:56:29] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en -239 70 431 -> colocada
+370:[12:56:29] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] palm_grove en -8 64 -254 -> colocada
+371:[12:56:29] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] fountain en 8 66 -283 -> colocada
+372:[12:56:29] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] bubble_cluster en 15 64 -370 -> colocada
+373:[12:56:29] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] lookout en 6 63 -346 -> descartada
+374:[12:56:29] [Worker-Main-3/INFO] [co.ri.fr.FrutigerFeature/]: [frutigerworld] turbine en 3 63 -340 -> descartada
