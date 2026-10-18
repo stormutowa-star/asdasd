@@ -1,147 +1,315 @@
 Compilacion: failure
 Servidor: no-ejecutado
-Commit: f9a5817e5e9b4a2366112b0e5a9c197ea5727081  Run: 2
+Commit: 92528197079901690931dc94c5ed1432edd00dcc  Run: 3
 
 === Cabecera del log de compilacion ===
-Downloading https://services.gradle.org/distributions/gradle-8.12.1-bin.zip
+Downloading https://services.gradle.org/distributions/gradle-9.3.0-bin.zip
 .............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
 
-Welcome to Gradle 8.12.1!
+Welcome to Gradle 9.3.0!
 
 Here are the highlights of this release:
- - Enhanced error and warning reporting with the Problems API
- - File-system watching support on Alpine Linux
- - Build and test Swift 6 libraries and apps
+ - Test reporting improvements
+ - Error and warning improvements
+ - Build authoring improvements
 
-For more details see https://docs.gradle.org/8.12.1/release-notes.html
+For more details see https://docs.gradle.org/9.3.0/release-notes.html
 
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.12.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
-Configuration on demand is an incubating feature.
 Parallel Configuration Cache is an incubating feature.
+Configuration on demand is an incubating feature.
 Calculating task graph as no cached configuration is available for tasks: build
 
 > Configure project :
-ERROR: ForgeGradle 7 requires Gradle 9.3.0 or later to run. You are currently using Gradle 8.12.1.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792291713681.json
+Minecraft Mavenizer 0.5.21 by Forge Development LLC
+  Output:             /home/runner/work/asdasd/asdasd/frutiger-world/.gradle/mavenizer/repo
+  Output JSON:        /home/runner/work/asdasd/asdasd/frutiger-world/.gradle/mavenizer/dependencies/default.json
+  Dependencies Only:  false
+  Cache:              /home/runner/.gradle/caches/minecraftforge/forgegradle/mavenizer/caches
+  JDK Cache:          /home/runner/.gradle/caches/minecraftforge/forgegradle/mavenizer/caches
+  Offline:            false
+  Cache Only:         false
+  Ignore Cache:       false
+  Mappings:           official-1.21.1
+  Foreign Repos:      [https://repo.maven.apache.org/maven2/, https://maven.minecraftforge.net/, https://libraries.minecraft.net/]
+  GradleVariantHack:  true
+  Disable Gradle:     false
+  Stub Jars:          false
 
-FAILURE: Build failed with an exception.
-
-* Where:
-Build file '/home/runner/work/asdasd/asdasd/frutiger-world/build.gradle' line: 5
-
-* What went wrong:
-An exception occurred applying plugin request [id: 'net.minecraftforge.gradle', version: '[7.0.3,8)']
-> Failed to apply plugin 'net.minecraftforge.gradle'.
-   > ForgeGradle 7 requires Gradle 9.3.0 or later to run. You are currently using Gradle 8.12.1.
-
-* Try:
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-* Exception is:
-org.gradle.api.plugins.InvalidPluginException: An exception occurred applying plugin request [id: 'net.minecraftforge.gradle', version: '[7.0.3,8)']
-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.exceptionOccurred(DefaultPluginRequestApplicator.java:183)
-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.access$400(DefaultPluginRequestApplicator.java:54)
-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator$ApplyAction.apply(DefaultPluginRequestApplicator.java:164)
-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.lambda$applyPlugins$1(DefaultPluginRequestApplicator.java:134)
-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.applyPlugins(DefaultPluginRequestApplicator.java:134)
-	at org.gradle.configuration.DefaultScriptPluginFactory$ScriptPluginImpl.apply(DefaultScriptPluginFactory.java:123)
-	at org.gradle.configuration.BuildOperationScriptPlugin$1.run(BuildOperationScriptPlugin.java:68)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
-	at org.gradle.configuration.BuildOperationScriptPlugin.lambda$apply$0(BuildOperationScriptPlugin.java:65)
-	at org.gradle.internal.code.DefaultUserCodeApplicationContext.apply(DefaultUserCodeApplicationContext.java:44)
-	at org.gradle.configuration.BuildOperationScriptPlugin.apply(BuildOperationScriptPlugin.java:65)
-	at org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.lambda$applyToMutableState$1(DefaultProjectStateRegistry.java:411)
-	at org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.fromMutableState(DefaultProjectStateRegistry.java:429)
-	at org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.applyToMutableState(DefaultProjectStateRegistry.java:410)
-	at org.gradle.configuration.project.BuildScriptProcessor.execute(BuildScriptProcessor.java:46)
+Processing Minecraft dependency: net.minecraftforge:forge:1.21.1-52.1.0
+Processing Minecraft Forge (userdev): 1.21.1-52.1.0
+  Cache miss!
+  java.lang.Exception: Cache miss! Stacktrace for Information Only
+  	at net.minecraftforge.mcmaven.impl.Mavenizer.assertNotCacheOnly(Mavenizer.java:60)
+  	at net.minecraftforge.mcmaven.impl.cache.MavenCache.download(MavenCache.java:271)
+  	at net.minecraftforge.mcmaven.impl.cache.MavenCache.download(MavenCache.java:101)
+  	at net.minecraftforge.mcmaven.impl.repo.forge.Patcher.<init>(Patcher.java:94)
+  	at net.minecraftforge.mcmaven.impl.repo.forge.ForgeRepo.processV3(ForgeRepo.java:257)
+  	at net.minecraftforge.mcmaven.impl.repo.forge.ForgeRepo.process(ForgeRepo.java:144)
+  	at net.minecraftforge.mcmaven.impl.MinecraftMaven.createForge(MinecraftMaven.java:240)
+  	at net.minecraftforge.mcmaven.impl.MinecraftMaven.run(MinecraftMaven.java:119)
+  	at net.minecraftforge.mcmaven.cli.MavenTask.run(MavenTask.java:218)
+  	at net.minecraftforge.mcmaven.cli.Main.run(Main.java:70)
+  	at net.minecraftforge.mcmaven.cli.Main.main(Main.java:23)
+Mappings Zip
+  downloadLauncherManifest
+  downloadVersionJson[1.21.1]
+  download[1.21.1][client_mappings]
+  extract[mappings]
+  mergeMappings
+  download[1.21.1][server_mappings]
+  srg2names[official-1.21.1]
+Mappings POM
+  pom[mappings_official]
+Mappings map2obf
 
 === Errores de compilacion ===
-23:FAILURE: Build failed with an exception.
-24-
-25-* Where:
-26-Build file '/home/runner/work/asdasd/asdasd/frutiger-world/build.gradle' line: 5
-27-
-28:* What went wrong:
-29-An exception occurred applying plugin request [id: 'net.minecraftforge.gradle', version: '[7.0.3,8)']
-30-> Failed to apply plugin 'net.minecraftforge.gradle'.
-31-   > ForgeGradle 7 requires Gradle 9.3.0 or later to run. You are currently using Gradle 8.12.1.
-32-
-33-* Try:
-34-> Run with --info or --debug option to get more log output.
+38:  java.lang.Exception: Cache miss! Stacktrace for Information Only
+39-  	at net.minecraftforge.mcmaven.impl.Mavenizer.assertNotCacheOnly(Mavenizer.java:60)
+40-  	at net.minecraftforge.mcmaven.impl.cache.MavenCache.download(MavenCache.java:271)
+41-  	at net.minecraftforge.mcmaven.impl.cache.MavenCache.download(MavenCache.java:101)
+42-  	at net.minecraftforge.mcmaven.impl.repo.forge.Patcher.<init>(Patcher.java:94)
+43-  	at net.minecraftforge.mcmaven.impl.repo.forge.ForgeRepo.processV3(ForgeRepo.java:257)
+44-  	at net.minecraftforge.mcmaven.impl.repo.forge.ForgeRepo.process(ForgeRepo.java:144)
 --
-38:* Exception is:
-39:org.gradle.api.plugins.InvalidPluginException: An exception occurred applying plugin request [id: 'net.minecraftforge.gradle', version: '[7.0.3,8)']
-40-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.exceptionOccurred(DefaultPluginRequestApplicator.java:183)
-41-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.access$400(DefaultPluginRequestApplicator.java:54)
-42-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator$ApplyAction.apply(DefaultPluginRequestApplicator.java:164)
-43-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.lambda$applyPlugins$1(DefaultPluginRequestApplicator.java:134)
-44-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.applyPlugins(DefaultPluginRequestApplicator.java:134)
-45-	at org.gradle.configuration.DefaultScriptPluginFactory$ScriptPluginImpl.apply(DefaultScriptPluginFactory.java:123)
+105:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:65: error: cannot find symbol
+106-            level.setBlock(new BlockPos(cx + dx, floorY + dy, cz + dz), state, Block.UPDATE_CLIENT);
+107-                                                                                    ^
+108-  symbol:   variable UPDATE_CLIENT
+109-  location: class Block
+110:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:75: error: cannot find symbol
+111-                level.setBlock(pos, state, Block.UPDATE_CLIENT);
+112-                                                ^
+113-  symbol:   variable UPDATE_CLIENT
+114-  location: class Block
+115:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:143: error: cannot find symbol
+116-                level.setBlock(new BlockPos(x, y, z), FOUNDATION, Block.UPDATE_CLIENT);
+117-                                                                       ^
+118-  symbol:   variable UPDATE_CLIENT
+119-  location: class Block
+120:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:147: error: cannot find symbol
+121-                level.setBlock(new BlockPos(x, y, z), AIR, Block.UPDATE_CLIENT);
+122-                                                                ^
+123-  symbol:   variable UPDATE_CLIENT
+124-  location: class Block
+125:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:153: error: cannot find symbol
+126-                level.setBlock(pos, AIR, Block.UPDATE_CLIENT);
+127-                                              ^
+128-  symbol:   variable UPDATE_CLIENT
+129-  location: class Block
+130:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:177: error: cannot find symbol
+131-            level.setBlock(pos, state, Block.UPDATE_CLIENT);
+132-                                            ^
+133-  symbol:   variable UPDATE_CLIENT
+134-  location: class Block
+135:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:410: error: cannot find symbol
+136-            level.setBlock(new BlockPos(tx, base + i, tz), TRUNK, Block.UPDATE_CLIENT);
+137-                                                                       ^
+138-  symbol:   variable UPDATE_CLIENT
+139-  location: class Block
+140:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:414: error: cannot find symbol
+141-        level.setBlock(crown, FROND, Block.UPDATE_CLIENT);
+142-                                          ^
+143-  symbol:   variable UPDATE_CLIENT
+144-  location: class Block
+145:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:421: error: cannot find symbol
+146-            level.setBlock(a, FROND, Block.UPDATE_CLIENT);
+147-                                          ^
+148-  symbol:   variable UPDATE_CLIENT
+149-  location: class Block
+150:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:422: error: cannot find symbol
+151-            level.setBlock(b, FROND, Block.UPDATE_CLIENT);
+152-                                          ^
+153-  symbol:   variable UPDATE_CLIENT
+154-  location: class Block
+155:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:423: error: cannot find symbol
+156-            level.setBlock(tip, FROND, Block.UPDATE_CLIENT);
+157-                                            ^
+158-  symbol:   variable UPDATE_CLIENT
+159-  location: class Block
+160:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:424: error: cannot find symbol
+161-            level.setBlock(left, FROND, Block.UPDATE_CLIENT);
+162-                                             ^
+163-  symbol:   variable UPDATE_CLIENT
+164-  location: class Block
+165:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:425: error: cannot find symbol
+166-            level.setBlock(right, FROND, Block.UPDATE_CLIENT);
+167-                                              ^
+168-  symbol:   variable UPDATE_CLIENT
+169-  location: class Block
+170-13 errors
+171-
 --
-230:Caused by: org.gradle.api.internal.plugins.PluginApplicationException: Failed to apply plugin 'net.minecraftforge.gradle'.
-231-	at org.gradle.api.internal.plugins.DefaultPluginManager.doApply(DefaultPluginManager.java:176)
-232-	at org.gradle.api.internal.plugins.DefaultPluginManager.apply(DefaultPluginManager.java:148)
-233-	at org.gradle.plugin.use.resolve.internal.ArtifactRepositoriesPluginResolver$ExternalPluginResolution.applyTo(ArtifactRepositoriesPluginResolver.java:151)
-234-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator$ApplyAction.apply(DefaultPluginRequestApplicator.java:160)
-235-	... 187 more
-236:Caused by: java.lang.IllegalStateException: ForgeGradle 7 requires Gradle 9.3.0 or later to run. You are currently using Gradle 8.12.1.
-237-	at net.minecraftforge.gradle.internal.ForgeGradlePluginEntry.apply(ForgeGradlePluginEntry.java:42)
-238-	at net.minecraftforge.gradle.internal.ForgeGradlePluginEntry.apply(ForgeGradlePluginEntry.java:17)
-239-	at org.gradle.api.internal.plugins.ImperativeOnlyPluginTarget.applyImperative(ImperativeOnlyPluginTarget.java:54)
-240-	at org.gradle.api.internal.plugins.RuleBasedPluginTarget.applyImperative(RuleBasedPluginTarget.java:51)
-241-	at org.gradle.api.internal.plugins.DefaultPluginManager.addPlugin(DefaultPluginManager.java:190)
-242-	at org.gradle.api.internal.plugins.DefaultPluginManager.access$100(DefaultPluginManager.java:54)
+177:FAILURE: Build failed with an exception.
+178-
+179:* What went wrong:
+180-Execution failed for task ':compileJava'.
+181-> Compilation failed; see the compiler output below.
+182:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:65: error: cannot find symbol
+183-              level.setBlock(new BlockPos(cx + dx, floorY + dy, cz + dz), state, Block.UPDATE_CLIENT);
+184-                                                                                      ^
+185-    symbol:   variable UPDATE_CLIENT
+186-    location: class Block
+187:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:75: error: cannot find symbol
+188-                  level.setBlock(pos, state, Block.UPDATE_CLIENT);
+189-                                                  ^
+190-    symbol:   variable UPDATE_CLIENT
+191-    location: class Block
+192:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:143: error: cannot find symbol
+193-                  level.setBlock(new BlockPos(x, y, z), FOUNDATION, Block.UPDATE_CLIENT);
+194-                                                                         ^
+195-    symbol:   variable UPDATE_CLIENT
+196-    location: class Block
+197:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:147: error: cannot find symbol
+198-                  level.setBlock(new BlockPos(x, y, z), AIR, Block.UPDATE_CLIENT);
+199-                                                                  ^
+200-    symbol:   variable UPDATE_CLIENT
+201-    location: class Block
+202:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:153: error: cannot find symbol
+203-                  level.setBlock(pos, AIR, Block.UPDATE_CLIENT);
+204-                                                ^
+205-    symbol:   variable UPDATE_CLIENT
+206-    location: class Block
+207:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:177: error: cannot find symbol
+208-              level.setBlock(pos, state, Block.UPDATE_CLIENT);
+209-                                              ^
+210-    symbol:   variable UPDATE_CLIENT
+211-    location: class Block
+212:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:410: error: cannot find symbol
+213-              level.setBlock(new BlockPos(tx, base + i, tz), TRUNK, Block.UPDATE_CLIENT);
+214-                                                                         ^
+215-    symbol:   variable UPDATE_CLIENT
+216-    location: class Block
+217:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:414: error: cannot find symbol
+218-          level.setBlock(crown, FROND, Block.UPDATE_CLIENT);
+219-                                            ^
+220-    symbol:   variable UPDATE_CLIENT
+221-    location: class Block
+222:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:421: error: cannot find symbol
+223-              level.setBlock(a, FROND, Block.UPDATE_CLIENT);
+224-                                            ^
+225-    symbol:   variable UPDATE_CLIENT
+226-    location: class Block
+227:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:422: error: cannot find symbol
+228-              level.setBlock(b, FROND, Block.UPDATE_CLIENT);
+229-                                            ^
+230-    symbol:   variable UPDATE_CLIENT
+231-    location: class Block
+232:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:423: error: cannot find symbol
+233-              level.setBlock(tip, FROND, Block.UPDATE_CLIENT);
+234-                                              ^
+235-    symbol:   variable UPDATE_CLIENT
+236-    location: class Block
+237:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:424: error: cannot find symbol
+238-              level.setBlock(left, FROND, Block.UPDATE_CLIENT);
+239-                                               ^
+240-    symbol:   variable UPDATE_CLIENT
+241-    location: class Block
+242:  /home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:425: error: cannot find symbol
+243-              level.setBlock(right, FROND, Block.UPDATE_CLIENT);
+244-                                                ^
+245-    symbol:   variable UPDATE_CLIENT
+246-    location: class Block
+247-  13 errors
+248-
+--
+253:* Exception is:
+254:org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':compileJava'.
+255-	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+256-	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+257-	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+258-	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+259-	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+260-	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+--
+264:	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+265-	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+266-	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+267-	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+268-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+269-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+270-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+--
+288:Caused by: org.gradle.api.internal.tasks.compile.CompilationFailedException: Compilation failed; see the compiler output below.
+289:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:65: error: cannot find symbol
+290-            level.setBlock(new BlockPos(cx + dx, floorY + dy, cz + dz), state, Block.UPDATE_CLIENT);
+291-                                                                                    ^
+292-  symbol:   variable UPDATE_CLIENT
+293-  location: class Block
+294:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:75: error: cannot find symbol
+295-                level.setBlock(pos, state, Block.UPDATE_CLIENT);
+296-                                                ^
+297-  symbol:   variable UPDATE_CLIENT
+298-  location: class Block
+299:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:143: error: cannot find symbol
+300-                level.setBlock(new BlockPos(x, y, z), FOUNDATION, Block.UPDATE_CLIENT);
+301-                                                                       ^
+302-  symbol:   variable UPDATE_CLIENT
+303-  location: class Block
+304:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:147: error: cannot find symbol
+305-                level.setBlock(new BlockPos(x, y, z), AIR, Block.UPDATE_CLIENT);
+306-                                                                ^
+307-  symbol:   variable UPDATE_CLIENT
+308-  location: class Block
+309:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:153: error: cannot find symbol
+310-                level.setBlock(pos, AIR, Block.UPDATE_CLIENT);
+311-                                              ^
+312-  symbol:   variable UPDATE_CLIENT
+313-  location: class Block
+314:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:177: error: cannot find symbol
+315-            level.setBlock(pos, state, Block.UPDATE_CLIENT);
+316-                                            ^
+317-  symbol:   variable UPDATE_CLIENT
+318-  location: class Block
+319:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:410: error: cannot find symbol
+320-            level.setBlock(new BlockPos(tx, base + i, tz), TRUNK, Block.UPDATE_CLIENT);
+321-                                                                       ^
+322-  symbol:   variable UPDATE_CLIENT
+323-  location: class Block
+324:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:414: error: cannot find symbol
+325-        level.setBlock(crown, FROND, Block.UPDATE_CLIENT);
+326-                                          ^
+327-  symbol:   variable UPDATE_CLIENT
+328-  location: class Block
+329:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:421: error: cannot find symbol
+330-            level.setBlock(a, FROND, Block.UPDATE_CLIENT);
+331-                                          ^
+332-  symbol:   variable UPDATE_CLIENT
+333-  location: class Block
+334:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:422: error: cannot find symbol
+335-            level.setBlock(b, FROND, Block.UPDATE_CLIENT);
+336-                                          ^
+337-  symbol:   variable UPDATE_CLIENT
+338-  location: class Block
+339:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:423: error: cannot find symbol
+340-            level.setBlock(tip, FROND, Block.UPDATE_CLIENT);
+341-                                            ^
+342-  symbol:   variable UPDATE_CLIENT
+343-  location: class Block
+344:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:424: error: cannot find symbol
+345-            level.setBlock(left, FROND, Block.UPDATE_CLIENT);
+346-                                             ^
+347-  symbol:   variable UPDATE_CLIENT
+348-  location: class Block
+349:/home/runner/work/asdasd/asdasd/frutiger-world/src/main/java/com/ricardo/frutigerworld/FrutigerStructures.java:425: error: cannot find symbol
+350-            level.setBlock(right, FROND, Block.UPDATE_CLIENT);
+351-                                              ^
+352-  symbol:   variable UPDATE_CLIENT
+353-  location: class Block
+354-13 errors
+355-	at org.gradle.api.internal.tasks.compile.JdkJavaCompiler.execute(JdkJavaCompiler.java:89)
 
 === Final del log de compilacion ===
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
-	at org.gradle.composite.internal.DefaultIncludedBuildTaskGraph$DefaultBuildTreeWorkGraph.scheduleWork(DefaultIncludedBuildTaskGraph.java:204)
-	at org.gradle.internal.buildtree.DefaultBuildTreeWorkPreparer.scheduleRequestedTasks(DefaultBuildTreeWorkPreparer.java:37)
-	at org.gradle.internal.cc.impl.ConfigurationCacheAwareBuildTreeWorkController$scheduleAndRunRequestedTasks$executionResult$1$result$1.invoke(ConfigurationCacheAwareBuildTreeWorkController.kt:48)
-	at org.gradle.internal.cc.impl.ConfigurationCacheAwareBuildTreeWorkController$scheduleAndRunRequestedTasks$executionResult$1$result$1.invoke(ConfigurationCacheAwareBuildTreeWorkController.kt:45)
-	at org.gradle.internal.cc.impl.DefaultConfigurationCache$loadOrScheduleRequestedTasks$1.invoke(DefaultConfigurationCache.kt:239)
-	at org.gradle.internal.cc.impl.DefaultConfigurationCache$loadOrScheduleRequestedTasks$1.invoke(DefaultConfigurationCache.kt:238)
-	at org.gradle.internal.cc.impl.DefaultConfigurationCache.runWorkThatContributesToCacheEntry(DefaultConfigurationCache.kt:548)
-	at org.gradle.internal.cc.impl.DefaultConfigurationCache.loadOrScheduleRequestedTasks(DefaultConfigurationCache.kt:238)
-	at org.gradle.internal.cc.impl.ConfigurationCacheAwareBuildTreeWorkController$scheduleAndRunRequestedTasks$executionResult$1.apply(ConfigurationCacheAwareBuildTreeWorkController.kt:45)
-	at org.gradle.internal.cc.impl.ConfigurationCacheAwareBuildTreeWorkController$scheduleAndRunRequestedTasks$executionResult$1.apply(ConfigurationCacheAwareBuildTreeWorkController.kt:44)
-	at org.gradle.composite.internal.DefaultIncludedBuildTaskGraph.withNewWorkGraph(DefaultIncludedBuildTaskGraph.java:112)
-	at org.gradle.internal.cc.impl.ConfigurationCacheAwareBuildTreeWorkController.scheduleAndRunRequestedTasks(ConfigurationCacheAwareBuildTreeWorkController.kt:44)
-	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.lambda$scheduleAndRunTasks$1(DefaultBuildTreeLifecycleController.java:77)
-	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.lambda$runBuild$4(DefaultBuildTreeLifecycleController.java:120)
-	at org.gradle.internal.model.StateTransitionController.lambda$transition$6(StateTransitionController.java:169)
-	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
-	at org.gradle.internal.model.StateTransitionController.lambda$transition$7(StateTransitionController.java:169)
-	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
-	at org.gradle.internal.model.StateTransitionController.transition(StateTransitionController.java:169)
-	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.runBuild(DefaultBuildTreeLifecycleController.java:117)
-	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.scheduleAndRunTasks(DefaultBuildTreeLifecycleController.java:77)
-	at org.gradle.internal.buildtree.DefaultBuildTreeLifecycleController.scheduleAndRunTasks(DefaultBuildTreeLifecycleController.java:72)
-	at org.gradle.tooling.internal.provider.ExecuteBuildActionRunner.run(ExecuteBuildActionRunner.java:31)
-	at org.gradle.launcher.exec.ChainingBuildActionRunner.run(ChainingBuildActionRunner.java:35)
-	at org.gradle.internal.buildtree.ProblemReportingBuildActionRunner.run(ProblemReportingBuildActionRunner.java:49)
-	at org.gradle.launcher.exec.BuildOutcomeReportingBuildActionRunner.run(BuildOutcomeReportingBuildActionRunner.java:71)
-	at org.gradle.tooling.internal.provider.FileSystemWatchingBuildActionRunner.run(FileSystemWatchingBuildActionRunner.java:135)
-	at org.gradle.launcher.exec.BuildCompletionNotifyingBuildActionRunner.run(BuildCompletionNotifyingBuildActionRunner.java:41)
-	at org.gradle.launcher.exec.RootBuildLifecycleBuildActionExecutor.lambda$execute$0(RootBuildLifecycleBuildActionExecutor.java:54)
-	at org.gradle.composite.internal.DefaultRootBuildState.run(DefaultRootBuildState.java:130)
-	at org.gradle.launcher.exec.RootBuildLifecycleBuildActionExecutor.execute(RootBuildLifecycleBuildActionExecutor.java:54)
-	at org.gradle.internal.buildtree.InitDeprecationLoggingActionExecutor.execute(InitDeprecationLoggingActionExecutor.java:62)
-	at org.gradle.internal.buildtree.InitProblems.execute(InitProblems.java:36)
-	at org.gradle.internal.buildtree.DefaultBuildTreeContext.execute(DefaultBuildTreeContext.java:40)
-	at org.gradle.launcher.exec.BuildTreeLifecycleBuildActionExecutor.lambda$execute$0(BuildTreeLifecycleBuildActionExecutor.java:71)
-	at org.gradle.internal.buildtree.BuildTreeState.run(BuildTreeState.java:60)
-	at org.gradle.launcher.exec.BuildTreeLifecycleBuildActionExecutor.execute(BuildTreeLifecycleBuildActionExecutor.java:71)
-	at org.gradle.launcher.exec.RunAsBuildOperationBuildActionExecutor$2.call(RunAsBuildOperationBuildActionExecutor.java:67)
-	at org.gradle.launcher.exec.RunAsBuildOperationBuildActionExecutor$2.call(RunAsBuildOperationBuildActionExecutor.java:63)
+	at org.gradle.api.tasks.compile.JavaCompile.lambda$createToolchainCompiler$3(JavaCompile.java:206)
+	at org.gradle.api.internal.tasks.compile.CleaningJavaCompiler.execute(CleaningJavaCompiler.java:53)
+	at org.gradle.api.internal.tasks.compile.incremental.IncrementalCompilerFactory.lambda$createRebuildAllCompiler$0(IncrementalCompilerFactory.java:55)
+	at org.gradle.api.internal.tasks.compile.incremental.SelectiveCompiler.execute(SelectiveCompiler.java:70)
+	at org.gradle.api.internal.tasks.compile.incremental.SelectiveCompiler.execute(SelectiveCompiler.java:44)
+	at org.gradle.api.internal.tasks.compile.incremental.IncrementalResultStoringCompiler.execute(IncrementalResultStoringCompiler.java:66)
+	at org.gradle.api.internal.tasks.compile.incremental.IncrementalResultStoringCompiler.execute(IncrementalResultStoringCompiler.java:52)
+	at org.gradle.api.internal.tasks.compile.CompileJavaBuildOperationReportingCompiler$1.call(CompileJavaBuildOperationReportingCompiler.java:64)
+	at org.gradle.api.internal.tasks.compile.CompileJavaBuildOperationReportingCompiler$1.call(CompileJavaBuildOperationReportingCompiler.java:48)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
@@ -149,64 +317,16 @@ org.gradle.api.plugins.InvalidPluginException: An exception occurred applying pl
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
-	at org.gradle.launcher.exec.RunAsBuildOperationBuildActionExecutor.execute(RunAsBuildOperationBuildActionExecutor.java:63)
-	at org.gradle.launcher.exec.RunAsWorkerThreadBuildActionExecutor.lambda$execute$0(RunAsWorkerThreadBuildActionExecutor.java:36)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
-	at org.gradle.launcher.exec.RunAsWorkerThreadBuildActionExecutor.execute(RunAsWorkerThreadBuildActionExecutor.java:36)
-	at org.gradle.tooling.internal.provider.continuous.ContinuousBuildActionExecutor.execute(ContinuousBuildActionExecutor.java:110)
-	at org.gradle.tooling.internal.provider.SubscribableBuildActionExecutor.execute(SubscribableBuildActionExecutor.java:64)
-	at org.gradle.internal.session.DefaultBuildSessionContext.execute(DefaultBuildSessionContext.java:46)
-	at org.gradle.internal.buildprocess.execution.BuildSessionLifecycleBuildActionExecutor$ActionImpl.apply(BuildSessionLifecycleBuildActionExecutor.java:92)
-	at org.gradle.internal.buildprocess.execution.BuildSessionLifecycleBuildActionExecutor$ActionImpl.apply(BuildSessionLifecycleBuildActionExecutor.java:80)
-	at org.gradle.internal.session.BuildSessionState.run(BuildSessionState.java:71)
-	at org.gradle.internal.buildprocess.execution.BuildSessionLifecycleBuildActionExecutor.execute(BuildSessionLifecycleBuildActionExecutor.java:62)
-	at org.gradle.internal.buildprocess.execution.BuildSessionLifecycleBuildActionExecutor.execute(BuildSessionLifecycleBuildActionExecutor.java:41)
-	at org.gradle.internal.buildprocess.execution.StartParamsValidatingActionExecutor.execute(StartParamsValidatingActionExecutor.java:64)
-	at org.gradle.internal.buildprocess.execution.StartParamsValidatingActionExecutor.execute(StartParamsValidatingActionExecutor.java:32)
-	at org.gradle.internal.buildprocess.execution.SessionFailureReportingActionExecutor.execute(SessionFailureReportingActionExecutor.java:51)
-	at org.gradle.internal.buildprocess.execution.SessionFailureReportingActionExecutor.execute(SessionFailureReportingActionExecutor.java:39)
-	at org.gradle.internal.buildprocess.execution.SetupLoggingActionExecutor.execute(SetupLoggingActionExecutor.java:47)
-	at org.gradle.internal.buildprocess.execution.SetupLoggingActionExecutor.execute(SetupLoggingActionExecutor.java:31)
-	at org.gradle.launcher.daemon.server.exec.ExecuteBuild.doBuild(ExecuteBuild.java:70)
-	at org.gradle.launcher.daemon.server.exec.BuildCommandOnly.execute(BuildCommandOnly.java:37)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.WatchForDisconnection.execute(WatchForDisconnection.java:39)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.ResetDeprecationLogger.execute(ResetDeprecationLogger.java:29)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.RequestStopIfSingleUsedDaemon.execute(RequestStopIfSingleUsedDaemon.java:35)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.ForwardClientInput.lambda$execute$0(ForwardClientInput.java:40)
-	at org.gradle.internal.daemon.clientinput.ClientInputForwarder.forwardInput(ClientInputForwarder.java:80)
-	at org.gradle.launcher.daemon.server.exec.ForwardClientInput.execute(ForwardClientInput.java:37)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.LogAndCheckHealth.execute(LogAndCheckHealth.java:53)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.LogToClient.doBuild(LogToClient.java:63)
-	at org.gradle.launcher.daemon.server.exec.BuildCommandOnly.execute(BuildCommandOnly.java:37)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.EstablishBuildEnvironment.doBuild(EstablishBuildEnvironment.java:84)
-	at org.gradle.launcher.daemon.server.exec.BuildCommandOnly.execute(BuildCommandOnly.java:37)
-	at org.gradle.launcher.daemon.server.api.DaemonCommandExecution.proceed(DaemonCommandExecution.java:104)
-	at org.gradle.launcher.daemon.server.exec.StartBuildOrRespondWithBusy$1.run(StartBuildOrRespondWithBusy.java:52)
-	at org.gradle.launcher.daemon.server.DaemonStateCoordinator.lambda$runCommand$0(DaemonStateCoordinator.java:321)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
-	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
-Caused by: org.gradle.api.internal.plugins.PluginApplicationException: Failed to apply plugin 'net.minecraftforge.gradle'.
-	at org.gradle.api.internal.plugins.DefaultPluginManager.doApply(DefaultPluginManager.java:176)
-	at org.gradle.api.internal.plugins.DefaultPluginManager.apply(DefaultPluginManager.java:148)
-	at org.gradle.plugin.use.resolve.internal.ArtifactRepositoriesPluginResolver$ExternalPluginResolution.applyTo(ArtifactRepositoriesPluginResolver.java:151)
-	at org.gradle.plugin.use.internal.DefaultPluginRequestApplicator$ApplyAction.apply(DefaultPluginRequestApplicator.java:160)
-	... 187 more
-Caused by: java.lang.IllegalStateException: ForgeGradle 7 requires Gradle 9.3.0 or later to run. You are currently using Gradle 8.12.1.
-	at net.minecraftforge.gradle.internal.ForgeGradlePluginEntry.apply(ForgeGradlePluginEntry.java:42)
-	at net.minecraftforge.gradle.internal.ForgeGradlePluginEntry.apply(ForgeGradlePluginEntry.java:17)
-	at org.gradle.api.internal.plugins.ImperativeOnlyPluginTarget.applyImperative(ImperativeOnlyPluginTarget.java:54)
-	at org.gradle.api.internal.plugins.RuleBasedPluginTarget.applyImperative(RuleBasedPluginTarget.java:51)
-	at org.gradle.api.internal.plugins.DefaultPluginManager.addPlugin(DefaultPluginManager.java:190)
-	at org.gradle.api.internal.plugins.DefaultPluginManager.access$100(DefaultPluginManager.java:54)
-	at org.gradle.api.internal.plugins.DefaultPluginManager$AddPluginBuildOperation.run(DefaultPluginManager.java:285)
+	at org.gradle.api.internal.tasks.compile.CompileJavaBuildOperationReportingCompiler.execute(CompileJavaBuildOperationReportingCompiler.java:48)
+	at org.gradle.api.tasks.compile.JavaCompile.performCompilation(JavaCompile.java:224)
+	at org.gradle.api.tasks.compile.JavaCompile.performIncrementalCompilation(JavaCompile.java:165)
+	at org.gradle.api.tasks.compile.JavaCompile.compile(JavaCompile.java:150)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.IncrementalTaskAction.doExecute(IncrementalTaskAction.java:45)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.IncrementalTaskAction.execute(IncrementalTaskAction.java:26)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:259)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
@@ -214,13 +334,92 @@ Caused by: java.lang.IllegalStateException: ForgeGradle 7 requires Gradle 9.3.0 
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
-	at org.gradle.api.internal.plugins.DefaultPluginManager.lambda$doApply$0(DefaultPluginManager.java:170)
-	at org.gradle.internal.code.DefaultUserCodeApplicationContext.apply(DefaultUserCodeApplicationContext.java:44)
-	at org.gradle.api.internal.plugins.DefaultPluginManager.doApply(DefaultPluginManager.java:169)
-	... 190 more
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:244)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:227)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:210)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:176)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:110)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:47)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:64)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:61)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:61)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:47)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:51)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:29)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.executeMutable(RemovePreviousOutputsStep.java:70)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.executeMutable(RemovePreviousOutputsStep.java:40)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:25)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:62)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:27)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.executeMutable(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.executeMutable(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:25)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:192)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:76)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:74)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:49)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.executeMutable(ResolveChangesStep.java:63)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.executeMutable(ResolveChangesStep.java:34)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:25)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:64)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:42)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:77)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:133)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:64)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:36)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.executeMutable(HandleStaleOutputsStep.java:77)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.executeMutable(HandleStaleOutputsStep.java:43)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:25)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:305)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:44)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:31)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:68)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 30 more
 
 
-BUILD FAILED in 14s
+BUILD FAILED in 3m 55s
+2 actionable tasks: 2 executed
 Configuration cache entry stored.
 
 === Mensajes del servidor ===
