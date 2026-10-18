@@ -27,6 +27,8 @@ public final class FrutigerStructures {
     private static final int SEA_LEVEL = 63;
     private static final int MAX_RELIEF = 4;
     private static final int NONE = Integer.MIN_VALUE;
+    /** Bandera de actualización de bloques para el cliente (valor 2 en Minecraft). */
+    private static final int UPDATE_FLAGS = 2;
     /** Índice de lado -> dirección hacia fuera: 0 norte (-Z), 1 este (+X), 2 sur (+Z), 3 oeste (-X). */
     private static final Direction[] SIDES = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
@@ -62,7 +64,7 @@ public final class FrutigerStructures {
         }
 
         private void set(int dx, int dy, int dz, BlockState state) {
-            level.setBlock(new BlockPos(cx + dx, floorY + dy, cz + dz), state, Block.UPDATE_CLIENT);
+            level.setBlock(new BlockPos(cx + dx, floorY + dy, cz + dz), state, UPDATE_FLAGS);
         }
 
         private void air(int dx, int dy, int dz) {
@@ -72,7 +74,7 @@ public final class FrutigerStructures {
         private void setIfAir(int dx, int dy, int dz, BlockState state) {
             BlockPos pos = new BlockPos(cx + dx, floorY + dy, cz + dz);
             if (level.getBlockState(pos).isAir()) {
-                level.setBlock(pos, state, Block.UPDATE_CLIENT);
+                level.setBlock(pos, state, UPDATE_FLAGS);
             }
         }
     }
@@ -140,17 +142,17 @@ public final class FrutigerStructures {
     private static void shapeColumn(WorldGenLevel level, int x, int z, int ground, int floorY, int height) {
         if (ground < floorY) {
             for (int y = ground; y < floorY; y++) {
-                level.setBlock(new BlockPos(x, y, z), FOUNDATION, Block.UPDATE_CLIENT);
+                level.setBlock(new BlockPos(x, y, z), FOUNDATION, UPDATE_FLAGS);
             }
         } else {
             for (int y = floorY; y < ground; y++) {
-                level.setBlock(new BlockPos(x, y, z), AIR, Block.UPDATE_CLIENT);
+                level.setBlock(new BlockPos(x, y, z), AIR, UPDATE_FLAGS);
             }
         }
         for (int y = floorY; y <= floorY + height; y++) {
             BlockPos pos = new BlockPos(x, y, z);
             if (!level.getBlockState(pos).isAir()) {
-                level.setBlock(pos, AIR, Block.UPDATE_CLIENT);
+                level.setBlock(pos, AIR, UPDATE_FLAGS);
             }
         }
     }
@@ -174,7 +176,7 @@ public final class FrutigerStructures {
 
     private static void setIfAir(WorldGenLevel level, BlockPos pos, BlockState state) {
         if (level.getBlockState(pos).isAir()) {
-            level.setBlock(pos, state, Block.UPDATE_CLIENT);
+            level.setBlock(pos, state, UPDATE_FLAGS);
         }
     }
 
@@ -407,22 +409,22 @@ public final class FrutigerStructures {
                 tx += lean.getStepX();
                 tz += lean.getStepZ();
             }
-            level.setBlock(new BlockPos(tx, base + i, tz), TRUNK, Block.UPDATE_CLIENT);
+            level.setBlock(new BlockPos(tx, base + i, tz), TRUNK, UPDATE_FLAGS);
         }
 
         BlockPos crown = new BlockPos(tx, base + height, tz);
-        level.setBlock(crown, FROND, Block.UPDATE_CLIENT);
+        level.setBlock(crown, FROND, UPDATE_FLAGS);
         for (Direction d : SIDES) {
             BlockPos a = crown.relative(d);
             BlockPos b = a.relative(d);
             BlockPos tip = b.relative(d).below();
             BlockPos left = b.relative(d.getClockWise()).below();
             BlockPos right = b.relative(d.getCounterClockWise()).below();
-            level.setBlock(a, FROND, Block.UPDATE_CLIENT);
-            level.setBlock(b, FROND, Block.UPDATE_CLIENT);
-            level.setBlock(tip, FROND, Block.UPDATE_CLIENT);
-            level.setBlock(left, FROND, Block.UPDATE_CLIENT);
-            level.setBlock(right, FROND, Block.UPDATE_CLIENT);
+            level.setBlock(a, FROND, UPDATE_FLAGS);
+            level.setBlock(b, FROND, UPDATE_FLAGS);
+            level.setBlock(tip, FROND, UPDATE_FLAGS);
+            level.setBlock(left, FROND, UPDATE_FLAGS);
+            level.setBlock(right, FROND, UPDATE_FLAGS);
         }
     }
 }
