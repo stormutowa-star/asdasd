@@ -96,7 +96,7 @@ Maven POM
 Metadata
   metadata[forge]
   metadata[forge][variants]
-Minecraft Maven has finished, took 2:03.498
+Minecraft Maven has finished, took 2:00.311
 
 > Task :processTestResources NO-SOURCE
 > Task :compileJava
@@ -157,8 +157,8 @@ This message will not display again until ForgeGradle 7.1 or the below file is
 deleted:
 /home/runner/.gradle/caches/minecraftforge/forgegradle/messages/7_0_WELCOME_1
 --- End of Message ---
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792329550037.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1792330838320.json
 
-BUILD SUCCESSFUL in 2m 34s
+BUILD SUCCESSFUL in 2m 25s
 3 actionable tasks: 3 executed
 Configuration cache entry stored.
