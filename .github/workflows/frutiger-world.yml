@@ -85,21 +85,28 @@ jobs:
         working-directory: frutiger-world
         shell: bash
         run: |
+          set +e +o pipefail
           mkdir -p dist
-          cp -f build/libs/frutigerworld-1.0.0.jar dist/ 2>/dev/null || true
+          cp -f build/libs/frutigerworld-1.0.0.jar dist/ 2>/dev/null
           {
             echo "Compilacion: ${{ steps.build.outcome }}"
             echo "Servidor: $(cat dist/servidor.resultado 2>/dev/null || echo no-ejecutado)"
             echo "Commit: ${GITHUB_SHA}  Run: ${GITHUB_RUN_NUMBER}"
             echo
+            echo "=== Cabecera del log de compilacion ==="
+            head -n 60 dist/build.log 2>/dev/null
+            echo
             echo "=== Errores de compilacion ==="
-            grep -n -E 'error:|What went wrong|FAILURE' -A4 dist/build.log 2>/dev/null | head -200
+            grep -n -E 'error:|What went wrong|FAILURE|Could not|Exception' -A6 dist/build.log 2>/dev/null | head -n 300
+            echo
+            echo "=== Final del log de compilacion ==="
+            tail -n 120 dist/build.log 2>/dev/null
             echo
             echo "=== Mensajes del servidor ==="
-            grep -n -E 'ERROR|Exception|Caused by|frutigerworld|Done \(|Unknown|world type' dist/servidor.log 2>/dev/null | head -200
-          } > dist/estado.txt
-          tail -n 1500 dist/build.log > dist/build-final.log 2>/dev/null || true
-          tail -n 3000 dist/servidor.log > dist/servidor-final.log 2>/dev/null || true
+            grep -n -E 'ERROR|Exception|Caused by|frutigerworld|Done \(|Unknown|world type' dist/servidor.log 2>/dev/null | head -n 300
+          } > dist/estado.txt 2>&1
+          tail -n 1500 dist/build.log > dist/build-final.log 2>/dev/null
+          tail -n 3000 dist/servidor.log > dist/servidor-final.log 2>/dev/null
           rm -f dist/build.log dist/servidor.log
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -107,3 +114,4 @@ jobs:
           git commit -m "Frutiger World: resultado de la ejecucion ${GITHUB_RUN_NUMBER} [skip ci]" || echo "Sin cambios que guardar"
           git pull --rebase origin "$GITHUB_REF_NAME" || true
           git push origin "HEAD:${GITHUB_REF_NAME}" || echo "No se pudo subir la rama"
+          exit 0
