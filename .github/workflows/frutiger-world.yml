@@ -1,0 +1,109 @@
+name: Frutiger World
+
+on:
+  push:
+    paths:
+      - 'frutiger-world/**'
+      - '.github/workflows/frutiger-world.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: frutiger-world-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compilar-y-probar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Cache de Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compilar el mod
+        id: build
+        working-directory: frutiger-world
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p dist
+          chmod +x gradlew
+          ./gradlew build --no-daemon --stacktrace 2>&1 | tee dist/build.log
+
+      - name: Probar en servidor Forge con el mundo Frutiger World
+        if: steps.build.outcome == 'success'
+        working-directory: frutiger-world
+        shell: bash
+        run: |
+          FULL=1.21.1-52.1.0
+          SRV="$RUNNER_TEMP/servidor"
+          mkdir -p "$SRV"
+          cd "$SRV"
+          curl -fsSL -o forge-installer.jar "https://maven.minecraftforge.net/net/minecraftforge/forge/${FULL}/forge-${FULL}-installer.jar"
+          java -jar forge-installer.jar --installServer > "$GITHUB_WORKSPACE/frutiger-world/dist/instalador.log" 2>&1 || true
+          printf 'eula=true\n' > eula.txt
+          printf 'level-type=frutigerworld:frutiger_world\nonline-mode=false\nmax-players=2\nview-distance=6\nsimulation-distance=6\nspawn-protection=0\n' > server.properties
+          mkdir -p mods
+          cp "$GITHUB_WORKSPACE/frutiger-world/build/libs/frutigerworld-1.0.0.jar" mods/
+          LOG="$GITHUB_WORKSPACE/frutiger-world/dist/servidor.log"
+          ./run.sh nogui > "$LOG" 2>&1 &
+          PID=$!
+          RES=sin-terminar
+          for i in $(seq 1 90); do
+            if grep -q 'Done (' "$LOG"; then RES=OK; break; fi
+            if grep -q -E 'Crash report|Exception in thread' "$LOG"; then RES=CRASH; break; fi
+            if ! kill -0 "$PID" 2>/dev/null; then RES=SALIDA-PREMATURA; break; fi
+            sleep 10
+          done
+          pkill -TERM -f BootstrapLauncher || true
+          sleep 20
+          pkill -KILL -f BootstrapLauncher || true
+          echo "$RES" > "$GITHUB_WORKSPACE/frutiger-world/dist/servidor.resultado"
+          echo "Resultado del servidor: $RES"
+
+      - name: Subir el jar como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frutigerworld-1.0.0
+          path: frutiger-world/build/libs/frutigerworld-1.0.0.jar
+          if-no-files-found: ignore
+
+      - name: Guardar jar y registros en la rama
+        if: always()
+        working-directory: frutiger-world
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp -f build/libs/frutigerworld-1.0.0.jar dist/ 2>/dev/null || true
+          {
+            echo "Compilacion: ${{ steps.build.outcome }}"
+            echo "Servidor: $(cat dist/servidor.resultado 2>/dev/null || echo no-ejecutado)"
+            echo "Commit: ${GITHUB_SHA}  Run: ${GITHUB_RUN_NUMBER}"
+            echo
+            echo "=== Errores de compilacion ==="
+            grep -n -E 'error:|What went wrong|FAILURE' -A4 dist/build.log 2>/dev/null | head -200
+            echo
+            echo "=== Mensajes del servidor ==="
+            grep -n -E 'ERROR|Exception|Caused by|frutigerworld|Done \(|Unknown|world type' dist/servidor.log 2>/dev/null | head -200
+          } > dist/estado.txt
+          tail -n 1500 dist/build.log > dist/build-final.log 2>/dev/null || true
+          tail -n 3000 dist/servidor.log > dist/servidor-final.log 2>/dev/null || true
+          rm -f dist/build.log dist/servidor.log
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dist
+          git commit -m "Frutiger World: resultado de la ejecucion ${GITHUB_RUN_NUMBER} [skip ci]" || echo "Sin cambios que guardar"
+          git pull --rebase origin "$GITHUB_REF_NAME" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "No se pudo subir la rama"
