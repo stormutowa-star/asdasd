@@ -7,7 +7,7 @@
     {
       "name": "subagentes-personales",
       "source": "./plugins/subagentes-personales",
-      "description": "Subagentes por niveles: cerebro-opus, peon-sonnet y peon-haiku."
+      "description": "Subagentes por niveles: opus-worker, sonnet-worker y haiku-worker."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "subagentes-personales",
   "version": "1.0.0",
-  "description": "Subagentes por niveles: cerebro-opus para tareas difíciles, peon-sonnet para implementación media y peon-haiku para tareas mínimas.",
+  "description": "Subagentes por niveles: opus-worker para tareas difíciles, sonnet-worker para implementación media y haiku-worker para tareas mínimas.",
   "author": {
     "name": "stormutowa-star"
   }
