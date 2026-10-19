@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[52,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="frutigeraero"
+version="0.1.0"
+displayName="Frutiger Aero City"
+authors="Ricardo"
+description='''Nuevo tipo de mundo: una ciudad infinita Frutiger Aero / Y2K con ciudadanos y coches burbuja.'''
+
+[[dependencies.frutigeraero]]
+    modId="forge"
+    mandatory=true
+    versionRange="[52,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.frutigeraero]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.1,1.22)"
+    ordering="NONE"
+    side="BOTH"
