@@ -1,0 +1,13 @@
+{
+  "name": "stormutowa-personal",
+  "owner": {
+    "name": "stormutowa-star"
+  },
+  "plugins": [
+    {
+      "name": "subagentes-personales",
+      "source": "./plugins/subagentes-personales",
+      "description": "Subagentes por niveles: cerebro-opus, peon-sonnet y peon-haiku."
+    }
+  ]
+}
