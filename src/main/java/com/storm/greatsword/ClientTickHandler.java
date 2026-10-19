@@ -1,15 +1,17 @@
 package com.storm.greatsword;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
-// Escucha la pulsacion de Z en el cliente y pide al servidor alternar desenfundar/enfundar.
 @Mod.EventBusSubscriber(modid = GreatswordMod.MODID, value = Dist.CLIENT)
 public final class ClientTickHandler {
+    private ClientTickHandler() {}
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -17,18 +19,24 @@ public final class ClientTickHandler {
             return;
         }
 
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null || minecraft.level == null) {
             return;
         }
 
-        // consumeClick() devuelve true solo en el frame en que se pulso la tecla.
         while (ClientSetup.DRAW_KEY.consumeClick()) {
-            ItemStack main = mc.player.getItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND);
+            ItemStack main = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
             if (main.getItem() instanceof GreatswordItem) {
-                // Envia la peticion al servidor (que es quien aplica y sincroniza el cambio).
-                ModNetwork.CHANNEL.send(new ToggleDrawPacket(),
-                        net.minecraftforge.network.PacketDistributor.SERVER.noArg());
+                ModNetwork.CHANNEL.send(new WeaponActionPacket(WeaponActionPacket.Action.DRAW),
+                        PacketDistributor.SERVER.noArg());
+            }
+        }
+
+        while (ClientSetup.TACKLE_KEY.consumeClick()) {
+            ItemStack main = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
+            if (main.getItem() instanceof GreatswordItem && GreatswordItem.isDrawn(main)) {
+                ModNetwork.CHANNEL.send(new WeaponActionPacket(WeaponActionPacket.Action.TACKLE),
+                        PacketDistributor.SERVER.noArg());
             }
         }
     }

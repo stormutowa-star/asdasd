@@ -2,56 +2,52 @@ package com.storm.greatsword;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
-// Configuracion exclusiva del cliente: tecla Z para desenfundar/enfundar.
+@Mod.EventBusSubscriber(modid = GreatswordMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientSetup {
     private ClientSetup() {}
 
     public static final String CATEGORY = "key.greatsword.category";
 
-    // Tecla Z por defecto.
     public static final KeyMapping DRAW_KEY = new KeyMapping(
             "key.greatsword.draw",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_Z,
             CATEGORY);
 
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        // El registro real de la KeyMapping ocurre en el evento del bus de mod (abajo).
-        // Aqui solo encolamos la inicializacion segura en el hilo de cliente.
-        event.enqueueWork(ClientSetup::registerClient);
+    public static final KeyMapping TACKLE_KEY = new KeyMapping(
+            "key.greatsword.tackle",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_V,
+            CATEGORY);
+
+    @SubscribeEvent
+    public static void clientSetup(FMLClientSetupEvent event) {
+        GreatswordMod.LOGGER.info("Hunter's Greatsword client setup complete.");
     }
 
-    private static void registerClient() {
-        // Se registra el handler de tick de cliente para leer la tecla.
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(ClientTickHandler.class);
+    @SubscribeEvent
+    public static void registerKeys(RegisterKeyMappingsEvent event) {
+        event.register(DRAW_KEY);
+        event.register(TACKLE_KEY);
     }
 
-    // Registro de la KeyMapping en el bus de mod (clase estatica anidada con SubscribeEvent).
-    @net.minecraftforge.fml.common.Mod.EventBusSubscriber(
-            modid = GreatswordMod.MODID,
-            bus = net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD,
-            value = Dist.CLIENT)
-    public static class ModBus {
-        @net.minecraftforge.eventbus.api.SubscribeEvent
-        public static void registerKeys(RegisterKeyMappingsEvent event) {
-            event.register(DRAW_KEY);
-        }
-
-        // Anade la capa de la espada en la espalda a cada renderer de jugador.
-        @net.minecraftforge.eventbus.api.SubscribeEvent
-        public static void addLayers(net.minecraftforge.client.event.EntityRenderersEvent.AddLayers event) {
-            net.minecraft.client.renderer.entity.ItemRenderer itemRenderer =
-                    net.minecraft.client.Minecraft.getInstance().getItemRenderer();
-            for (net.minecraft.client.resources.PlayerSkin.Model skin : event.getSkins()) {
-                @SuppressWarnings("unchecked")
-                net.minecraft.client.renderer.entity.player.PlayerRenderer renderer =
-                        (net.minecraft.client.renderer.entity.player.PlayerRenderer) event.getPlayerSkin(skin);
-                renderer.addLayer(new BackSheathLayer(renderer, itemRenderer));
+    @SubscribeEvent
+    public static void addLayers(EntityRenderersEvent.AddLayers event) {
+        for (PlayerSkin.Model skin : event.getSkins()) {
+            PlayerRenderer renderer = event.getPlayerSkin(skin);
+            if (renderer != null) {
+                renderer.addLayer(new BackSheathLayer(renderer));
             }
         }
     }

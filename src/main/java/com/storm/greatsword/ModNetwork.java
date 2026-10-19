@@ -6,11 +6,10 @@ import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.SimpleChannel;
 
-// Canal de red del mod. Solo lleva el packet de desenfundar/enfundar (cliente -> servidor).
 public final class ModNetwork {
     private ModNetwork() {}
 
-    private static final int PROTOCOL = 1;
+    private static final int PROTOCOL = 2;
 
     public static final SimpleChannel CHANNEL = ChannelBuilder
             .named(ResourceLocation.fromNamespaceAndPath(GreatswordMod.MODID, "main"))
@@ -20,13 +19,11 @@ public final class ModNetwork {
             .optional()
             .simpleChannel();
 
-    private static int packetId = 0;
-
     public static void register(IEventBus modEventBus) {
-        CHANNEL.messageBuilder(ToggleDrawPacket.class, packetId++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(ToggleDrawPacket::encode)
-                .decoder(ToggleDrawPacket::decode)
-                .consumerMainThread(ToggleDrawPacket::handle)
+        CHANNEL.messageBuilder(WeaponActionPacket.class, 0, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(WeaponActionPacket::encode)
+                .decoder(WeaponActionPacket::decode)
+                .consumerMainThread(WeaponActionPacket::handle)
                 .add();
     }
 }

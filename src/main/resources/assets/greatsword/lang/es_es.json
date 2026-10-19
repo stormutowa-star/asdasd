@@ -1,9 +1,18 @@
 {
-  "item.greatsword.greatsword": "Gran Espada",
-  "key.greatsword.category": "Gran Espada",
-  "key.greatsword.draw": "Desenfundar / Enfundar Gran Espada",
-  "msg.greatsword.drawn": "Gran espada desenfundada (a dos manos)",
+  "item.greatsword.greatsword": "Gran Espada del Cazador",
+  "itemGroup.greatsword": "Gran Espada del Cazador",
+  "key.greatsword.category": "Gran Espada del Cazador",
+  "key.greatsword.draw": "Desenfundar / Enfundar gran espada",
+  "key.greatsword.tackle": "Embestida con el hombro",
+  "msg.greatsword.drawn": "Gran espada desenfundada: las dos manos en el mango",
   "msg.greatsword.sheathed": "Gran espada enfundada en la espalda",
   "msg.greatsword.need_free_offhand": "Libera la mano secundaria para desenfundar la gran espada",
-  "msg.greatsword.not_holding": "No estás sosteniendo una gran espada"
+  "msg.greatsword.not_holding": "No estás sosteniendo una gran espada",
+  "msg.greatsword.charged": "¡Gran espada cargada al máximo! Suelta para golpear",
+  "tooltip.greatsword.two_handed": "Gran espada a dos manos",
+  "tooltip.greatsword.state.drawn": "Desenfundada: combos lentos y devastadores",
+  "tooltip.greatsword.state.sheathed": "Enfundada en la espalda",
+  "tooltip.greatsword.controls": "Z: desenfundar / enfundar  |  V: embestida",
+  "tooltip.greatsword.controls.charge": "Clic izquierdo: combo de 3 golpes  |  Mantén clic derecho: golpe cargado",
+  "tooltip.greatsword.controls.tackle": "Clic derecho estando enfundada: desenvaine rápido"
 }

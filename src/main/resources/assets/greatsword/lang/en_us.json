@@ -1,9 +1,18 @@
 {
-  "item.greatsword.greatsword": "Greatsword",
-  "key.greatsword.category": "Greatsword",
+  "item.greatsword.greatsword": "Hunter's Greatsword",
+  "itemGroup.greatsword": "Hunter's Greatsword",
+  "key.greatsword.category": "Hunter's Greatsword",
   "key.greatsword.draw": "Draw / Sheathe Greatsword",
-  "msg.greatsword.drawn": "Greatsword drawn (two-handed)",
-  "msg.greatsword.sheathed": "Greatsword sheathed on back",
+  "key.greatsword.tackle": "Shoulder Tackle",
+  "msg.greatsword.drawn": "Greatsword drawn - both hands on the grip",
+  "msg.greatsword.sheathed": "Greatsword sheathed on your back",
   "msg.greatsword.need_free_offhand": "Free your off-hand to draw the greatsword",
-  "msg.greatsword.not_holding": "You are not holding a greatsword"
+  "msg.greatsword.not_holding": "You are not holding a greatsword",
+  "msg.greatsword.charged": "Greatsword fully charged - release to slam!",
+  "tooltip.greatsword.two_handed": "Two-handed greatsword",
+  "tooltip.greatsword.state.drawn": "Drawn: slow, devastating combos",
+  "tooltip.greatsword.state.sheathed": "Sheathed on back",
+  "tooltip.greatsword.controls": "Z: draw / sheathe  |  V: shoulder tackle",
+  "tooltip.greatsword.controls.charge": "Left click: 3-hit combo  |  Hold right click: charged slam",
+  "tooltip.greatsword.controls.tackle": "Right click while sheathed: quick draw"
 }
