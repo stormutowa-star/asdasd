@@ -22,10 +22,10 @@ public final class ClientSetup {
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.WOODCUTTER.get(), ctx ->
                 new GeoEntityRenderer<WoodcutterEntity>(ctx,
-                        new DefaultedEntityGeoModel<WoodcutterEntity>(new ResourceLocation(LenadorBosque.MODID, "woodcutter"))));
+                        new DefaultedEntityGeoModel<WoodcutterEntity>(ResourceLocation.fromNamespaceAndPath(LenadorBosque.MODID,"woodcutter"))));
 
         event.registerEntityRenderer(ModEntities.DEAD_DEER.get(), ctx ->
                 new GeoEntityRenderer<DeadDeerEntity>(ctx,
-                        new DefaultedEntityGeoModel<DeadDeerEntity>(new ResourceLocation(LenadorBosque.MODID, "dead_deer"))));
+                        new DefaultedEntityGeoModel<DeadDeerEntity>(ResourceLocation.fromNamespaceAndPath(LenadorBosque.MODID,"dead_deer"))));
     }
 }
