@@ -1,0 +1,39 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "idle": {
+      "loop": true,
+      "animation_length": 4.0,
+      "bones": {
+        "head": {"rotation": {"0.0": [0, 0, 0], "2.0": [0, -4, 0], "4.0": [0, 0, 0]}},
+        "body": {"rotation": {"0.0": [0, 0, 0], "2.0": [1, 0, 0], "4.0": [0, 0, 0]}}
+      }
+    },
+    "walk": {
+      "loop": true,
+      "animation_length": 1.0,
+      "bones": {
+        "leftLeg":  {"rotation": {"0.0": [-30, 0, 0], "0.5": [30, 0, 0], "1.0": [-30, 0, 0]}},
+        "rightLeg": {"rotation": {"0.0": [30, 0, 0], "0.5": [-30, 0, 0], "1.0": [30, 0, 0]}}
+      }
+    },
+    "chop": {
+      "loop": false,
+      "animation_length": 2.0,
+      "bones": {
+        "rightArm": {"rotation": {"0.0": [0, 0, 0], "0.6": [-150, 0, 0], "1.0": [30, 0, 0], "1.3": [40, 0, 0], "2.0": [0, 0, 0]}},
+        "body": {"rotation": {"0.0": [0, 0, 0], "1.0": [10, 0, 0], "2.0": [0, 0, 0]}}
+      }
+    },
+    "kneel": {
+      "loop": false,
+      "animation_length": 1.5,
+      "bones": {
+        "leftLeg":  {"rotation": {"0.0": [0, 0, 0], "1.5": [-90, 0, 0]}},
+        "rightLeg": {"rotation": {"0.0": [0, 0, 0], "1.5": [-90, 0, 0]}},
+        "body":     {"rotation": {"0.0": [0, 0, 0], "1.5": [25, 0, 0]}},
+        "head":     {"rotation": {"0.0": [0, 0, 0], "1.5": [20, 0, 0]}}
+      }
+    }
+  }
+}

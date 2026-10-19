@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "Todos los derechos reservados"
+issueTrackerURL = ""
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "El Leñador del Bosque"
+authors = "Tu amigo y tú"
+description = '''
+Una historia de terror corta dentro de Minecraft. En la Arboleda de Ámbar, un leñador
+llamado Tomás vive junto a un roble que no debió cortar. Tus decisiones deciden cómo termina.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "forge"
+mandatory = true
+versionRange = "[52,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[4.5,)"
+ordering = "AFTER"
+side = "BOTH"
