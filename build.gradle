@@ -1,62 +1,55 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[7.0.3,8)'
 }
 
-group = 'com.lenadorbosque'
 version = project.mod_version
+group = 'com.lenadorbosque'
+
 base {
     archivesName = project.mod_id
 }
 
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 minecraft {
     mappings channel: 'official', version: project.minecraft_version
-    copyIdeResources = true
 
     runs {
-        client {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.main"
-            property 'forge.enabledGameTestNamespaces', project.mod_id
-            mods {
-                "${project.mod_id}" {
-                    source sourceSets.main
-                }
-            }
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
         }
 
-        server {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.main"
-            property 'forge.enabledGameTestNamespaces', project.mod_id
-            mods {
-                "${project.mod_id}" {
-                    source sourceSets.main
-                }
-            }
+        register('client')
+
+        register('server') {
+            args '--nogui'
         }
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
 repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
     maven {
         name = 'GeckoLib'
         url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
     }
+    mavenCentral()
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.minecraft_version}:${project.geckolib_version}")
+    implementation minecraft.dependency("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}".toString())
+    implementation "software.bernie.geckolib:geckolib-forge-${project.minecraft_version}:${project.geckolib_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }
 
 tasks.named('processResources', ProcessResources).configure {
