@@ -13,3 +13,6 @@ sin pedirle que elija agentes, y reparte tú mismo las partes así:
 Tú solo: planificas, delegas, revisas los resúmenes y das al usuario el resultado final breve.
 Haz tú directamente solo lo trivial (una respuesta corta o un cambio de una línea ya localizado).
 No lances varios subagentes en paralelo si uno basta.
+
+Límites fijos: al lanzar un subagente no cambies nunca su `model` ni su `effort`;
+usa siempre los de su archivo (haiku low, sonnet medium, opus high). Nunca uses effort `max` o `xhigh`.
