@@ -16,7 +16,6 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -55,7 +54,6 @@ public class LooreCommander extends LooreMob implements RangedAttackMob {
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.1D, false));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 0.7D));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 12.0F));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override

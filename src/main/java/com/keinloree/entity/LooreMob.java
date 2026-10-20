@@ -111,9 +111,34 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
         this.poseHold = ticks;
     }
 
+    /** Los mobs vanilla ignoran a los jugadores en creativo; la faccion Loree no. */
+    private void acquireTarget() {
+        LivingEntity cur = this.getTarget();
+        if (cur != null && cur.isAlive() && !(cur instanceof net.minecraft.world.entity.player.Player pl && pl.isSpectator())) {
+            return;
+        }
+        double range = this.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE);
+        net.minecraft.world.entity.player.Player p = this.level().getNearestPlayer(this, range);
+        this.setTarget(p != null && p.isAlive() && !p.isSpectator() ? p : null);
+    }
+
+    /** Golpe cuerpo a cuerpo que empuja tambien a jugadores en creativo. */
+    @Override
+    public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
+        if (target instanceof LivingEntity living) {
+            this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+            this.strike(living, (float) this.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE), 0.6D);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void aiStep() {
         super.aiStep();
+        if (!this.level().isClientSide && this.tickCount % 10 == 0) {
+            this.acquireTarget();
+        }
         if (!this.level().isClientSide && this.poseHold > 0) {
             this.poseHold--;
             if (this.poseHold == 0) {
