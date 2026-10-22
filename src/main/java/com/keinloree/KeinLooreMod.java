@@ -1,6 +1,7 @@
 package com.keinloree;
 
 import com.keinloree.client.KeinLooreClient;
+import com.keinloree.entity.CargoShip;
 import com.keinloree.entity.Droid;
 import com.keinloree.entity.KeinLooreEntity;
 import com.keinloree.entity.LooreCommander;
@@ -60,6 +61,14 @@ public class KeinLooreMod {
             .clientTrackingRange(16)
             .build(MODID + ":loree_warlord"));
 
+    /** Nave de carga de Kein Loree: vuela del hangar de la nave nodriza hasta las bases. */
+    public static final RegistryObject<EntityType<CargoShip>> CARGO_SHIP = ENTITY_TYPES.register("cargo_ship", () -> EntityType.Builder
+            .of(CargoShip::new, MobCategory.MISC)
+            .sized(8.6F, 4.2F)
+            .clientTrackingRange(16)
+            .updateInterval(1)
+            .build(MODID + ":cargo_ship"));
+
     /** Nucleo de Decodificacion: activa la señal (usar) y acepta la oferta de Kein Loree (clic sobre el). */
     public static final RegistryObject<Item> DECODE_CORE = ITEMS.register("decode_core",
             () -> new DecodeCoreItem(new Item.Properties().stacksTo(16)));
@@ -76,6 +85,9 @@ public class KeinLooreMod {
     public static final RegistryObject<Item> WARLORD_EGG = ITEMS.register("warlord_egg",
             () -> new LooreEggItem(() -> LOREE_WARLORD.get(), new Item.Properties().stacksTo(16)));
 
+    public static final RegistryObject<Item> CARGO_SHIP_EGG = ITEMS.register("cargo_ship_egg",
+            () -> new LooreEggItem(() -> CARGO_SHIP.get(), new Item.Properties().stacksTo(16)));
+
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("keinloree_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.keinloree"))
             .withTabsBefore(CreativeModeTabs.COMBAT)
@@ -86,6 +98,7 @@ public class KeinLooreMod {
                 output.accept(DROID_EGG.get());
                 output.accept(COMMANDER_EGG.get());
                 output.accept(WARLORD_EGG.get());
+                output.accept(CARGO_SHIP_EGG.get());
             })
             .build());
 
@@ -108,5 +121,6 @@ public class KeinLooreMod {
         event.put(DROID.get(), Droid.createAttributes().build());
         event.put(LOREE_COMMANDER.get(), LooreCommander.createAttributes().build());
         event.put(LOREE_WARLORD.get(), LooreWarlord.createAttributes().build());
+        event.put(CARGO_SHIP.get(), CargoShip.createAttributes().build());
     }
 }

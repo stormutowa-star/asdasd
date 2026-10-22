@@ -9,5 +9,7 @@
   "entity.keinloree.droid": "Loree Droid",
   "entity.keinloree.loree_commander": "Loree Commander",
   "entity.keinloree.loree_warlord": "Loree Warlord",
-  "entity.keinloree.laser_marker": "Decode marker"
+  "entity.keinloree.laser_marker": "Decode marker",
+  "item.keinloree.cargo_ship_egg": "Loree Cargo Ship Spawn Egg",
+  "entity.keinloree.cargo_ship": "Loree Cargo Ship"
 }

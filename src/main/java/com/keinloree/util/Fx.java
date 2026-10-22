@@ -5,6 +5,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -57,6 +58,33 @@ public final class Fx {
             double a = phase + Math.PI * 2.0D * i / points;
             level.sendParticles(particle, center.x + Math.cos(a) * radius, center.y, center.z + Math.sin(a) * radius,
                     1, 0.0D, 0.0D, 0.0D, 0.0D);
+        }
+    }
+
+    /** Particulas visibles desde lejos (hasta 512 bloques): para la nave nodriza y las naves de carga. */
+    public static void burstFar(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {
+        for (ServerPlayer p : level.players()) {
+            level.sendParticles(p, particle, true, at.x, at.y, at.z, count, spread, spread, spread, speed);
+        }
+    }
+
+    /** Linea de particulas visible desde lejos. */
+    public static void lineFar(ServerLevel level, Vec3 a, Vec3 b, ParticleOptions particle, double step) {
+        Vec3 d = b.subtract(a);
+        double len = d.length();
+        int n = Math.max(1, (int) Math.ceil(len / step));
+        for (int i = 0; i <= n; i++) {
+            Vec3 q = a.add(d.scale(i / (double) n));
+            burstFar(level, particle, q, 1, 0.0D, 0.0D);
+        }
+    }
+
+    /** Anillo horizontal de particulas visible desde lejos. */
+    public static void ringFar(ServerLevel level, Vec3 center, double radius, int points, ParticleOptions particle, double phase) {
+        for (int i = 0; i < points; i++) {
+            double a = phase + Math.PI * 2.0D * i / points;
+            burstFar(level, particle, new Vec3(center.x + Math.cos(a) * radius, center.y, center.z + Math.sin(a) * radius),
+                    1, 0.0D, 0.0D);
         }
     }
 
