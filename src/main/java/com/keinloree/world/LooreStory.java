@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -339,7 +340,7 @@ public class LooreStory extends SavedData {
         this.nextBaseIn = BASE_INTERVAL;
         this.bases.add(g);
         Vec3 hover = new Vec3(g.getX() + 0.5D, g.getY() + 30.0D, g.getZ() + 0.5D);
-        Vec3 land = new Vec3(g.getX() + 0.5D, g.getY(), g.getZ() + 1.5D);
+        Vec3 land = new Vec3(g.getX() + 0.5D, g.getY(), g.getZ() + 3.0D);
         ship.dispatch(this.exitPoint(ship), hover, land, g, false, true, true, 0, 180.0F);
         say(level, "Nave de carga despachada hacia X " + g.getX() + ", Z " + g.getZ() + ". Base militar "
                 + this.basesBuilt + " de " + OUTPOSTS + ".");
@@ -554,7 +555,7 @@ public class LooreStory extends SavedData {
             return;
         }
         ship.markReleased();
-        Vec3 rear = ship.local(0.0D, 0.0D, -6.0D);
+        Vec3 rear = ship.local(0.0D, 0.0D, -7.8D);
         spawnGarrison(level, rear, ship.getY(), ship.isFort());
     }
 
@@ -669,22 +670,40 @@ public class LooreStory extends SavedData {
                 continue;
             }
             double a = (i - (droids - 1) / 2.0D) * 1.6D;
-            droid.moveTo(rear.x + a, groundY, rear.z + (i % 2) * 1.5D, (float) (i * 40), 0.0F);
+            placeSafe(level, droid, rear.x + a, groundY, rear.z + (i % 2) * 1.5D, (float) (i * 40));
             level.addFreshEntity(droid);
         }
         LooreCommander c = KeinLooreMod.LOREE_COMMANDER.get().create(level);
         if (c != null) {
-            c.moveTo(rear.x, groundY, rear.z - 2.5D, 0.0F, 0.0F);
+            placeSafe(level, c, rear.x, groundY, rear.z - 2.5D, 0.0F);
             level.addFreshEntity(c);
         }
         if (fortress) {
             LooreWarlord w = KeinLooreMod.LOREE_WARLORD.get().create(level);
             if (w != null) {
-                w.moveTo(rear.x + 3.0D, groundY, rear.z - 3.0D, 0.0F, 0.0F);
+                placeSafe(level, w, rear.x + 3.0D, groundY, rear.z - 3.0D, 0.0F);
                 level.addFreshEntity(w);
             }
         }
         Fx.burst(level, Fx.CODE, new Vec3(rear.x, groundY + 1.0D, rear.z), 30, 1.5D, 0.2D);
+    }
+
+    /** Coloca a la criatura en el hueco libre mas cercano al punto deseado (no dentro de muros ni cajas). */
+    private static void placeSafe(ServerLevel level, Mob mob, double x, double y, double z, float yaw) {
+        for (int ring = 0; ring <= 6; ring++) {
+            int steps = Math.max(1, ring * 6);
+            for (int k = 0; k < steps; k++) {
+                double ang = k * (Math.PI * 2.0D / steps);
+                double px = x + Math.cos(ang) * ring;
+                double pz = z + Math.sin(ang) * ring;
+                AABB box = mob.getType().getDimensions().makeBoundingBox(px, y, pz);
+                if (level.noCollision(box) && !level.containsAnyLiquid(box)) {
+                    mob.moveTo(px, y, pz, yaw, 0.0F);
+                    return;
+                }
+            }
+        }
+        mob.moveTo(x, y + 3.0D, z, yaw, 0.0F);
     }
 
     /** Mensaje de Kein Loree a todos los jugadores del servidor. */

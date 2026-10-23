@@ -49,15 +49,21 @@ public final class OutpostDesign {
         if (fort) {
             keep(g, 0, -(r - 10));
         } else {
-            spire(g, 0, -(r - 5));
+            spire(g, 0, -(r - 4));
         }
 
         // 4. Barracones y cajas
         int bx = (int) Math.round(r * 0.58D);
         barracks(g, bx, -(int) Math.round(r * 0.05D), fort ? 3 : 2, fort ? 6 : 4, -1);
         barracks(g, -bx, -(int) Math.round(r * 0.05D), fort ? 3 : 2, fort ? 6 : 4, 1);
-        crates(g, (int) Math.round(r * 0.35D), (int) Math.round(r * 0.55D));
-        crates(g, -(int) Math.round(r * 0.35D), (int) Math.round(r * 0.55D));
+        if (fort) {
+            crates(g, (int) Math.round(r * 0.35D), (int) Math.round(r * 0.55D));
+            crates(g, -(int) Math.round(r * 0.35D), (int) Math.round(r * 0.55D));
+        } else {
+            // las cajas se apartan de donde aterriza la nave de carga (centro y sur de la plataforma)
+            crates(g, 2, -4);
+            crates(g, -4, -4);
+        }
         crates(g, (int) Math.round(r * 0.50D), -(int) Math.round(r * 0.45D));
 
         // 5. Torretas sobre el muro y pilones exteriores

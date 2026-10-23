@@ -202,7 +202,7 @@ public class CargoShip extends Mob {
 
     @Override
     public AABB getBoundingBoxForCulling() {
-        return this.getBoundingBox().inflate(3.0D, 1.0D, 3.0D);
+        return this.getBoundingBox().inflate(3.5D, 2.5D, 3.5D);
     }
 
     @Override
@@ -569,7 +569,7 @@ public class CargoShip extends Mob {
             double bx = Math.sin(yaw) * 0.25D * this.thrust;
             double bz = -Math.cos(yaw) * 0.25D * this.thrust;
             for (int s = -1; s <= 1; s += 2) {
-                Vec3 n = this.local(s * 3.3D, 2.15D, -5.35D);
+                Vec3 n = this.local(s * 3.75D, 2.5D, -6.1D);
                 this.level().addParticle(FLAME, n.x, n.y, n.z, bx, 0.0D, bz);
                 if (this.thrust > 0.5F && this.random.nextInt(2) == 0) {
                     this.level().addParticle(FLAME_CORE, n.x, n.y, n.z, bx * 1.4D, 0.0D, bz * 1.4D);
@@ -577,7 +577,7 @@ public class CargoShip extends Mob {
             }
         }
         if (this.lift > 0.08F) {
-            double[][] spots = {{3.3D, 1.2D, -1.0D}, {-3.3D, 1.2D, -1.0D}, {0.0D, 1.35D, 3.2D}};
+            double[][] spots = {{3.75D, 1.2D, -2.75D}, {-3.75D, 1.2D, -2.75D}, {0.0D, 1.2D, 4.25D}};
             for (double[] sp : spots) {
                 Vec3 n = this.local(sp[0], sp[1], sp[2]);
                 this.level().addParticle(FLAME, n.x, n.y, n.z, 0.0D, -0.2D * this.lift, 0.0D);
@@ -590,7 +590,7 @@ public class CargoShip extends Mob {
 
     /** Haz de escaneo verde desde el vientre de la nave hasta el centro de la base que se esta imprimiendo. */
     private void beamFx(ServerLevel level) {
-        Vec3 from = this.position().add(0.0D, 1.2D, 0.0D);
+        Vec3 from = this.local(0.0D, 1.2D, 4.25D);
         Vec3 to = new Vec3(this.base.getX() + 0.5D, this.base.getY() + 0.5D, this.base.getZ() + 0.5D);
         for (int i = 0; i < 14; i++) {
             double t = this.random.nextDouble();
