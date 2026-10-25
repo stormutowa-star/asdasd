@@ -1,0 +1,1070 @@
+# =====================================================================================
+#  KEIN LOREE — LA SEXTA HORA
+#  Guion de la historia. Formato: ver docs (20-sistemas-base.md, "Guion").
+#  Hablantes: KEIN RAZAKO ORREL OFICIAL SOLDADO ALBA CENIT OCASO MEDIANOCHE ECLIPSE VOZ NARRADOR JUGADOR
+#  {jugador} = nombre del héroe.
+# =====================================================================================
+
+# -------------------------------------------------------------------------------------
+#  LA VOZ (el propio mundo). Mensajes sueltos a lo largo de la historia.
+# -------------------------------------------------------------------------------------
+[escena voz.1]
+@sonido keinloree:glitch 0.6 0.7
+VOZ: ...¿m-me... oyes?
+@espera 30
+VOZ: N-no estás solo. Ya n-no.
+
+[escena voz.2]
+@sonido keinloree:glitch 0.6 0.6
+VOZ: No les m-mires a los ojos. Los ojos v-verdes... cuentan.
+
+[escena voz.3]
+@sonido keinloree:glitch 0.6 0.8
+VOZ: Cinco. Cinco p-pilares. Siempre f-fueron... s-seis.
+
+[escena voz.4]
+@sonido keinloree:glitch 0.7 0.5
+VOZ: M-me duele la noche. ¿L-la oyes caer?
+
+[escena voz.5]
+@sonido keinloree:glitch 0.6 0.7
+VOZ: Él también m-me escucha. Él t-también dice que me q-quiere.
+
+[escena voz.6]
+@sonido keinloree:glitch 0.6 0.7
+VOZ: No le o-odies a él. Odia el S-SILENCIO.
+
+[escena voz.7]
+@sonido keinloree:glitch 0.7 0.6
+VOZ: Si te vas... ¿q-quién se acordará de m-mí?
+
+[escena voz.8.amanecer]
+@sonido keinloree:glitch 0.4 1.0
+VOZ: Gracias. Ahora p-puedo... dormir sin miedo.
+
+[escena voz.8.sexta]
+@sonido keinloree:glitch 0.4 1.2
+VOZ: Seis. Otra vez s-seis. Como al principio.
+
+[escena voz.8.nexo]
+@sonido keinloree:glitch 0.8 0.3
+VOZ: ...
+@espera 60
+VOZ: ......
+
+# -------------------------------------------------------------------------------------
+#  PRÓLOGO — LA HORA QUE FALTA
+# -------------------------------------------------------------------------------------
+[escena prologo.inquietud]
+@accion cielo_parpadeo
+@accion animales_miran
+NARRADOR: Por un instante, el sol parpadea. Verde.
+NARRADOR: Los animales han dejado de pastar. Todos miran hacia el mismo punto del cielo.
+NARRADOR: Allí no hay nada. Todavía.
+
+[escena prologo.llegada]
+@sonido keinloree:hyperspace 4.0 0.8
+@fx temblor 60 1.5
+@titulo PRÓLOGO | La Hora que Falta
+@espera 40
+NARRADOR: El cielo se abre como una herida.
+NARRADOR: Algo más grande que una montaña sale de ninguna parte... y frena.
+@espera 60
+NARRADOR: Su sombra cae sobre el mundo. Fría. Paciente.
+@espera 80
+NARRADOR: Se detiene por encima de las nubes. Y espera.
+
+[escena prologo.transmision]
+@accion holograma_aparece
+@cinematica transmision
+@sonido keinloree:hologram 2.0 1.0
+@espera 50
+KEIN: Habitantes de este mundo.
+KEIN: No temáis al cielo. El cielo no os hará daño. Yo tampoco... si no me obligáis.
+KEIN: Mi nombre es Kein Loree. He cruzado más mundos de los que vuestras estrellas podrían contar.
+KEIN: Todos eran como el vuestro. Hermosos. Frágiles. Solos.
+KEIN: Y todos, tarde o temprano, morían en silencio.
+@espera 20
+KEIN: Yo he venido a impedirlo.
+KEIN: A partir de hoy, este mundo forma parte del Nexo. Nada de lo que hagáis volverá a perderse.
+KEIN: Cada piedra que pongáis. Cada paso. Cada respiración.
+KEIN(t=100): Yo lo veré todo.
+@espera 30
+@accion holograma_mira_heroe
+@sonido keinloree:kein_whisper 1.5 0.8
+@fx glitch 20 0.6 4CFF7A
+KEIN: ...
+KEIN(t=90): Tú.
+KEIN(t=110): Te veo, {jugador}.
+@accion holograma_desaparece
+@espera 40
+NARRADOR: La imagen se deshace en ceniza verde. El silencio que deja es peor que la voz.
+
+# -------------------------------------------------------------------------------------
+#  ACTO I — EL CIELO OCUPADO
+# -------------------------------------------------------------------------------------
+[escena act1.desembarco]
+@titulo CAPÍTULO I | Desembarco
+NARRADOR: Del vientre de la nave caen formas más pequeñas. Naves de carga. Bajan sin prisa, como quien llega a su casa.
+NARRADOR: Allí donde tocan tierra, el suelo empieza a cambiar.
+
+[escena radio.1]
+@sonido keinloree:glitch 0.4 1.4
+OFICIAL: ...Lanzadera Tres a Sentencia. Zona de aterrizaje asegurada. Ninguna resistencia.
+OFICIAL: ...Recibido, Tres. El Lord quiere la primera base antes del anochecer.
+OFICIAL: ...¿Y los habitantes, señor?
+OFICIAL: ...Cuéntelos. Él quiere saber cuántos son. Él siempre quiere saberlo.
+
+[escena radio.2]
+@sonido keinloree:glitch 0.4 1.3
+OFICIAL: ...Patrulla Siete. Hemos encontrado un poblado. Casas de madera. Campos.
+OFICIAL: ...¿Resistencia?
+OFICIAL: ...Negativo. Nos miran. Solo nos miran.
+
+[escena radio.3]
+@sonido keinloree:glitch 0.4 1.2
+OFICIAL: ...Escuadrón de caza, mantengan la formación sobre el sector norte.
+OFICIAL: ...Señor, hay algo en las lecturas. Una columna de luz que no estaba ahí ayer.
+OFICIAL: ...No la mire. Es una orden del Ejecutor. No la mire.
+
+[escena radio.4]
+@sonido keinloree:glitch 0.4 1.1
+OFICIAL: ...A todas las unidades. Si encuentran al habitante {jugador}, no disparen a matar.
+OFICIAL: ...El Lord quiere hablar con él. Después, haremos lo que diga el Lord.
+
+[escena radio.5]
+@sonido keinloree:glitch 0.4 1.0
+SOLDADO: ...Sargento. ¿Usted recuerda su mundo?
+OFICIAL: ...Silencio en el canal.
+SOLDADO: ...Yo creo que tenía un perro. Creo.
+OFICIAL: ...He dicho silencio.
+
+[escena radio.6]
+@sonido keinloree:glitch 0.4 0.9
+OFICIAL: ...Torre de control. Perdemos contacto con la base del valle.
+OFICIAL: ...Lo último que enviaron fue una imagen. Cinco luces. Y después nada.
+
+[escena act1.patrulla]
+@sonido keinloree:alarm 0.8 1.3
+OFICIAL: Habitante localizado. Iniciando protocolo de contención.
+OFICIAL: No se resista. El Nexo no castiga. El Nexo corrige.
+
+[escena act1.primer_sangre]
+@sonido keinloree:kein_whisper 1.0 0.9
+@susurro Has roto algo que no era tuyo, {jugador}.
+@espera 60
+@susurro Interesante. Muy interesante.
+
+[escena act1.huida]
+@susurro Huyes bien. Pero también huir es una respuesta.
+@espera 40
+@susurro Y yo colecciono respuestas.
+
+[escena act1.muerte]
+@susurro Levántate.
+@espera 50
+@susurro Aún no he terminado de mirarte.
+
+[escena act1.ecos]
+@titulo CAPÍTULO II | Ecos
+NARRADOR: Pasan las horas. La nave no se mueve. No necesita moverse.
+NARRADOR: Cada noche hay una luz verde más en el horizonte. Cada mañana, un sonido menos en el bosque.
+
+[escena act1.aldeano]
+@sonido keinloree:kein_beam 2.0 0.6
+NARRADOR: El haz baja del cielo sin ruido. Envuelve al aldeano como una mano.
+NARRADOR: No grita.
+NARRADOR: Ya no tiene boca para hacerlo.
+@espera 40
+SOLDADO: ...Unidad incorporada. Esperando órdenes.
+@espera 30
+@susurro ¿Lo has visto, {jugador}? Ya no tendrá frío. Ni hambre. Ni miedo.
+@susurro Ni nombre.
+
+[escena act1.cazadores]
+@sonido keinloree:alarm 0.6 1.1
+OFICIAL: Escuadra de caza, el objetivo está en su sector. El Lord lo quiere vivo... o casi.
+@susurro Te he mandado compañía. Me pareció que te aburrías.
+
+[escena act1.ejecutor]
+@titulo CAPÍTULO III | El Ejecutor
+NARRADOR: Esa mañana, una sola nave baja del Sentencia. No trae soldados.
+NARRADOR: Trae a uno solo.
+
+[escena act1.razako]
+@sonido keinloree:razako_roar 1.5 0.7
+@cinematica razako_llega
+@espera 60
+RAZAKO: Así que tú eres el habitante que no se arrodilla.
+RAZAKO: Mi señor quiere conocerte.
+@espera 20
+RAZAKO(t=80): Yo no.
+@susurro No le hagas enfadar, {jugador}. A mí me cuesta mucho encontrar Ejecutores.
+
+[escena act1.razako_golpe]
+RAZAKO: ¿Eso es todo? En Veyra los niños pegaban más fuerte.
+
+[escena act1.calendarios_llegan]
+@fx tiempo_detenido 400 1.0 E8E8FF
+@sonido keinloree:time_stop 2.0 0.8
+@accion congelar_legion
+NARRADOR: La espada de Razako se detiene a un palmo de tu cara.
+NARRADOR: No porque él quiera. El viento también se ha detenido. Las hojas. El polvo.
+NARRADOR: El tiempo.
+@espera 40
+@cinematica calendarios_llegan
+@accion calendario_entra alba
+ALBA: Primera Hora. Alba.
+@espera 20
+@accion calendario_entra cenit
+CENIT: ¡Segunda Hora! ¡Cénit! ¡Y llego tarde, como siempre!
+@espera 20
+@accion calendario_entra ocaso
+OCASO: Tercera Hora. Ocaso. Que conste que yo no quería venir.
+@espera 20
+@accion calendario_entra medianoche
+MEDIANOCHE: Cuarta Hora. Medianoche.
+@espera 20
+@accion calendario_entra eclipse
+ECLIPSE: Quinta Hora. Eclipse.
+ECLIPSE(t=90): Y tú, Ejecutor, estás en nuestro mundo.
+@accion descongelar_legion
+@sonido keinloree:time_tick 1.5 0.6
+RAZAKO: ...Calendarios.
+RAZAKO: Me preguntaba cuándo saldríais de debajo de vuestras piedras.
+
+[escena act1.razako_retirada]
+RAZAKO: Cinco contra uno. En Veyra también lo intentaron así.
+RAZAKO: Veyra ya no existe.
+@accion razako_retira
+RAZAKO: Nos veremos, Horas. Y tú, habitante... tú y yo no hemos terminado.
+ECLIPSE: Dejadle marchar. Hoy no es su día.
+OCASO: Nunca es su día. Ese es el problema.
+
+[escena act1.base]
+@cinematica base_destruida
+CENIT: ¿Y esto? ¿Esto qué es? ¿Una base? ¡Si parece una caja de zapatos!
+CENIT: ¡Mediodía, despierta!
+@accion base_destruir
+@sonido keinloree:explosion_big 3.0 0.8
+@fx temblor 40 2.0
+@espera 60
+NARRADOR: La base se rompe como un juguete. Los soldados se deshacen en glifos verdes antes de tocar el suelo.
+
+[escena act1.oferta]
+ALBA: ¿Estás bien? No, claro que no. Nadie lo estaría.
+ALBA: Siento que tu primer día con nosotros haya sido así.
+JUGADOR: ¿Quiénes sois?
+MEDIANOCHE: Somos el tiempo de este mundo.
+MEDIANOCHE: Cada mundo nace de una semilla. Y cada semilla guarda sus horas. Nosotros somos las de éste.
+CENIT: Amanecer, mediodía, atardecer, medianoche... y Eclipse, que es la jefa y no se ríe nunca.
+ECLIPSE: Cénit.
+CENIT: ¿Ves? Nunca.
+ECLIPSE: Dormimos bajo la piedra hasta que el mundo nos necesita. Cada uno tiene un Pilar. Mientras los cinco sigan en pie, ese hombre no puede leer este mundo.
+OCASO: "Leer". Qué palabra tan bonita para lo que hace. Se lo come. Lo mastica. Y lo convierte en soldados como esos.
+JUGADOR: ¿Y yo qué pinto en esto?
+ALBA: Le has hecho frente. Sin armas, sin saber nada. Eso no lo hace cualquiera.
+ECLIPSE: Y hay algo más. Algo que no podemos hacer nosotros.
+ECLIPSE: Nosotros pertenecemos a este mundo. Tú no del todo. Tú vienes de... fuera.
+OCASO: Lo cual, para que conste, a mí me parece un motivo para desconfiar. No para fiarse.
+ALBA: Únete a nosotros. Te daremos una armadura. Y un arma.
+MEDIANOCHE: No es una armadura cualquiera. No es un arma cualquiera.
+ECLIPSE: Decide.
+@eleccion unirse
+> si: Me uno a vosotros.
+> no: No quiero formar parte de esto.
+
+[escena act1.equipo]
+ALBA: Sabía que dirías que sí. Lo tienes en la cara.
+@accion dar_equipo
+@sonido keinloree:rareiri_ultimate 1.5 1.2
+@fx destello 20 1.0 FFFFFF
+ECLIPSE: Esta armadura perteneció a alguien que ya no está. Cuídala mejor que él.
+MEDIANOCHE: Y esa hoja se llama RareIri. La hoja que corta las horas.
+OCASO: La hoja que corta lo que sea, si se la deja. Ten cuidado de a quién apuntas.
+CENIT: ¡Y póntela ya, que estás muy feo sin armadura!
+@accion encender_pilares
+@cinematica pilares_encendidos
+ALBA: Mira. Allí. Y allí. Nuestros Pilares.
+ALBA: Ven a vernos. A cada uno. Te enseñaremos lo que esa hoja sabe hacer.
+@accion calendarios_a_pilares
+
+[escena act1.rechazo]
+ALBA: Lo entiendo. De verdad que sí.
+@accion dejar_equipo
+ECLIPSE: Lo dejamos aquí. Nadie más podrá tocarlo.
+OCASO: Ni siquiera nos ha dado las gracias. Me cae mejor.
+MEDIANOCHE: Cuando estés listo, la hoja te estará esperando.
+@accion encender_pilares
+@accion calendarios_a_pilares
+
+[escena act1.aceptado]
+@sonido keinloree:rareiri_hum 1.2 1.0
+@susurro (La voz de Alba, muy lejos) Sabía que volverías.
+ALBA: Ven a vernos. Te esperamos en los Pilares.
+
+# -------------------------------------------------------------------------------------
+#  ACTO II — LAS CINCO HORAS
+# -------------------------------------------------------------------------------------
+[escena act2.inicio]
+@titulo CAPÍTULO IV | Aprendiz de las Horas
+NARRADOR: Cinco columnas de luz atraviesan el cielo. Cinco horas que nadie había visto nunca.
+NARRADOR: Y sobre todas ellas, inmóvil, la nave.
+@susurro Cinco luces. Qué bonitas. Las apagaré con cuidado.
+
+[escena act2.llegada_pilar]
+NARRADOR: El Pilar zumba como un corazón muy grande. El aire sabe a hierro y a lluvia.
+
+# --- ALBA ---
+[escena act2.alba_inicio]
+@cinematica pilar_orbita
+ALBA: ¡Viniste primero a verme a mí! Los demás se van a poner celosos.
+ALBA: Yo soy el amanecer. Lo primero que existe cada día. Por eso soy rápida: si llego tarde, no hay día.
+ALBA: RareIri recuerda cómo moverse. Solo tienes que dejarla.
+@accion desbloquear primer_rayo
+ALBA: Pulsa la técnica y piensa en avanzar. No en golpear: en llegar.
+ALBA: Te he traído unos ecos. Sombras de soldados. No sienten nada, así que no te cortes.
+@accion alba_ecos
+
+[escena act2.alba_fin]
+ALBA: ¡Eso es! ¡Has llegado antes que tu propia sombra!
+ALBA: ¿Sabes? Cuando despertamos, yo tenía miedo. Hacía tanto que dormíamos...
+ALBA: Pero luego te vi plantarle cara a Razako, y pensé: si ese habitante puede, yo también.
+JUGADOR: ¿Cuánto tiempo dormisteis?
+ALBA: Desde que este mundo nació. Las Horas despiertan una sola vez. Cuando se acaba el peligro...
+ALBA: ...volvemos a dormir. Para siempre.
+ALBA: No pongas esa cara. Es lo que somos.
+
+[escena act2.tras_alba]
+@susurro Corres muy rápido, {jugador}. Como ella.
+@susurro Los rápidos son los primeros en llegar. Y los primeros en caer.
+
+# --- CÉNIT ---
+[escena act2.cenit_inicio]
+@cinematica pilar_orbita
+CENIT: ¡Mi aprendiz! ¡Por fin! Alba me dijo que eras bajito. No mintió.
+CENIT: Yo soy el mediodía. La hora en la que el sol pesa. Y lo que pesa, golpea.
+@accion desbloquear llamarada
+CENIT: Salta y deja caer todo tu peso con la hoja por delante. ¡Como si el suelo te debiera dinero!
+CENIT: Y ahora, la parte divertida: vienen visitas. Defiende mi Pilar conmigo.
+@accion cenit_oleadas
+
+[escena act2.cenit_oleada]
+CENIT: ¡Otra nave! ¡Les gusta hacer cola, a estos!
+
+[escena act2.cenit_oleada2]
+CENIT: ¡La última, la última! ¡Y trae a un comandante con capa! ¡Las capas arden genial!
+
+[escena act2.cenit_fin]
+CENIT: ¡JA! ¿Lo has visto? ¡Lo has visto! ¡Ni una grieta en mi Pilar!
+CENIT: Eh. Oye. En serio un momento.
+CENIT: Yo grito mucho porque si no grito, pienso. Y si pienso, me acuerdo de que cuando esto acabe nos dormiremos otra vez.
+CENIT: Así que grito. ¿Vale? Ya está. Ya se me ha pasado. ¡A golpear cosas!
+
+[escena act2.tras_cenit]
+@susurro Golpeas con rabia. Bien. La rabia es honesta.
+@susurro Cuando estés en mi puente, quiero ver esa misma rabia.
+
+# --- OCASO ---
+[escena act2.ocaso_inicio]
+@cinematica pilar_orbita
+OCASO: Vaya. El forastero con la espada prestada.
+OCASO: Te diré algo que los demás no te dirán: no me fío de ti. No es personal. No me fío de nadie que no sea de aquí.
+OCASO: Pero Eclipse me ha pedido que te enseñe. Y yo a Eclipse no le digo que no. Casi nunca.
+OCASO: Soy el atardecer. La hora en la que todo tiene dos sombras. Una de ellas, la mía, siempre está detrás de ti.
+@accion desbloquear paso_umbrio
+OCASO: Mira a tu enemigo. Desea estar detrás de él. Y estarás.
+OCASO: Hay tres escuadras escondidas en el bosque. Cada una con un comandante. Quiero los tres. Sin prisa. Sin ruido.
+@accion ocaso_escuadras
+
+[escena act2.ocaso_fin]
+OCASO: Mm. No ha estado mal. Para alguien de fuera.
+OCASO: ¿Quieres saber por qué no me fío? Mira tu hoja.
+OCASO: Las Horas no fabricamos armas. Las nuestras nacen con nosotros. Esa no nació con ninguno de los cinco.
+JUGADOR: ¿Entonces de quién es?
+OCASO: Pregúntaselo a Eclipse. Y fíjate en lo que tarda en contestar.
+
+[escena act2.tras_ocaso]
+@susurro Te ha dicho que desconfíes, ¿verdad? Ocaso siempre fue el más listo.
+@susurro Ah... ¿cómo sé yo eso? Buena pregunta, {jugador}. Muy buena pregunta.
+
+# --- MEDIANOCHE ---
+[escena act2.medianoche_inicio]
+@cinematica pilar_orbita
+MEDIANOCHE: Llegas cuando las estrellas están despiertas. Bien.
+MEDIANOCHE: Yo soy la medianoche. La hora más larga. La que más pesa.
+MEDIANOCHE: El peso no se combate. Se usa.
+@accion desbloquear pozo_estelar
+MEDIANOCHE: Lanza la estrella. Deja que todo caiga hacia ella. Luego, suéltala.
+MEDIANOCHE: Y sube. He dejado un camino entre las estrellas. Arriba te espero.
+@accion medianoche_camino
+
+[escena act2.medianoche_fin]
+MEDIANOCHE: Mira hacia abajo. Todo tu mundo. Pequeño. Tranquilo.
+MEDIANOCHE: Desde aquí arriba no se oye la guerra. Solo el viento.
+MEDIANOCHE: Hace mucho tiempo, antes de que existieran los mundos como el tuyo, hubo uno primero.
+MEDIANOCHE: Y en ese mundo, el calendario tenía seis horas.
+JUGADOR: ¿Seis?
+MEDIANOCHE: Seis. La sexta guardaba el instante entre un día y otro. El momento en que todo se guarda... y se cierra.
+MEDIANOCHE: Ya no se nombra. No me preguntes más. No esta noche.
+
+[escena act2.tras_medianoche]
+@susurro Has subido muy alto, {jugador}. Casi a mi altura.
+@susurro Medianoche te ha hablado de la sexta hora. Siempre fue la más sincera.
+
+# --- ECLIPSE ---
+[escena act2.eclipse_inicio]
+@cinematica pilar_orbita
+ECLIPSE: Bienvenido a mi Pilar.
+ECLIPSE: Soy Eclipse. La hora que no debería existir. Cuando el día se apaga a mediodía.
+ECLIPSE: Mi don es el más peligroso: detener el tiempo.
+@accion desbloquear hora_detenida
+ECLIPSE: Un instante quieto es un instante robado. No robes demasiados.
+ECLIPSE: En guardia. Tócame diez veces. Si puedes.
+@accion eclipse_duelo
+
+[escena act2.eclipse_fin]
+ECLIPSE: Suficiente.
+ECLIPSE: Lo haces bien. Mejor de lo que esperaba.
+ECLIPSE: Esa armadura te queda... como si la hubieran hecho para ti.
+JUGADOR: Ocaso dice que RareIri no nació con ninguno de vosotros.
+@espera 60
+ECLIPSE: Ocaso habla demasiado.
+ECLIPSE: Cuando llegue el momento, te lo contaré todo. Te lo prometo.
+ECLIPSE: Ese momento no es hoy.
+
+[escena act2.tras_eclipse]
+@susurro Eclipse te ha prometido la verdad. Qué generosa.
+@susurro Yo te la daría ahora mismo. Solo tienes que venir a buscarla.
+
+# --- EL PILAR CAÍDO ---
+[escena act2.alarma_pilar]
+@titulo CAPÍTULO V | El Pilar Caído
+@sonido keinloree:pillar_hum 2.0 0.5
+@fx glitch 30 0.8 6F7BFF
+MEDIANOCHE: Testigo... Testigo, ¿me oyes?
+MEDIANOCHE: Están aquí. En mi Pilar. Muchos. Y él... él está con ellos.
+MEDIANOCHE: Ven. Por favor. Ven deprisa.
+
+[escena act2.pilar_cae]
+@cinematica pilar_cae
+RAZAKO: La cuarta Hora. Medianoche. La que mira las estrellas.
+MEDIANOCHE: Razako. Tú también tenías estrellas, en Veyra. ¿Las recuerdas?
+RAZAKO(t=70): No.
+@accion pilar_cae medianoche
+@sonido keinloree:explosion_big 4.0 0.6
+@fx temblor 60 2.5
+@fx destello 15 0.8 6F7BFF
+NARRADOR: El Pilar se parte por la mitad. La luz se apaga como una vela que alguien pisa.
+@accion medianoche_capturada
+@sonido keinloree:chain 2.0 0.8
+RAZAKO: Lleváosla al Sentencia. El Lord quiere verla.
+RAZAKO: Y tú, habitante. Llegas tarde.
+@susurro Una hora menos, {jugador}. ¿Notas el silencio? Las noches serán más oscuras a partir de ahora.
+
+[escena act2.plan]
+@titulo Las ruinas de la noche
+ALBA: Se la han llevado. Se la han llevado y no hemos podido hacer nada.
+CENIT: ¡Pues vamos a buscarla! ¡Subimos ahí arriba y le rompo la nave en dos!
+ECLIPSE: No podemos, Cénit. Lo sabes.
+ECLIPSE: Esa nave está envuelta en el campo del Nexo. Es código que no es de este mundo. Si una Hora lo cruza... se deshace.
+OCASO: Pero él no es de este mundo. Él puede cruzarlo.
+OCASO: Qué casualidad tan conveniente, ¿no?
+ALBA: Ocaso, por favor.
+ECLIPSE: Necesitamos que entres en el Sentencia. Roba una de sus naves. Las bases tienen cazas aparcados.
+ECLIPSE: Entra por el hangar. Encuentra a Medianoche. Sácala de ahí.
+CENIT: Y si te encuentras a Razako... corre. Hasta que te diga yo que no corras.
+
+[escena act2.despegue]
+@sonido keinloree:fighter_pass 1.5 1.0
+OCASO: (Por radio) ¿Me oyes? Bien. Sube recto hacia la panza de la nave. El hangar está abierto por abajo.
+OCASO: No mires abajo. Y no mires a los cazas. Si les miras, te miran.
+
+[escena act2.sin_nave]
+OCASO: Te has entretenido mucho. Así que te he traído un regalo.
+OCASO: Un caza de la Legión. Su piloto ya no lo necesita.
+OCASO: No preguntes.
+
+[escena act2.infiltracion]
+@titulo CAPÍTULO VI | A bordo del Sentencia
+
+[escena act2.hangar]
+@sonido keinloree:destroyer_hum 2.0 0.8
+NARRADOR: El hangar es una catedral de piedra negra y luz verde. Huele a metal caliente y a nada.
+@susurro Bienvenido a bordo, {jugador}.
+@susurro Límpiate los pies. Acabamos de fregar.
+
+[escena act2.alarma]
+@accion alarma_nave
+@sonido keinloree:alarm 2.0 1.0
+OFICIAL: ¡Intruso en la cubierta! ¡Repito, intruso en la cubierta! ¡Todas las unidades!
+@susurro Ay. Te han visto. Yo no he sido, lo prometo.
+
+[escena act2.medianoche_celda]
+MEDIANOCHE: Has venido. Has venido de verdad.
+MEDIANOCHE: Las cadenas... salen de esos generadores. Rómpelos. Los tres.
+MEDIANOCHE: Y date prisa. Él está escuchando. Siempre está escuchando.
+
+[escena act2.liberada]
+@accion liberar_medianoche
+@sonido keinloree:star_fall 1.5 1.0
+MEDIANOCHE: Ah... Las estrellas. Vuelvo a oírlas.
+MEDIANOCHE: Gracias, Testigo. Estoy débil, pero puedo caminar. Al hangar.
+MEDIANOCHE: Y Testigo... cuando le veas... no le escuches. Su voz es lo más peligroso que tiene.
+
+[escena act2.razako_hangar]
+@cinematica razako_hangar
+@sonido keinloree:razako_roar 2.0 0.8
+RAZAKO: Sabía que vendrías por ella.
+RAZAKO: Las Horas siempre vienen a por las suyas. Es lo único bueno que tienen.
+RAZAKO: Esta vez no hay tiempo detenido. Ni cinco contra uno.
+RAZAKO: Solo tú. Y yo.
+MEDIANOCHE: Testigo... ten cuidado. Él también fue una Hora.
+
+[escena act2.razako_mitad]
+RAZAKO: ¡Bien! ¡Por fin alguien que pega como en mi mundo!
+
+[escena act2.razako_vencido]
+@sonido keinloree:impact 2.0 0.5
+NARRADOR: Razako cae de rodillas. La espada resbala de su mano y suena contra el suelo como una campana.
+RAZAKO: ...Hazlo.
+RAZAKO: Es lo que haría yo. Es lo que he hecho mil veces.
+@eleccion perdon
+> perdonar: Bajar la hoja.
+> acabar: Acabar con él.
+
+[escena act2.razako_perdonado]
+RAZAKO: ...¿Por qué?
+JUGADOR: Porque tú no elegiste estar aquí.
+@espera 40
+RAZAKO: Hace mucho tiempo... yo era el Eclipse de Veyra. La quinta Hora de mi mundo.
+RAZAKO: Él vino. Como aquí. Rompimos nuestros pilares luchando... y perdimos.
+RAZAKO: Me clavó un trozo de su Núcleo en el pecho. Desde entonces, cuando él habla, yo obedezco.
+RAZAKO: Veyra ya no existe. Pero yo sí. Y no sé si eso es una suerte.
+RAZAKO: Vete, Testigo. Antes de que él me vuelva a hablar.
+@accion razako_retirada_nave
+
+[escena act2.razako_muerto]
+@accion razako_muere
+RAZAKO: ...Bien hecho.
+RAZAKO: Por fin... silencio.
+NARRADOR: Su armadura se vacía como un cascarón. Dentro solo quedan glifos que se apagan.
+MEDIANOCHE: Era una Hora, Testigo. Igual que nosotros.
+MEDIANOCHE: ...Vámonos.
+
+[escena act2.escape]
+OFICIAL: ¡Cazas en persecución! ¡No dejen que salga del sector!
+@susurro ¿Ya te vas? Pero si acabas de llegar.
+
+[escena act2.huida]
+@susurro Ve. No te seguiré más.
+@susurro Llévale mi saludo a Eclipse. Y pregúntale...
+@espera 40
+@susurro ...pregúntale por la Sexta Hora.
+@accion medianoche_teleporta
+MEDIANOCHE: (Muy lejos) Iré a mis ruinas, Testigo. Allí me recuperaré. Gracias. Gracias.
+
+[escena act2.aprendiz2]
+@titulo Las horas que quedan
+ALBA: ¡Lo has conseguido! ¡La has traído de vuelta!
+CENIT: ¡Eso! ¡Y sin que yo tuviera que romper ninguna nave! Aunque me habría gustado.
+ECLIPSE: Bien hecho, Testigo. Termina tu aprendizaje. Lo vas a necesitar.
+OCASO: Y cuando termines, Eclipse tiene una conversación pendiente contigo. ¿Verdad, Eclipse?
+@espera 40
+ECLIPSE: ...Sí.
+
+# -------------------------------------------------------------------------------------
+#  ACTO III — LA SEXTA HORA
+# -------------------------------------------------------------------------------------
+[escena act3.revelacion_titulo]
+@titulo CAPÍTULO VII | Lo que Eclipse calló
+NARRADOR: Cinco técnicas. Cinco Horas. Y una pregunta que nadie quiere contestar.
+
+[escena act3.revelacion]
+@cinematica pilar_orbita
+ECLIPSE: Os he reunido a todos porque el Testigo merece saber la verdad. Y vosotros también.
+ECLIPSE: En el Mundo Primero había seis Horas. La sexta se llamaba la Hora Cero.
+ECLIPSE: Guardaba el instante en que un mundo se guarda y se cierra. El instante en que su jugador se va.
+MEDIANOCHE: Su guardián vio cómo su mundo se cerraba... y no volvía a abrirse nunca.
+ECLIPSE: El jugador de aquel mundo no regresó. El mundo quedó en silencio. Y el silencio lo borró.
+ECLIPSE: Su guardián sobrevivió. Con el corazón de su mundo entre las manos.
+@espera 30
+ECLIPSE(t=110): Se llamaba Kein Loree.
+@sonido keinloree:heartbeat 1.5 0.7
+CENIT: ...¿Qué?
+ECLIPSE: Las Horas de cien mundos lo encerramos. Borramos la sexta hora de todos los calendarios para que no pudiera volver.
+ECLIPSE: Le quitamos su arma y su armadura. Las escondimos aquí, bajo mi Pilar. Esperando a alguien que no perteneciera a ninguna Hora.
+@espera 20
+OCASO: RareIri.
+OCASO(t=100): Le habéis dado el arma del enemigo a un forastero. Y no nos lo habéis dicho. A ninguno.
+ECLIPSE: Era la única forma. RareIri es lo único que puede herirle. Es su propia hora.
+OCASO: ¡Es SU hora, Eclipse! ¿Y si la hoja recuerda a su dueño? ¿Y si el Testigo recuerda por ella?
+ALBA: ¡Basta! ¡Basta los dos!
+ALBA: Testigo... di algo. Por favor.
+JUGADOR: ¿Por qué hace todo esto?
+MEDIANOCHE: Porque tiene miedo. El mismo miedo que tenemos todos. A que nos olviden.
+ECLIPSE: Lo siento, Testigo. Debí decírtelo el primer día.
+OCASO: Sí. Debiste.
+
+[escena act3.susurro_rareiri]
+@titulo CAPÍTULO VIII | La Oferta
+@sonido keinloree:rareiri_hum 2.0 0.5
+@fx glitch 40 1.0 4CFF7A
+NARRADOR: RareIri vibra en tu mano. No es un zumbido. Es una voz.
+KEIN: Hola, {jugador}.
+KEIN: No te asustes. Esta hoja fue mía durante mucho más tiempo del que ha sido tuya. Todavía me reconoce.
+KEIN: Ya te lo han contado, ¿verdad? Eclipse por fin se ha atrevido.
+KEIN: Ahora te toca escuchar mi versión. Sube a mi puente. Solo.
+KEIN: Nadie te hará daño. Tienes mi palabra. Y yo nunca he roto mi palabra.
+KEIN: Te mando una lanzadera.
+
+[escena act3.lanzadera]
+@sonido keinloree:door 1.5 0.9
+OFICIAL: Habitante {jugador}. Por orden del Lord Kein Loree, suba a bordo.
+OFICIAL: No se le hará ningún daño. Por favor. No nos haga quedar mal delante de él.
+
+[escena act3.tripulacion]
+NARRADOR: Los soldados se apartan a tu paso. Ninguno levanta el arma. Ninguno deja de mirarte.
+
+[escena act3.kein_historia]
+@cinematica kein_puente
+@accion kein_gira
+@espera 40
+KEIN: Bienvenido a mi puente, {jugador}.
+KEIN: Siéntate, si quieres. No, mejor ven a la ventana. Mira.
+KEIN: Desde aquí se ve todo tu mundo. Cada río. Cada casa que has construido. Cada noche que has pasado con miedo.
+KEIN: Yo también tuve un mundo así. Lo cuidé durante más tiempo del que puedes imaginar.
+KEIN: Mi trabajo era vigilar el último instante. El momento en que el jugador se despide y todo se guarda.
+KEIN: Lo vi miles de veces. Y siempre, siempre, el jugador volvía.
+@espera 30
+KEIN: Hasta que un día no volvió.
+@sonido keinloree:heartbeat 1.2 0.6
+KEIN: Esperé. Un día. Un año. Un siglo. El mundo seguía guardado, quieto, esperando a alguien que ya se había olvidado de él.
+KEIN: Y entonces llegó el Silencio. Y lo borró. Todo. Mis montañas, mis mares, mis cinco hermanos.
+KEIN: Solo quedé yo. Con esto en las manos.
+@accion kein_nucleo
+KEIN: El Núcleo. El corazón de mi mundo. Lo único que pude salvar.
+KEIN: Desde entonces voy de mundo en mundo. Y en todos veo lo mismo: un jugador que algún día se irá.
+KEIN: Tú también te irás, {jugador}. Lo sabes. Un día cerrarás este mundo y no volverás.
+KEIN: Pero si este mundo pertenece al Nexo, no morirá nunca. Yo lo cuidaré. Para siempre.
+KEIN: Únete a mí. Dame tu hoja, que también es la mía, y este mundo vivirá eternamente.
+@eleccion oferta
+> unirse: Me uno a ti.
+> rechazar: No. Este mundo no es tuyo.
+> saber: Quiero saber más.
+
+[escena act3.kein_silencio]
+KEIN: Claro que quieres. Eres curioso. Siempre lo has sido. Te he visto leer cada cartel, abrir cada cofre.
+KEIN: ¿Sabes qué es el Silencio? No es oscuridad. No es dolor. Es... nada. Ni siquiera el recuerdo de que hubo algo.
+KEIN: Mis soldados... los llamáis decodificados. Eran habitantes de mundos que iban a morir. Los salvé. Les di forma.
+KEIN: ¿Que no recuerdan sus nombres? No. Pero existen. Y en el Silencio no habrían existido nunca.
+KEIN: Razako lo sabe. Por eso me odia... y por eso no se va.
+KEIN: No te pido que me quieras, {jugador}. Te pido que elijas qué es peor: un mundo encadenado... o un mundo borrado.
+@eleccion oferta2
+> unirse: Me uno a ti.
+> rechazar: Prefiero un mundo libre. Aunque muera.
+
+[escena act3.rechazo]
+@espera 40
+KEIN: ...Libre.
+KEIN: Un mundo libre puede morir. ¿Lo entiendes? Eso es lo que eliges para él.
+KEIN: Muy bien. No te obligaré. Nunca obligo a nadie a elegir.
+KEIN(t=100): Pero tampoco te obligaré a mirar. Mirarás tú solo.
+KEIN: Tienes un minuto para salir de mi nave. Después, volveremos a ser lo que éramos.
+@accion tregua_fin_cuenta
+
+[escena act3.tregua_fin]
+@accion alarma_nave
+@sonido keinloree:alarm 2.0 1.0
+ORREL: A todas las unidades: la tregua ha terminado. El habitante {jugador} es hostil. Fuego a discreción.
+
+# -------------------------------------------------------------------------------------
+#  RUTA DEL AMANECER
+# -------------------------------------------------------------------------------------
+[escena amanecer.bombardeo]
+@titulo CAPÍTULO IX | Fuego desde el cielo
+@sonido keinloree:destroyer_hum 3.0 0.6
+NARRADOR: Por primera vez desde que llegó, la nave se mueve.
+NARRADOR: Despacio. Como un dedo que busca dónde apretar.
+ALBA: ¡Testigo! ¡Viene hacia mi Pilar! ¡Viene hacia mí!
+@susurro Te dije que mirarías, {jugador}.
+
+[escena amanecer.bombardeo_inicio]
+@sonido keinloree:turbolaser 3.0 0.7
+CENIT: ¡Llueve fuego! ¡Alba, detrás de mí!
+ALBA: ¡Testigo, sus cañones! ¡Si destruyes los cañones grandes, no podrá seguir disparando!
+OCASO: Las bases tienen cazas. O, si estás loco, puedes subir por el casco y cortarlos uno a uno.
+OCASO: Yo te recomiendo estar loco.
+
+[escena amanecer.bombardeo_mitad]
+ALBA: ¡Ya casi! ¡El Pilar aguanta!
+@susurro Te estás divirtiendo. Lo noto en cómo respiras.
+
+[escena amanecer.bombardeo_fin]
+@sonido keinloree:explosion_big 3.0 0.7
+NARRADOR: El último cañón revienta en una flor de fuego verde. Sobre el Pilar del Alba, el cielo vuelve a callarse.
+ALBA: ...Sigue en pie. Mi Pilar sigue en pie.
+@susurro Impresionante. De verdad. Ya entiendo por qué la hoja te eligió.
+
+[escena amanecer.alba_caido]
+ALBA: Mi Pilar... Testigo, mi Pilar...
+ALBA: Estoy bien. Estoy bien. Una hora no muere tan fácil.
+
+[escena amanecer.luces]
+@titulo CAPÍTULO X | Las Cinco Luces
+ECLIPSE: No podemos cruzar su campo. Pero podemos romperlo.
+ECLIPSE: Si los cinco pilares brillan a la vez, con todas sus fuerzas, su luz atravesará el Nexo.
+MEDIANOCHE: Mi Pilar está roto. Pero yo no. Encenderé lo que quede de él.
+ECLIPSE: Ve a cada Pilar, Testigo. Quédate junto al núcleo mientras cada uno de nosotros lo enciende. Protégenos.
+
+[escena amanecer.luz_alba]
+ALBA: ¡Primera luz! ¡Que se vea desde su ventana!
+
+[escena amanecer.luz_cenit]
+CENIT: ¡Segunda luz! ¡Y la más gorda! ¡MEDIODÍA!
+
+[escena amanecer.luz_ocaso]
+OCASO: Tercera luz. Testigo... lo que dije de ti. Retiro la mitad.
+OCASO: La otra mitad me la guardo por si acaso.
+
+[escena amanecer.luz_medianoche]
+MEDIANOCHE: Cuarta luz. Desde las ruinas. Las estrellas también brillan en las ruinas.
+
+[escena amanecer.luz_eclipse]
+ECLIPSE: Quinta luz. Gracias, Testigo. Por todo.
+
+[escena amanecer.escudo_roto]
+@cinematica cinco_haces
+@sonido keinloree:rareiri_ultimate 3.0 0.6
+@fx destello 30 1.0 FFFFFF
+@fx temblor 80 2.0
+NARRADOR: Cinco haces de luz se curvan en el cielo y se encuentran sobre la nave.
+NARRADOR: Durante un segundo, el Sentencia queda envuelto en una burbuja verde que nadie había visto.
+NARRADOR: Y la burbuja se rompe como un cristal.
+@accion escudo_romper
+ECLIPSE: El campo ha caído. Ahora sí podemos subir.
+
+[escena amanecer.asalto]
+@titulo CAPÍTULO XI | Asalto al Nexo
+@accion calendarios_suben
+CENIT: ¡POR FIN! ¡Llevo diez capítulos queriendo romper esta nave!
+ALBA: ¿Capítulos?
+CENIT: ¡Es una forma de hablar!
+ECLIPSE: Al puente. Kein está en el puente. Siempre está en el puente.
+@accion alarma_nave
+
+[escena amanecer.razako_aliado]
+@sonido keinloree:razako_roar 2.0 0.9
+RAZAKO: Habitante.
+RAZAKO: Me perdonaste la vida. En mi mundo eso es una deuda. Y yo pago mis deudas.
+@accion razako_aliado
+RAZAKO: Esta vez lucharé con las Horas. Como debí hacer en Veyra.
+OCASO: ¿Ahora nos ayuda el Ejecutor? Este día no deja de mejorar.
+
+[escena amanecer.eco_razako]
+@accion eco_razako
+NARRADOR: Delante del puente hay una figura que conoces. La armadura de Razako. Vacía. Llena de luz verde.
+KEIN: (Por los altavoces) Mataste a mi Ejecutor. Así que he hecho otro con lo que quedaba de él.
+KEIN: Nada se pierde en el Nexo, {jugador}. Nada.
+
+[escena amanecer.final_inicio]
+@titulo CAPÍTULO XII | La Hora Cero
+@cinematica kein_final
+KEIN: Cinco Horas. Un Ejecutor. Y tú.
+KEIN: Mirad cuánta gente ha venido a decirme que me equivoco.
+KEIN: Os lo diré una sola vez: cuando él se vaya, este mundo morirá. Lo que hacéis hoy es firmar su sentencia.
+ECLIPSE: Lo que hacemos hoy es dejarle elegir.
+KEIN: ...Entonces elegid bien. Porque no habrá otra vez.
+@accion kein_combate
+
+[escena amanecer.fase2]
+@sonido keinloree:kein_beam 2.0 0.5
+KEIN: Ah. Duele. Había olvidado lo que duele mi propia hoja.
+KEIN: Gracias por recordármelo.
+@susurro Voy a enseñarte lo que es ver de verdad.
+
+[escena amanecer.fase3]
+@fx destello 20 1.0 4CFF7A
+KEIN: ¡BASTA!
+KEIN: ¡Os lo daría todo! ¡Os lo daría TODO y lo despreciáis!
+ALBA: ¡Testigo! ¡RareIri brilla! ¡Es la Hora Cero!
+ECLIPSE: ¡Su propia hora! ¡Úsala, ahora! ¡Es lo único que puede alcanzarle!
+@accion desbloquear hora_cero
+@accion carga_completa
+
+[escena amanecer.kein_vencido]
+@accion kein_arrodilla
+@sonido keinloree:heartbeat 2.0 0.5
+NARRADOR: Kein cae de rodillas. El Núcleo late en su pecho, cada vez más despacio.
+KEIN: ...Así que es esto.
+KEIN: Mil mundos. Y al final, mi propia hora.
+KEIN: Hazlo, {jugador}. Rómpelo. Ya no puedo seguir sujetándolo.
+@eleccion final
+> romper: Romper el Núcleo.
+
+[escena amanecer.kein_vencido_secreto]
+@accion kein_arrodilla
+@sonido keinloree:heartbeat 2.0 0.5
+NARRADOR: Kein cae de rodillas. El Núcleo late en su pecho, cada vez más despacio.
+KEIN: ...Así que es esto.
+KEIN: Mil mundos. Y al final, mi propia hora.
+RAZAKO: Habitante. Espera.
+RAZAKO: Esa hoja no solo corta horas. También las devuelve. Lo sé porque yo fui una.
+MEDIANOCHE: La Hora Cero... no tiene por qué ser un final. También es el instante antes de empezar.
+KEIN: ¿Qué... qué estáis diciendo?
+@eleccion final
+> romper: Romper el Núcleo.
+> devolver: Devolverle su Hora.
+
+[escena final.amanecer]
+@cinematica final_amanecer
+@sonido keinloree:rareiri_ultimate 3.0 1.0
+@fx destello 40 1.0 FFFFFF
+@accion nucleo_estalla
+KEIN: ...Ah.
+KEIN: Así que esto es... el silencio.
+KEIN: No es tan... oscuro... como creía.
+@accion nave_destruir
+@fx fundido_negro 60 1.0
+@espera 80
+@accion epilogo_pilar_alba
+@fx fundido_entrada 60 1.0
+@accion legion_deshacer
+@accion atmosfera 0
+NARRADOR: El Sentencia se deshace en lluvia de código verde sobre las nubes. Durante una noche entera, llueven estrellas.
+ALBA: Se acabó. Se ha acabado de verdad.
+CENIT: ¡Lo hemos conseguido! ¡LO HEMOS CONSEGUIDO! ¡Y no he llorado! ...Vale, un poco.
+OCASO: Testigo. Lo de la mitad que me guardaba... olvídalo. Eres de los nuestros.
+MEDIANOCHE: Las estrellas vuelven a estar en su sitio. Todas menos una. Ahí arriba. Esa nueva. Creo que es él.
+ECLIPSE: Ahora nos toca dormir. Las Horas despiertan una vez... y vuelven a la piedra.
+ALBA: Antes de irnos... ¿oíste alguna vez una voz que no era de nadie? ¿Una voz rota?
+ALBA: Era el mundo. Tu mundo. Te pidió ayuda desde el primer día. Y viniste.
+ECLIPSE: Desde hoy, este mundo tiene seis Horas otra vez. Cinco que duermen... y una que camina.
+ECLIPSE(t=120): Bienvenido, Sexta Hora.
+@accion calendarios_duermen
+@espera 60
+@escena_siguiente voz.8.amanecer
+@espera 80
+@susurro ...siempre vuelven. ¿Verdad?
+@accion creditos amanecer
+
+[escena final.sexta]
+@cinematica final_sexta
+@sonido keinloree:rareiri_ultimate 3.0 0.8
+@accion kein_restaurado
+NARRADOR: RareIri no corta. Brilla. Y la luz entra en el pecho de Kein como agua en tierra seca.
+KEIN: ...Lo oigo.
+KEIN: El instante. El último instante del día. Hacía tanto que no lo oía...
+KEIN: Soy... la Hora Cero. Otra vez.
+ECLIPSE: Y el Núcleo necesita una hora que lo selle. Para que nadie vuelva a usarlo.
+ALBA: ¿Eclipse? Eclipse, ¿qué haces?
+ECLIPSE: Lo que debí hacer hace mil años, en lugar de esconder una espada. Cuidadle. Cuidad al Testigo.
+@accion eclipse_sacrificio
+@fx destello 40 1.0 E8E8FF
+NARRADOR: Eclipse entra en el Núcleo como quien entra en su casa. La luz verde se vuelve blanca. Y se apaga.
+@espera 60
+KEIN: Llevaré a mis soldados a casa. A los mundos que aún queden. A los que no, les buscaré uno nuevo.
+KEIN: Y cuando tú te vayas, {jugador}... no tengas miedo. Ahora este mundo tiene quien vigile su último instante.
+@accion nave_salto
+@accion legion_deshacer
+@accion atmosfera 0
+@espera 60
+@escena_siguiente voz.8.sexta
+@espera 80
+@accion creditos sexta
+
+# -------------------------------------------------------------------------------------
+#  RUTA DEL NEXO
+# -------------------------------------------------------------------------------------
+[escena nexo.marca]
+@titulo CAPÍTULO IX | La Marca del Nexo
+@accion marca_nexo
+@sonido keinloree:kein_beam 2.0 0.4
+@fx destello 20 1.0 4CFF7A
+KEIN: Sabía que lo entenderías. Siempre lo supe.
+KEIN: Esta es mi marca. Mientras la lleves, ninguno de mis soldados te tocará. Te saludarán.
+NARRADOR: RareIri se oscurece en tu mano. El filo iridiscente se vuelve verde y negro.
+KEIN: Ves, la hoja también se alegra. Ha vuelto a casa.
+KEIN: Ahora, ve a ver a Razako. Tenéis mucho de qué hablar.
+
+[escena nexo.razako]
+RAZAKO: Así que tú también.
+RAZAKO: Llevas su marca como yo llevo su Núcleo. La diferencia es que tú la has elegido.
+RAZAKO: No sé si eso te hace más fuerte que yo... o peor.
+RAZAKO: Da igual. Las órdenes son claras: los pilares tienen que caer. Y tú sabes dónde están.
+
+[escena nexo.orrel]
+ORREL: Su Excelencia. El Lord me ha informado de su... incorporación.
+ORREL: Con el Ejecutor fallecido, usted ocupa su lugar. Las tropas responden a su voz.
+ORREL: Las órdenes son claras: los pilares tienen que caer. Y usted sabe dónde están.
+
+[escena nexo.traicion]
+@titulo CAPÍTULO X | Traición
+KEIN: El Pilar del Mediodía está anclado al mundo con tres anclas de luz. Rómpelas.
+KEIN: Cénit no estará. Le he dado algo que hacer lejos de allí.
+@susurro No te sientas mal. Es lo que haría cualquiera que quisiera salvar algo.
+
+[escena nexo.anclas_rotas]
+@sonido keinloree:explosion_big 3.0 0.7
+@accion pilar_cae cenit
+NARRADOR: Sin sus anclas, el Pilar del Mediodía tiembla. Los cañones del Sentencia hacen el resto.
+NARRADOR: A lo lejos, se oye a alguien gritar un nombre. El tuyo.
+
+[escena nexo.ocaso]
+@sonido keinloree:shadow_step 2.0 0.8
+OCASO: Lo sabía.
+OCASO: Desde el primer día. Desde la primera vez que vi esa hoja en tus manos.
+OCASO: ¿Y sabes qué es lo peor? Que me habría encantado equivocarme.
+OCASO: En guardia, forastero.
+@accion ocaso_duelo
+
+[escena nexo.ocaso_huye]
+OCASO: ...Suficiente.
+OCASO: No voy a morir aquí. Tengo que contárselo a los demás. Alguien tiene que hacerlo.
+@accion ocaso_huye
+
+[escena nexo.ultimo_pilar]
+@titulo CAPÍTULO XI | El Último Pilar
+NARRADOR: Esa semana caen dos pilares más. El del Alba. El de las ruinas de Medianoche. No los ves caer. Los oyes.
+NARRADOR: Solo queda una luz en el cielo. Negra y blanca.
+KEIN: El último, {jugador}. El suyo. Ella esconde mi espada desde hace mil años. Que te vea devolvérsela.
+
+[escena nexo.eclipse]
+@cinematica pilar_orbita
+ECLIPSE: Testigo.
+ECLIPSE: No te preguntaré por qué. Ya sé por qué. Es la misma razón que le movió a él.
+ECLIPSE: Tienes miedo de que este mundo muera cuando te vayas.
+ECLIPSE: Yo también. Todos lo tenemos. Pero un mundo que no puede morir... tampoco puede vivir.
+ECLIPSE: Si quieres mi Pilar, tendrás que detener mi tiempo.
+@accion eclipse_duelo_final
+
+[escena nexo.eclipse_cae]
+@sonido keinloree:time_stop 2.0 0.5
+ECLIPSE: ...Bien. Lo has hecho bien.
+ECLIPSE: Cuídale. A él. Alguien tiene que hacerlo.
+@accion pilar_cae eclipse
+
+[escena final.nexo]
+@cinematica final_nexo
+@accion cielo_verde
+@accion congelar_calendarios
+@fx destello 40 1.0 4CFF7A
+@sonido keinloree:kein_beam 3.0 0.3
+NARRADOR: Cuando cae el último Pilar, el cielo se vuelve verde. No de golpe. Despacio. Como una enfermedad.
+NARRADOR: Las Horas no mueren. Se quedan quietas. Congeladas en mitad de un gesto, junto a sus pilares rotos.
+KEIN: Ya está, {jugador}. Ya está.
+KEIN: Este mundo ya no morirá. Ni cuando yo me vaya. Ni cuando tú te vayas.
+KEIN: Siempre habrá alguien mirándolo. Yo. Para siempre.
+KEIN: Bienvenido al Nexo.
+@espera 40
+KEIN(t=120): Nunca volverás a estar solo.
+@espera 40
+KEIN(t=140): Y nunca podrás irte.
+@escena_siguiente voz.8.nexo
+@espera 120
+@accion creditos nexo
+
+# -------------------------------------------------------------------------------------
+#  CRÉDITOS (los muestra la acción "creditos <final>" con @titulo en secuencia)
+# -------------------------------------------------------------------------------------
+[escena creditos.amanecer]
+@titulo FIN | Final del Amanecer
+@espera 140
+@titulo KEIN LOREE | La Sexta Hora
+@espera 140
+@titulo Gracias por jugar | El mundo te recordará
+
+[escena creditos.sexta]
+@titulo FIN | Final de la Sexta Hora
+@espera 140
+@titulo KEIN LOREE | La Sexta Hora
+@espera 140
+@titulo Gracias por jugar | Ahora alguien vigila el último instante
+
+[escena creditos.nexo]
+@titulo FIN | Final del Nexo
+@espera 140
+@titulo KEIN LOREE | La Sexta Hora
+@espera 140
+@titulo Gracias por jugar | Él siempre estará mirando
+
+# -------------------------------------------------------------------------------------
+#  OMNISCIENCIA — susurros de Kein por categoría (una línea al azar de la escena)
+# -------------------------------------------------------------------------------------
+[escena omni.cueva]
+KEIN: Cavas como si el suelo pudiera esconderte, {jugador}.
+KEIN: A {y} bloques de altura. Bajo tierra no hay cielo... pero yo no necesito cielo para verte.
+KEIN: Qué oscuro está ahí abajo. ¿Te da miedo la oscuridad? A mí me da miedo el silencio.
+KEIN: Cada vez que picas, lo oigo. Toc. Toc. Toc. Como un corazón.
+
+[escena omni.noche]
+KEIN: Las noches aquí son tan oscuras... En el Nexo siempre es mediodía.
+KEIN: Mira hacia arriba. ¿Ves mis luces? Así sabes que alguien vela por ti.
+KEIN: Los monstruos de tu mundo salen de noche. Los míos no necesitan esperar.
+KEIN: Duérmete si quieres, {jugador}. Yo nunca duermo.
+
+[escena omni.lluvia]
+KEIN: La lluvia no me tapa la vista.
+KEIN: Llueve sobre tu mundo. Sobre mi nave no llueve nunca. Está por encima de todo.
+KEIN: ¿Oyes la lluvia? Yo oigo cada gota. Cada una.
+
+[escena omni.altura]
+KEIN: Has subido a {y} bloques. Casi a mi altura. Casi.
+KEIN: Desde ahí se ve bien mi nave, ¿verdad? Saluda.
+KEIN: Cuidado con caer, {jugador}. No quiero que te pierdas el final.
+
+[escena omni.muertes]
+KEIN: Llevas {muertes} muertes. Yo llevo la cuenta, por si tú la pierdes.
+KEIN: Mueres y vuelves. Mueres y vuelves. ¿No te cansas? En el Nexo no hace falta morir.
+KEIN: {muertes} veces. Y cada vez vuelves un poco más deprisa. Interesante.
+
+[escena omni.arma]
+KEIN: Esa [[arma]] no te salvará. Pero me gusta cómo la sujetas.
+KEIN: ¿Una [[arma]]? Contra mí. Qué tierno.
+KEIN: Aprieta más fuerte la [[arma]], {jugador}. Te tiembla la mano.
+
+[escena omni.fragmento]
+KEIN: Sigues llevándome contigo. En el bolsillo. Gracias.
+KEIN: Ese fragmento que recogiste... ¿de verdad creías que era un regalo del cielo? Era mi ojo.
+KEIN: Cada vez que lo miras, yo te miro a ti.
+
+[escena omni.cerca_nave]
+KEIN: Te acercas. Bien. Muy bien.
+KEIN: Desde aquí puedo verte sin necesidad de ningún truco. Hola, {jugador}.
+KEIN: Si te acercas un poco más, te invitaré a subir. No tengas prisa.
+
+[escena omni.construye]
+KEIN: Construyes. ¿Para quién? Todo esto será mío... y estará a salvo.
+KEIN: Bonitos bloques. Los pondría en un museo, si tuviera museos.
+KEIN: Construyes como si fueras a quedarte para siempre. Yo sé que no.
+
+[escena omni.mata]
+KEIN: Lo que acabas de matar tenía nombre. En otro mundo, quizá.
+KEIN: Otro más. ¿Llevas la cuenta tú, o la llevo yo?
+KEIN: Matas rápido. Sin mirar. Te pareces más a mí de lo que crees.
+
+[escena omni.bioma]
+KEIN: [[bioma]]. Te gustan los lugares así, ¿verdad? Pocas salidas.
+KEIN: Siempre vuelves a sitios como este: [[bioma]]. Las costumbres son fáciles de leer, {jugador}.
+KEIN: En mi mundo también había un lugar así. [[bioma]]. Ya no queda nada de él.
+
+[escena omni.generico]
+KEIN: Hoy has andado {dist} bloques. Todos en círculo alrededor de tu miedo.
+KEIN: Día {dia} desde que llegué. ¿Te has acostumbrado ya al cielo nuevo?
+KEIN: No te preocupes, {jugador}. No estoy enfadado. Solo miro.
+KEIN: ¿Sabes qué es lo que más me gusta de ti? Que sigues aquí. Todos los demás se van.
+KEIN: A veces hablo contigo aunque no me oigas. Hoy me has oído. Qué suerte.
+
+# -------------------------------------------------------------------------------------
+#  PRUEBAS (las usa el banco de pruebas)
+# -------------------------------------------------------------------------------------
+[escena prueba]
+@titulo PRUEBA | Sistema de diálogos
+KEIN: Si puedes leer esto, el sistema funciona.
+NARRADOR: El viento se detiene un instante.
+@susurro Te veo, {jugador}.
+VOZ: ¿m..me oyes?
+@eleccion prueba
+> a: Opción A
+> b: Opción B
+ALBA: Elegiste. Bien.
