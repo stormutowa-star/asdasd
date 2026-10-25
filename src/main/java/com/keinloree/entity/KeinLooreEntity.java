@@ -667,6 +667,6 @@ public class KeinLooreEntity extends LooreMob {
 
     private LivingEntity findTarget() {
         Player p = this.level().getNearestPlayer(this, SIGHT);
-        return p != null && p.isAlive() && !p.isSpectator() ? p : null;
+        return p != null && p.isAlive() && !p.isSpectator() && !com.keinloree.story.Cinematics.isActive(p) ? p : null;
     }
 }

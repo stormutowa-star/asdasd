@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "keinloree:kein_loree",
+    "keinloree:droid",
+    "keinloree:loree_commander",
+    "keinloree:loree_warlord",
+    "keinloree:cargo_ship",
+    {"id": "keinloree:razako", "required": false}
+  ]
+}

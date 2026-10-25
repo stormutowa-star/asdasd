@@ -42,6 +42,29 @@ public final class AutoTest {
         });
     }
 
+    static {
+        // Sistemas de historia sin jugadores: guion, escena de prueba, pasos y efectos
+        register("story", s -> {
+            s.run(server -> com.keinloree.story.ScenePlayer.setHeadless(true));
+            s.wait(40);
+            s.cmd("keinloree story status");
+            s.cmd("keinloree scene prueba");
+            s.wait(1000);
+            s.cmd("keinloree story status");
+            s.cmd("keinloree story goto prueba.escena");
+            s.wait(1000);
+            s.cmd("keinloree story status");
+            s.cmd("keinloree fx flash 10 1 FFFFFF");
+            s.cmd("keinloree title PRUEBA | Subtitulo");
+            s.cmd("keinloree whisper Te veo");
+            s.cmd("keinloree cine prueba_orbita");
+            s.cmd("keinloree story skip");
+            s.cmd("keinloree story status");
+            s.wait(20);
+            s.stop();
+        });
+    }
+
     private final List<Step> steps;
     private int index;
     private int wait;

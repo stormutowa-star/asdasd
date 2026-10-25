@@ -125,7 +125,7 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
         }
         double range = this.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE);
         net.minecraft.world.entity.player.Player p = this.level().getNearestPlayer(this, range);
-        this.setTarget(p != null && p.isAlive() && !p.isSpectator() ? p : null);
+        this.setTarget(p != null && p.isAlive() && !p.isSpectator() && !com.keinloree.story.Cinematics.isActive(p) ? p : null);
     }
 
     /** Golpe cuerpo a cuerpo que empuja tambien a jugadores en creativo. */

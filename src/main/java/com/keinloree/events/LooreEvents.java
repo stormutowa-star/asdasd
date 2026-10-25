@@ -26,7 +26,6 @@ public class LooreEvents {
         }
         ServerLevel overworld = server.overworld();
         Builds.tick();
-        LooreStory.get(overworld).tick(overworld);
     }
 
     @SubscribeEvent
