@@ -9,6 +9,7 @@ import com.keinloree.entity.LooreWarlord;
 import com.keinloree.events.LooreEvents;
 import com.keinloree.item.DecodeCoreItem;
 import com.keinloree.item.LooreEggItem;
+import com.keinloree.test.AutoTest;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -110,6 +111,7 @@ public class KeinLooreMod {
         modBus.addListener(this::onEntityAttributes);
 
         MinecraftForge.EVENT_BUS.register(new LooreEvents());
+        AutoTest.init();
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             KeinLooreClient.register(modBus);

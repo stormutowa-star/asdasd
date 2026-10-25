@@ -1,6 +1,7 @@
 package com.keinloree.client;
 
 import com.keinloree.KeinLooreMod;
+import com.keinloree.client.test.ClientAutoTest;
 import com.keinloree.entity.KeinLooreEntity;
 import com.keinloree.entity.LooreCommander;
 import com.keinloree.entity.LooreWarlord;
@@ -16,6 +17,7 @@ public final class KeinLooreClient {
     public static void register(IEventBus modEventBus) {
         modEventBus.addListener(KeinLooreClient::onRegisterLayers);
         modEventBus.addListener(KeinLooreClient::onRegisterRenderers);
+        ClientAutoTest.init();
     }
 
     private static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

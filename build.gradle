@@ -24,10 +24,19 @@ minecraft {
             workingDir = layout.projectDirectory.dir('run')
         }
 
-        register('client')
+        register('client') {
+            // Banco de pruebas: ./gradlew runClient -Pautotest=basic
+            if (providers.gradleProperty('autotest').isPresent()) {
+                systemProperty 'keinloree.autotest', providers.gradleProperty('autotest').get()
+            }
+        }
 
         register('server') {
             args '--nogui'
+            // Banco de pruebas: ./gradlew runServer -Pservertest=smoke
+            if (providers.gradleProperty('servertest').isPresent()) {
+                systemProperty 'keinloree.servertest', providers.gradleProperty('servertest').get()
+            }
         }
     }
 }
