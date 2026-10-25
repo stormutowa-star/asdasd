@@ -42,5 +42,14 @@
   "subtitles.keinloree.door": "Pneumatic door",
   "subtitles.keinloree.razako_roar": "Razako roars",
   "subtitles.keinloree.chain": "Chains rattle",
-  "subtitles.keinloree.hologram": "Hologram flickers"
+  "subtitles.keinloree.hologram": "Hologram flickers",
+  "key.categories.keinloree": "Kein Loree",
+  "key.keinloree.next": "Advance dialogue",
+  "keinloree.hud.objective": "OBJECTIVE",
+  "keinloree.hud.meters": "%s m",
+  "keinloree.cine.skip": "Hold [%s] to skip",
+  "keinloree.compass.n": "N",
+  "keinloree.compass.e": "E",
+  "keinloree.compass.s": "S",
+  "keinloree.compass.w": "W"
 }

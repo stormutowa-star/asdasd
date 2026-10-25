@@ -1,5 +1,13 @@
 package com.keinloree.client.net;
 
+import com.keinloree.client.cam.CinematicCamera;
+import com.keinloree.client.ui.AtmosphereClient;
+import com.keinloree.client.ui.ChoiceScreen;
+import com.keinloree.client.ui.DialogueOverlay;
+import com.keinloree.client.ui.ObjectiveHud;
+import com.keinloree.client.ui.ScreenFxOverlay;
+import com.keinloree.client.ui.TitleCard;
+import com.keinloree.client.ui.WhisperHud;
 import com.keinloree.net.AtmosphereS2C;
 import com.keinloree.net.ChoiceS2C;
 import com.keinloree.net.CinematicEndS2C;
@@ -21,47 +29,47 @@ public final class ClientPackets {
 
     /** WP1b: linea de dialogo (DialogueOverlay). */
     public static void onDialogue(DialogueS2C msg) {
-        // WP1b
+        DialogueOverlay.onLine(msg);
     }
 
     /** WP1b: abrir ChoiceScreen (ignorar si ya esta abierta la misma eleccion). */
     public static void onChoice(ChoiceS2C msg) {
-        // WP1b
+        ChoiceScreen.onChoice(msg);
     }
 
     /** WP1b: empezar una cinematica (CinematicCamera). */
     public static void onCinematic(CinematicS2C msg) {
-        // WP1b
+        CinematicCamera.start(msg.shots(), (msg.flags() & CinematicS2C.SALTABLE) != 0);
     }
 
     /** WP1b: terminar la cinematica y restaurar la camara. */
     public static void onCinematicEnd(CinematicEndS2C msg) {
-        // WP1b
+        CinematicCamera.end();
     }
 
     /** WP1b: efecto de pantalla (ScreenFxOverlay). */
     public static void onScreenFx(ScreenFxS2C msg) {
-        // WP1b
+        ScreenFxOverlay.onFx(msg);
     }
 
     /** WP1b: tarjeta de capitulo (TitleCard). */
     public static void onTitleCard(TitleCardS2C msg) {
-        // WP1b
+        TitleCard.show(msg);
     }
 
     /** WP1b: objetivo actual (ObjectiveHud). */
     public static void onHud(HudS2C msg) {
-        // WP1b
+        ObjectiveHud.set(msg);
     }
 
     /** WP1b: susurro de omnisciencia. */
     public static void onWhisper(WhisperS2C msg) {
-        // WP1b
+        WhisperHud.show(msg);
     }
 
     /** WP1b: tinte y niebla de la atmosfera. */
     public static void onAtmosphere(AtmosphereS2C msg) {
-        // WP1b
+        AtmosphereClient.set(msg);
     }
 
     /** WP2: efecto del motor de VFX (VfxRenderer). */

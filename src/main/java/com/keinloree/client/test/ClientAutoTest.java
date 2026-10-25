@@ -39,6 +39,7 @@ public final class ClientAutoTest {
     static {
         register("basic", s -> s.wait(200).cmd("time set noon").wait(40).shot("basic").wait(20).quit());
         BbTestRender.registerScenario();
+        StoryScenarios.registerAll();
     }
 
     private final List<Step> steps;

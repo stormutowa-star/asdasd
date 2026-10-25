@@ -18,6 +18,7 @@ public final class KeinLooreClient {
     public static void register(IEventBus modEventBus) {
         modEventBus.addListener(KeinLooreClient::onRegisterLayers);
         modEventBus.addListener(KeinLooreClient::onRegisterRenderers);
+        StoryClient.register(modEventBus);
         ClientAutoTest.init();
     }
 

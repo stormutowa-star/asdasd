@@ -42,5 +42,14 @@
   "subtitles.keinloree.door": "Puerta neumática",
   "subtitles.keinloree.razako_roar": "Razako ruge",
   "subtitles.keinloree.chain": "Cadenas",
-  "subtitles.keinloree.hologram": "Holograma"
+  "subtitles.keinloree.hologram": "Holograma",
+  "key.categories.keinloree": "Kein Loree",
+  "key.keinloree.next": "Avanzar diálogo",
+  "keinloree.hud.objective": "OBJETIVO",
+  "keinloree.hud.meters": "%s m",
+  "keinloree.cine.skip": "Mantén [%s] para saltar",
+  "keinloree.compass.n": "N",
+  "keinloree.compass.e": "E",
+  "keinloree.compass.s": "S",
+  "keinloree.compass.w": "O"
 }
