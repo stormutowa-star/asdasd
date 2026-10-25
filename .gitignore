@@ -7,3 +7,6 @@ run/
 .project
 .settings/
 .DS_Store
+
+# Capturas de prueba de Blockbench
+blockbench/shots/
