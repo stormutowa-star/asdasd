@@ -144,7 +144,7 @@ public class LooreStory extends SavedData {
     }
 
     private Vec3 throne() {
-        return this.shipPoint(ShipDesign.THRONE_X + 0.5D, ShipDesign.THRONE_Y - 0.55D, ShipDesign.THRONE_Z + 0.5D);
+        return this.shipPoint(ShipDesign.THRONE_X + 0.5D, ShipDesign.THRONE_Y - 0.32D, ShipDesign.THRONE_Z + 0.5D);
     }
 
     private Vec3 dockPoint(int slot) {

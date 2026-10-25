@@ -105,6 +105,12 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
         return 0;
     }
 
+    /** Las alas y los cuernos sobresalen de la caja de colision: se amplía la caja de culling para que no desaparezcan. */
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        return super.getBoundingBoxForCulling().inflate(2.6D, 1.2D, 2.6D);
+    }
+
     /** Pone una pose durante un numero de ticks y despues vuelve a la de reposo. */
     protected void holdPose(int pose, int ticks) {
         this.setLorePose(pose);
