@@ -1,6 +1,7 @@
 package com.keinloree.client;
 
 import com.keinloree.KeinLooreMod;
+import com.keinloree.registry.ModEntities;
 import com.keinloree.client.test.ClientAutoTest;
 import com.keinloree.entity.KeinLooreEntity;
 import com.keinloree.entity.LooreCommander;
@@ -27,10 +28,10 @@ public final class KeinLooreClient {
     }
 
     private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(KeinLooreMod.KEIN_LOREE.get(), ctx -> new LooreRenderer<KeinLooreEntity>(ctx));
-        event.registerEntityRenderer(KeinLooreMod.LOREE_COMMANDER.get(), ctx -> new LooreRenderer<LooreCommander>(ctx));
-        event.registerEntityRenderer(KeinLooreMod.LOREE_WARLORD.get(), ctx -> new LooreRenderer<LooreWarlord>(ctx));
-        event.registerEntityRenderer(KeinLooreMod.DROID.get(), DroidRenderer::new);
-        event.registerEntityRenderer(KeinLooreMod.CARGO_SHIP.get(), CargoShipRenderer::new);
+        event.registerEntityRenderer(ModEntities.KEIN_LOREE.get(), ctx -> new LooreRenderer<KeinLooreEntity>(ctx));
+        event.registerEntityRenderer(ModEntities.LOREE_COMMANDER.get(), ctx -> new LooreRenderer<LooreCommander>(ctx));
+        event.registerEntityRenderer(ModEntities.LOREE_WARLORD.get(), ctx -> new LooreRenderer<LooreWarlord>(ctx));
+        event.registerEntityRenderer(ModEntities.DROID.get(), DroidRenderer::new);
+        event.registerEntityRenderer(ModEntities.CARGO_SHIP.get(), CargoShipRenderer::new);
     }
 }

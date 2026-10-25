@@ -1,6 +1,7 @@
 package com.keinloree.entity;
 
-import com.keinloree.KeinLooreMod;
+import com.keinloree.registry.ModEntities;
+import com.keinloree.registry.ModItems;
 import com.keinloree.util.Fx;
 import com.keinloree.util.Geo;
 import com.keinloree.util.LooreDamage;
@@ -139,7 +140,7 @@ public class KeinLooreEntity extends LooreMob {
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
-        if (this.choiceOpen && !this.isCopy() && held.is(KeinLooreMod.DECODE_CORE.get())
+        if (this.choiceOpen && !this.isCopy() && held.is(ModItems.DECODE_CORE.get())
                 && this.level() instanceof ServerLevel level) {
             if (!player.getAbilities().instabuild) {
                 held.shrink(1);
@@ -439,7 +440,7 @@ public class KeinLooreEntity extends LooreMob {
     }
 
     private void summonCopy(ServerLevel level, double angle) {
-        KeinLooreEntity copy = KeinLooreMod.KEIN_LOREE.get().create(level);
+        KeinLooreEntity copy = ModEntities.KEIN_LOREE.get().create(level);
         if (copy == null) {
             return;
         }

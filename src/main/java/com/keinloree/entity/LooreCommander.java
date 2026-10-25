@@ -1,6 +1,6 @@
 package com.keinloree.entity;
 
-import com.keinloree.KeinLooreMod;
+import com.keinloree.registry.ModEntities;
 import com.keinloree.util.Fx;
 import com.keinloree.util.Geo;
 import net.minecraft.server.level.ServerLevel;
@@ -71,7 +71,7 @@ public class LooreCommander extends LooreMob implements RangedAttackMob {
             this.holdPose(POSE_SUMMON, 30);
             for (int i = 0; i < 2; i++) {
                 double a = this.random.nextDouble() * Math.PI * 2.0D;
-                Droid droid = KeinLooreMod.DROID.get().create(level);
+                Droid droid = ModEntities.DROID.get().create(level);
                 if (droid != null) {
                     droid.moveTo(this.getX() + Math.cos(a) * 3.0D, this.getY(), this.getZ() + Math.sin(a) * 3.0D,
                             this.getYRot(), 0.0F);

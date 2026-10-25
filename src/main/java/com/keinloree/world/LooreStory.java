@@ -1,6 +1,7 @@
 package com.keinloree.world;
 
-import com.keinloree.KeinLooreMod;
+import com.keinloree.registry.ModEntities;
+import com.keinloree.registry.ModItems;
 import com.keinloree.entity.CargoShip;
 import com.keinloree.entity.Droid;
 import com.keinloree.entity.KeinLooreEntity;
@@ -291,7 +292,7 @@ public class LooreStory extends SavedData {
 
     private void onShipBuilt(ServerLevel level) {
         this.shipBuilding = false;
-        KeinLooreEntity boss = KeinLooreMod.KEIN_LOREE.get().create(level);
+        KeinLooreEntity boss = ModEntities.KEIN_LOREE.get().create(level);
         if (boss != null) {
             Vec3 throne = this.throne();
             boss.moveTo(throne.x, throne.y, throne.z, 180.0F, 0.0F);
@@ -312,7 +313,7 @@ public class LooreStory extends SavedData {
     }
 
     private CargoShip spawnDocked(ServerLevel level, int slot) {
-        CargoShip ship = KeinLooreMod.CARGO_SHIP.get().create(level);
+        CargoShip ship = ModEntities.CARGO_SHIP.get().create(level);
         if (ship == null) {
             return null;
         }
@@ -413,7 +414,7 @@ public class LooreStory extends SavedData {
             double z = target.getZ() + dz / len * dist;
             BlockPos probe = BlockPos.containing(x, 80.0D, z);
             if (level.isLoaded(probe)) {
-                CargoShip ship = KeinLooreMod.CARGO_SHIP.get().create(level);
+                CargoShip ship = ModEntities.CARGO_SHIP.get().create(level);
                 if (ship == null) {
                     return null;
                 }
@@ -565,7 +566,7 @@ public class LooreStory extends SavedData {
         Vec3 landing = new Vec3(g.getX() + 0.5D, g.getY(), g.getZ() - 5.5D);
         KeinLooreEntity boss = this.findBoss(level);
         if (boss == null) {
-            boss = KeinLooreMod.KEIN_LOREE.get().create(level);
+            boss = ModEntities.KEIN_LOREE.get().create(level);
             if (boss == null) {
                 return;
             }
@@ -610,7 +611,7 @@ public class LooreStory extends SavedData {
         title(level, "KEIN LOREE DERROTADO", "La resistencia ha vencido");
         say(level, "Imposible... mi código se fragmenta. Esto no ha terminado.");
         for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
-            p.getInventory().add(new ItemStack(KeinLooreMod.DECODE_CORE.get()));
+            p.getInventory().add(new ItemStack(ModItems.DECODE_CORE.get()));
         }
         s.setDirty();
     }
@@ -665,7 +666,7 @@ public class LooreStory extends SavedData {
     private static void spawnGarrison(ServerLevel level, Vec3 rear, double groundY, boolean fortress) {
         int droids = fortress ? 6 : 3;
         for (int i = 0; i < droids; i++) {
-            Droid droid = KeinLooreMod.DROID.get().create(level);
+            Droid droid = ModEntities.DROID.get().create(level);
             if (droid == null) {
                 continue;
             }
@@ -673,13 +674,13 @@ public class LooreStory extends SavedData {
             placeSafe(level, droid, rear.x + a, groundY, rear.z + (i % 2) * 1.5D, (float) (i * 40));
             level.addFreshEntity(droid);
         }
-        LooreCommander c = KeinLooreMod.LOREE_COMMANDER.get().create(level);
+        LooreCommander c = ModEntities.LOREE_COMMANDER.get().create(level);
         if (c != null) {
             placeSafe(level, c, rear.x, groundY, rear.z - 2.5D, 0.0F);
             level.addFreshEntity(c);
         }
         if (fortress) {
-            LooreWarlord w = KeinLooreMod.LOREE_WARLORD.get().create(level);
+            LooreWarlord w = ModEntities.LOREE_WARLORD.get().create(level);
             if (w != null) {
                 placeSafe(level, w, rear.x + 3.0D, groundY, rear.z - 3.0D, 0.0F);
                 level.addFreshEntity(w);
