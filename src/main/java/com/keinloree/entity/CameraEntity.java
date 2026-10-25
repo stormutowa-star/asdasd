@@ -3,7 +3,9 @@ package com.keinloree.entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 
 /**
@@ -17,6 +19,14 @@ public class CameraEntity extends Entity {
         this.noPhysics = true;
         this.setNoGravity(true);
         this.setInvulnerable(true);
+    }
+
+    /** Altura de ojos fija igual a la del jugador de pie: la camara vanilla no da tirones al cambiar de entidad. */
+    public static final float EYE_HEIGHT = 1.62F;
+
+    @Override
+    public EntityDimensions getDimensions(Pose pose) {
+        return EntityDimensions.fixed(0.2F, 0.2F).withEyeHeight(EYE_HEIGHT);
     }
 
     @Override
