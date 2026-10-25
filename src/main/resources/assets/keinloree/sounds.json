@@ -1,0 +1,312 @@
+{
+  "blaster": {
+    "sounds": [
+      {
+        "name": "keinloree:blaster",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.blaster"
+  },
+  "turbolaser": {
+    "sounds": [
+      {
+        "name": "keinloree:turbolaser",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.turbolaser"
+  },
+  "kein_beam": {
+    "sounds": [
+      {
+        "name": "keinloree:kein_beam",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.kein_beam"
+  },
+  "fighter_pass": {
+    "sounds": [
+      {
+        "name": "keinloree:fighter_pass",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.fighter_pass"
+  },
+  "fighter_engine": {
+    "sounds": [
+      {
+        "name": "keinloree:fighter_engine",
+        "attenuation_distance": 32,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.fighter_engine"
+  },
+  "destroyer_hum": {
+    "sounds": [
+      {
+        "name": "keinloree:destroyer_hum",
+        "attenuation_distance": 128,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.destroyer_hum"
+  },
+  "hyperspace": {
+    "sounds": [
+      {
+        "name": "keinloree:hyperspace",
+        "attenuation_distance": 160,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.hyperspace"
+  },
+  "alarm": {
+    "sounds": [
+      {
+        "name": "keinloree:alarm",
+        "attenuation_distance": 96,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.alarm"
+  },
+  "explosion_big": {
+    "sounds": [
+      {
+        "name": "keinloree:explosion_big",
+        "attenuation_distance": 160,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.explosion_big"
+  },
+  "impact": {
+    "sounds": [
+      {
+        "name": "keinloree:impact",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.impact"
+  },
+  "slash_light": {
+    "sounds": [
+      {
+        "name": "keinloree:slash_light",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.slash_light"
+  },
+  "slash_heavy": {
+    "sounds": [
+      {
+        "name": "keinloree:slash_heavy",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.slash_heavy"
+  },
+  "time_stop": {
+    "sounds": [
+      {
+        "name": "keinloree:time_stop",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.time_stop"
+  },
+  "time_tick": {
+    "sounds": [
+      {
+        "name": "keinloree:time_tick",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.time_tick"
+  },
+  "star_fall": {
+    "sounds": [
+      {
+        "name": "keinloree:star_fall",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.star_fall"
+  },
+  "shadow_step": {
+    "sounds": [
+      {
+        "name": "keinloree:shadow_step",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.shadow_step"
+  },
+  "solar_flare": {
+    "sounds": [
+      {
+        "name": "keinloree:solar_flare",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.solar_flare"
+  },
+  "rareiri_hum": {
+    "sounds": [
+      {
+        "name": "keinloree:rareiri_hum",
+        "volume": 0.8,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.rareiri_hum"
+  },
+  "rareiri_swing": {
+    "sounds": [
+      {
+        "name": "keinloree:rareiri_swing",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.rareiri_swing"
+  },
+  "rareiri_ultimate": {
+    "sounds": [
+      {
+        "name": "keinloree:rareiri_ultimate",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.rareiri_ultimate"
+  },
+  "kein_whisper": {
+    "sounds": [
+      {
+        "name": "keinloree:kein_whisper",
+        "volume": 0.9,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.kein_whisper"
+  },
+  "glitch": {
+    "sounds": [
+      {
+        "name": "keinloree:glitch",
+        "volume": 0.8,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.glitch"
+  },
+  "drone_ambient": {
+    "sounds": [
+      {
+        "name": "keinloree:drone_ambient",
+        "volume": 0.7,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.drone_ambient"
+  },
+  "heartbeat": {
+    "sounds": [
+      {
+        "name": "keinloree:heartbeat",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.heartbeat"
+  },
+  "dialogue_blip": {
+    "sounds": [
+      {
+        "name": "keinloree:dialogue_blip",
+        "volume": 0.25,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.dialogue_blip"
+  },
+  "choice": {
+    "sounds": [
+      {
+        "name": "keinloree:choice",
+        "volume": 0.8,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.choice"
+  },
+  "chapter_sting": {
+    "sounds": [
+      {
+        "name": "keinloree:chapter_sting",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.chapter_sting"
+  },
+  "pillar_hum": {
+    "sounds": [
+      {
+        "name": "keinloree:pillar_hum",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.pillar_hum"
+  },
+  "door": {
+    "sounds": [
+      {
+        "name": "keinloree:door",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.door"
+  },
+  "razako_roar": {
+    "sounds": [
+      {
+        "name": "keinloree:razako_roar",
+        "attenuation_distance": 48,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.razako_roar"
+  },
+  "chain": {
+    "sounds": [
+      {
+        "name": "keinloree:chain",
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.chain"
+  },
+  "hologram": {
+    "sounds": [
+      {
+        "name": "keinloree:hologram",
+        "attenuation_distance": 24,
+        "volume": 0.7,
+        "stream": false
+      }
+    ],
+    "subtitle": "subtitles.keinloree.hologram"
+  }
+}
