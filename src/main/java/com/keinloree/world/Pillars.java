@@ -1,5 +1,6 @@
 package com.keinloree.world;
 
+import com.keinloree.entity.Animated;
 import com.keinloree.entity.CalendarioEntity;
 import com.keinloree.net.Net;
 import com.keinloree.net.VfxS2C;
@@ -467,8 +468,8 @@ public final class Pillars {
     }
 
     /**
-     * Los pilares en pie destruyen los cazas de la Legion que sobrevuelan su zona (el haz los alcanza). Los cazas
-     * con piloto jugador no son objetivo.
+     * Los pilares en pie atacan los cazas de la Legion que sobrevuelan su zona: su Calendario lanza un ataque con
+     * animacion y un rayo hacia el caza. Cada pilar ataca cada dos segundos.
      */
     private static void defend(ServerLevel level, Campaign c) {
         for (int h = 0; h < COUNT; h++) {
@@ -477,11 +478,33 @@ public final class Pillars {
             }
             Vec3 base = center(level, c, h);
             AABB zone = new AABB(base.x - 22.0D, base.y - 4.0D, base.z - 22.0D, base.x + 22.0D, base.y + 90.0D, base.z + 22.0D);
+            FighterEntity target = null;
+            double best = Double.MAX_VALUE;
             for (FighterEntity f : level.getEntitiesOfClass(FighterEntity.class, zone,
                     x -> x.isAlive() && x.isLegionCraft() && !(x.getControllingPassenger() instanceof Player))) {
-                Vfx.beam(level, base.add(0.0D, 4.0D, 0.0D), f.position().add(0.0D, 1.0D, 0.0D), color(h), 0.6F, 10);
-                f.hurt(level.damageSources().magic(), 12.0F);
+                double d = f.distanceToSqr(base);
+                if (d < best) {
+                    best = d;
+                    target = f;
+                }
             }
+            if (target == null || level.getGameTime() < c.counter("def_t." + id(h))) {
+                continue;
+            }
+            c.setCounter("def_t." + id(h), (int) (level.getGameTime() + 40));
+            CalendarioEntity guard = calendario(level, h);
+            if (guard == null) {
+                guard = summon(level, h, base.add(3.5D, 0.0D, 0.5D), 0.0F);
+                guard.setMode(CalendarioEntity.MODE_STILL);
+            }
+            guard.play(Animated.A_CAST);
+            guard.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            Vec3 from = guard.position().add(0.0D, 1.4D, 0.0D);
+            Vec3 to = target.position().add(0.0D, 1.0D, 0.0D);
+            Vfx.beam(level, from, to, color(h), 0.7F, 14);
+            Vfx.burst(level, to, color(h), 10, 0.4F);
+            level.playSound(null, from.x, from.y, from.z, ModSounds.KEIN_BEAM.get(), SoundSource.HOSTILE, 2.0F, 1.1F);
+            target.hurt(level.damageSources().mobAttack(guard), 18.0F);
         }
     }
 
