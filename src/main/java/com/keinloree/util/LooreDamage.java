@@ -39,7 +39,7 @@ public final class LooreDamage {
     }
 
     private static void shove(LivingEntity target, Vec3 dir, double push) {
-        if (push <= 0.0D) {
+        if (push <= 0.0D || target instanceof Player p && com.keinloree.ability.Techniques.fullSet(p)) {
             return;
         }
         Vec3 m = target.getDeltaMovement();

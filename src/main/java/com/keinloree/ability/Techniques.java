@@ -38,6 +38,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -404,6 +405,14 @@ public final class Techniques {
                         hurt(p, (LivingEntity) en, 7.0F, dir);
                     }
                 }
+            }
+        }
+
+        /** Con la armadura completa de la Sexta Hora el heroe no retrocede al recibir golpes. */
+        @SubscribeEvent
+        public void onKnockback(LivingKnockBackEvent e) {
+            if (e.getEntity() instanceof Player p && fullSet(p)) {
+                e.setCanceled(true);
             }
         }
 
