@@ -48,6 +48,8 @@ public final class Net {
                 .encoder(AtmosphereS2C::encode).decoder(AtmosphereS2C::decode).consumerMainThread(AtmosphereS2C::handle).add();
         CHANNEL.messageBuilder(VfxS2C.class, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(VfxS2C::encode).decoder(VfxS2C::decode).consumerMainThread(VfxS2C::handle).add();
+        CHANNEL.messageBuilder(AbilityStateS2C.class, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(AbilityStateS2C::encode).decoder(AbilityStateS2C::decode).consumerMainThread(AbilityStateS2C::handle).add();
         // Cliente a servidor
         CHANNEL.messageBuilder(ChoiceC2S.class, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ChoiceC2S::encode).decoder(ChoiceC2S::decode).consumerMainThread(ChoiceC2S::handle).add();
@@ -55,6 +57,8 @@ public final class Net {
                 .encoder(SkipC2S::encode).decoder(SkipC2S::decode).consumerMainThread(SkipC2S::handle).add();
         CHANNEL.messageBuilder(ShipInputC2S.class, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(ShipInputC2S::encode).decoder(ShipInputC2S::decode).consumerMainThread(ShipInputC2S::handle).add();
+        CHANNEL.messageBuilder(AbilityC2S.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(AbilityC2S::encode).decoder(AbilityC2S::decode).consumerMainThread(AbilityC2S::handle).add();
         CHANNEL.build();
     }
 

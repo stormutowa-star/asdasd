@@ -26,6 +26,7 @@ public final class KeinLooreClient {
                         com.keinloree.client.ship.ShipMesh.release()));
         com.keinloree.client.ship.ClientShipInput.register(modEventBus);
         modEventBus.addListener(com.keinloree.client.ship.FighterClient::onLayers);
+        com.keinloree.client.kit.KitClient.register(modEventBus);
         ClientAutoTest.init();
     }
 

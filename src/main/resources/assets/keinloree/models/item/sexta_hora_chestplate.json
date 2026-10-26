@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "keinloree:item/sexta_hora_chestplate"
+ }
+}

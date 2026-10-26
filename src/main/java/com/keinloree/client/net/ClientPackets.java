@@ -76,4 +76,8 @@ public final class ClientPackets {
     public static void onVfx(VfxS2C msg) {
         com.keinloree.client.vfx.VfxRenderer.add(msg);
     }
+
+    public static void onAbilityState(com.keinloree.net.AbilityStateS2C m) {
+        com.keinloree.client.kit.KitClient.onState(m);
+    }
 }

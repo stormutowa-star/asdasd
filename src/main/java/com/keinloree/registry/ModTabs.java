@@ -26,6 +26,11 @@ public final class ModTabs {
                 output.accept(ModItems.WARLORD_EGG.get());
                 output.accept(ModItems.CARGO_SHIP_EGG.get());
                 output.accept(ModItems.HELM.get());
+                output.accept(ModItems.RAREIRI.get());
+                output.accept(ModItems.SEXTA_HORA_HELMET.get());
+                output.accept(ModItems.SEXTA_HORA_CHESTPLATE.get());
+                output.accept(ModItems.SEXTA_HORA_LEGGINGS.get());
+                output.accept(ModItems.SEXTA_HORA_BOOTS.get());
             })
             .build());
 

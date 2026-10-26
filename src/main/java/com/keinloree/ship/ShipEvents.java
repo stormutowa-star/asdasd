@@ -42,7 +42,7 @@ public class ShipEvents {
         MinecraftForge.EVENT_BUS.register(new ShipEvents());
         StoryCommands.extend(ShipCommands::register);
         ShipArmament.init();
-        com.keinloree.entity.TimeStop.init();
+        com.keinloree.entity.TimeStop.init(); com.keinloree.ability.Techniques.init();
         ShipTests.register();
     }
 
