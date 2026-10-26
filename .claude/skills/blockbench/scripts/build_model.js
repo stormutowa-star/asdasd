@@ -9,12 +9,13 @@ const spec = require(specPath);
 const out = path.resolve(process.argv[3] || path.join(__dirname, '../../../../blockbench', spec.name + '.bbmodel'));
 const [TW, TH] = spec.texture;
 
-// Empaquetado de UV (estantes). Huella de caja: 2(w+d) x (d+h)
-function packUV(cubes) {
+// Empaquetado de UV (estantes). Huella de caja: 2(w+d) x (d+h).
+// Se prueba primero el orden clasico (alto desc.); si no cabe se prueban otros ordenes (sin cambiar los modelos que ya caben).
+function packWith(cubes, cmp) {
   const items = cubes.map((c, i) => {
     const w = Math.ceil(c.to[0] - c.from[0] - 1e-6), h = Math.ceil(c.to[1] - c.from[1] - 1e-6), d = Math.ceil(c.to[2] - c.from[2] - 1e-6);
     return { i, W: 2 * (w + d), H: d + h };
-  }).sort((a, b) => b.H - a.H || b.W - a.W);
+  }).sort(cmp);
   const uv = new Array(cubes.length);
   let x = 0, y = 0, rowH = 0;
   for (const it of items) {
@@ -26,11 +27,67 @@ function packUV(cubes) {
   }
   return uv;
 }
+// MaxRects (mejor ajuste por lado corto) como ultimo recurso: aprovecha mucho mejor la textura.
+function packMaxRects(cubes, cmp) {
+  const items = cubes.map((c, i) => {
+    const w = Math.ceil(c.to[0] - c.from[0] - 1e-6), h = Math.ceil(c.to[1] - c.from[1] - 1e-6), d = Math.ceil(c.to[2] - c.from[2] - 1e-6);
+    return { i, W: 2 * (w + d), H: d + h };
+  }).sort(cmp);
+  let free = [{ x: 0, y: 0, w: TW, h: TH }];
+  const uv = new Array(cubes.length);
+  for (const it of items) {
+    let best = null, bs = 1e9, bl = 1e9;
+    for (const f of free) {
+      if (it.W <= f.w && it.H <= f.h) {
+        const ss = Math.min(f.w - it.W, f.h - it.H), ls = Math.max(f.w - it.W, f.h - it.H);
+        if (ss < bs || (ss === bs && ls < bl)) { best = f; bs = ss; bl = ls; }
+      }
+    }
+    if (!best) throw new Error(`textura ${TW}x${TH} llena empaquetando ${cubes[it.i].name}`);
+    const r = { x: best.x, y: best.y, w: it.W, h: it.H };
+    uv[it.i] = [r.x, r.y];
+    const next = [];
+    for (const f of free) {
+      if (r.x >= f.x + f.w || r.x + r.w <= f.x || r.y >= f.y + f.h || r.y + r.h <= f.y) { next.push(f); continue; }
+      if (r.x > f.x) next.push({ x: f.x, y: f.y, w: r.x - f.x, h: f.h });
+      if (r.x + r.w < f.x + f.w) next.push({ x: r.x + r.w, y: f.y, w: f.x + f.w - r.x - r.w, h: f.h });
+      if (r.y > f.y) next.push({ x: f.x, y: f.y, w: f.w, h: r.y - f.y });
+      if (r.y + r.h < f.y + f.h) next.push({ x: f.x, y: r.y + r.h, w: f.w, h: f.y + f.h - r.y - r.h });
+    }
+    free = next.filter((a, ia) => !next.some((b, ib) => ib !== ia && a.x >= b.x && a.y >= b.y && a.x + a.w <= b.x + b.w && a.y + a.h <= b.y + b.h && (ia > ib || a.x !== b.x || a.y !== b.y || a.w !== b.w || a.h !== b.h)));
+  }
+  return uv;
+}
+function packUV(cubes) {
+  const orders = [
+    (a, b) => b.H - a.H || b.W - a.W,
+    (a, b) => b.W * b.H - a.W * a.H,
+    (a, b) => b.W - a.W || b.H - a.H,
+    (a, b) => Math.floor(b.H / 4) - Math.floor(a.H / 4) || b.W - a.W,
+    (a, b) => Math.floor(b.H / 8) - Math.floor(a.H / 8) || b.W - a.W,
+  ];
+  let err;
+  for (const cmp of orders) { try { return packWith(cubes, cmp); } catch (e) { err = err || e; } }
+  for (const cmp of [orders[1], orders[0], orders[2]]) { try { return packMaxRects(cubes, cmp); } catch (e) { err = err || e; } }
+  throw err;
+}
 
 (async () => {
   const names = new Set();
   spec.cubes.forEach((c, i) => { c.name = c.name || `cube_${i}`; if (names.has(c.name)) c.name += '_' + i; names.add(c.name); });
-  const uvs = packUV(spec.cubes);
+  // `uvFrom: '<cubo>'` reutiliza la zona de textura de otro cubo (mismas dimensiones): ahorra textura en piezas simetricas.
+  const dimsOf = (c) => [0, 1, 2].map((k) => Math.ceil(c.to[k] - c.from[k] - 1e-6)).join('x');
+  const own = spec.cubes.map((c, i) => i).filter((i) => !spec.cubes[i].uvFrom);
+  const packed = packUV(own.map((i) => spec.cubes[i]));
+  const uvs = new Array(spec.cubes.length);
+  own.forEach((i, k) => { uvs[i] = packed[k]; });
+  spec.cubes.forEach((c, i) => {
+    if (!c.uvFrom) return;
+    const j = spec.cubes.findIndex((o) => o.name === c.uvFrom);
+    if (j < 0 || spec.cubes[j].uvFrom) throw new Error(`uvFrom invalido en ${c.name}: ${c.uvFrom}`);
+    if (dimsOf(c) !== dimsOf(spec.cubes[j])) throw new Error(`uvFrom ${c.name} <- ${c.uvFrom}: dimensiones distintas`);
+    uvs[i] = uvs[j];
+  });
   const { browser, page } = await openBlockbench();
   const result = await page.evaluate(({ spec, uvs }) => {
     const warn = [];

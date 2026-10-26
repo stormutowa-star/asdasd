@@ -41,6 +41,7 @@ public final class ClientAutoTest {
         BbTestRender.registerScenario();
         StoryScenarios.registerAll();
         com.keinloree.client.vfx.VfxScenario.register();
+        ShipPreview.registerScenario();
     }
 
     private final List<Step> steps;

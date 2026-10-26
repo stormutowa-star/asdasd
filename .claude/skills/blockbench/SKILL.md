@@ -93,6 +93,7 @@ Huesos y nombres estandar: ver `scratchpad/docs/41-modelos.md` (root, body, head
 - Camara: `Preview.selected.camera.position.set()`, `.controls.target.set()`, `.controls.update()`; captura con `page.screenshot({clip: canvas rect})`.
   Animacion: `Modes.options.animate.select(); anim.select(); Timeline.setTime(t); Animator.preview()`.
 - Campos propios `kl_mat`, `kl_glow`, `kl_palette`, `kl_name` los anade build_model.js al JSON (Blockbench los ignora).
+- `ship_shots.js <bbmodel> <dir> <json>`: camaras libres (posicion, objetivo, fov, huesos ocultos), p. ej. desde dentro de una cabina. `uvFrom` en un cubo de la spec reutiliza la UV de otro cubo de mismas medidas (piezas simetricas); el empaquetado prueba otros ordenes y MaxRects si la textura no alcanza; specs sin animaciones generan solo `<Clase>Model.java`.
 
 ## Pendiente de verificar
 - `mirror:true` en cubos (UV espejo) no se ha comparado visualmente; `bb2java` solo traduce `mirror_uv` a `.mirror()`.

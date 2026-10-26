@@ -201,5 +201,6 @@ ${anims}    private ${cls}Anims() {
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, cls + 'Model.java'), javaModel);
-fs.writeFileSync(path.join(outDir, cls + 'Anims.java'), javaAnims);
-console.log(`bb2java: ${outDir}/${cls}Model.java + ${cls}Anims.java (${bones.length} huesos, ${(model.animations || []).length} animaciones)`);
+const hasAnims = (model.animations || []).length > 0; // sin animaciones: solo el modelo
+if (hasAnims) fs.writeFileSync(path.join(outDir, cls + 'Anims.java'), javaAnims);
+console.log(`bb2java: ${outDir}/${cls}Model.java${hasAnims ? ' + ' + cls + 'Anims.java' : ''} (${bones.length} huesos, ${(model.animations || []).length} animaciones)`);
