@@ -27,14 +27,4 @@ public class LooreEvents {
         ServerLevel overworld = server.overworld();
         Builds.tick();
     }
-
-    @SubscribeEvent
-    public void onDeath(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (entity instanceof KeinLooreEntity boss && !boss.isCopy()) {
-            LooreStory.onBossDeath(boss);
-        } else if (entity instanceof ServerPlayer player) {
-            LooreStory.onPlayerDeath(player);
-        }
-    }
 }

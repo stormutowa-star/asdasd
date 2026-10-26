@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    {"id": "keinloree:calendario", "required": false}
+    "keinloree:calendario"
   ]
 }

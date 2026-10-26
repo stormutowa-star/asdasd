@@ -119,12 +119,75 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
     /** Los mobs vanilla ignoran a los jugadores en creativo; la faccion Loree no. */
     private void acquireTarget() {
         LivingEntity cur = this.getTarget();
-        if (cur != null && cur.isAlive() && !(cur instanceof net.minecraft.world.entity.player.Player pl && pl.isSpectator())) {
+        if (cur != null && cur.isAlive() && com.keinloree.story.Factions.hostile(this, cur)
+                && cur.distanceToSqr(this) < 64.0D * 64.0D) {
             return;
         }
         double range = this.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE);
-        net.minecraft.world.entity.player.Player p = this.level().getNearestPlayer(this, range);
-        this.setTarget(p != null && p.isAlive() && !p.isSpectator() && !com.keinloree.story.Cinematics.isActive(p) ? p : null);
+        LivingEntity best = null;
+        double bestD = Double.MAX_VALUE;
+        for (LivingEntity e : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range),
+                x -> x != this && x.isAlive() && com.keinloree.story.Factions.hostile(this, x))) {
+            double d = e.distanceToSqr(this);
+            if (d < bestD && d <= range * range && this.hasLineOfSight(e)) {
+                bestD = d;
+                best = e;
+            }
+        }
+        this.setTarget(best);
+    }
+
+    private int rank;
+
+    public Rank getRank() {
+        return Rank.of(rank);
+    }
+
+    /** Asigna rango: nombre visible, vida, dano y armadura. */
+    public void setRank(Rank r) {
+        this.rank = r.ordinal();
+        if (r == Rank.NINGUNO) {
+            return;
+        }
+        var hp = this.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+        if (hp != null) {
+            hp.setBaseValue(hp.getBaseValue() * r.health);
+            this.setHealth(this.getMaxHealth());
+        }
+        var dmg = this.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        if (dmg != null) {
+            dmg.setBaseValue(dmg.getBaseValue() * r.damage);
+        }
+        var arm = this.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+        if (arm != null) {
+            arm.setBaseValue(arm.getBaseValue() + r.armor);
+        }
+        if (!this.hasCustomName()) {
+            this.setCustomName(r.title());
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("KlRank", this.rank);
+    }
+
+    @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.rank = tag.getInt("KlRank");
+    }
+
+    /** Oficiales: cada 10 s dan Fuerza I a la tropa cercana. */
+    protected void officerTick() {
+        if (this.getRank().isOfficer() && this.tickCount % 200 == 0 && this.getTarget() != null
+                && this.level() instanceof ServerLevel sl) {
+            for (LooreMob m : sl.getEntitiesOfClass(LooreMob.class, this.getBoundingBox().inflate(6.0D), x -> x != this)) {
+                m.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST, 200, 0));
+            }
+            com.keinloree.vfx.Vfx.ringExpanding(sl, this.position().add(0.0D, 0.2D, 0.0D), new Vec3(0, 1, 0), 0x4CFF7A, 6.0F, 16);
+        }
     }
 
     /** Golpe cuerpo a cuerpo que empuja tambien a jugadores en creativo. */
@@ -143,6 +206,9 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
         super.aiStep();
         if (!this.level().isClientSide && this.tickCount % 10 == 0) {
             this.acquireTarget();
+        }
+        if (!this.level().isClientSide) {
+            this.officerTick();
         }
         if (!this.level().isClientSide && this.poseHold > 0) {
             this.poseHold--;

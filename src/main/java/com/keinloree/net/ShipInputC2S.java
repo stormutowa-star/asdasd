@@ -28,6 +28,8 @@ public record ShipInputC2S(float forward, float turn, float lift, int buttons) {
         if (sender != null && sender.getVehicle() instanceof DestroyerEntity ship
                 && Float.isFinite(m.forward) && Float.isFinite(m.turn) && Float.isFinite(m.lift)) {
             ship.input(sender, m.forward, m.turn, m.lift, m.buttons);
+        } else if (sender != null && sender.getVehicle() instanceof com.keinloree.ship.FighterEntity fighter) {
+            fighter.input(sender, m.buttons);
         }
         ctx.setPacketHandled(true);
     }

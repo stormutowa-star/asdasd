@@ -24,7 +24,8 @@ public final class Factions {
     private Factions() {}
 
     public static boolean isLegion(Entity e) {
-        return e instanceof LooreMob || e instanceof CargoShip || e.getType().is(LEGION_TAG);
+        return e instanceof LooreMob || e instanceof CargoShip || e.getType().is(LEGION_TAG)
+                || e instanceof com.keinloree.ship.FighterEntity f && f.isLegionCraft() && !(f.getControllingPassenger() instanceof Player);
     }
 
     public static boolean isHours(Entity e) {
@@ -48,18 +49,26 @@ public final class Factions {
     /** Puede ser elegido como objetivo: ni creativo, ni espectador, ni en cinematica. */
     public static boolean canTarget(Entity e) {
         if (e instanceof Player p) {
-            return p.isAlive() && !p.isCreative() && !p.isSpectator() && !Cinematics.isActive(p);
+            // En creativo tambien son objetivo: el dano de la faccion no les quita vida (LooreDamage), solo empuja
+            return p.isAlive() && !p.isSpectator() && !Cinematics.isActive(p);
         }
         return true;
     }
 
     public static boolean hostile(Entity a, Entity b) {
+        if (a == b) {
+            return false;
+        }
+        if (isLegion(a) && b instanceof net.minecraft.world.entity.animal.IronGolem
+                || isLegion(b) && a instanceof net.minecraft.world.entity.animal.IronGolem) {
+            return true;
+        }
         if (isLegion(a) && isHours(b) || isHours(a) && isLegion(b)) {
             return true;
         }
         if (b instanceof Player p && canTarget(p)) {
             if (isLegion(a)) {
-                return !legionAlly(p);
+                return !legionAlly(p) && !Campaign.get(p.getServer()).hasFlag("tregua");
             }
             if (isHours(a)) {
                 return Campaign.get(p.getServer()).hasFlag("traicion_horas");

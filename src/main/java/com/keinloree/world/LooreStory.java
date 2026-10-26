@@ -709,18 +709,11 @@ public class LooreStory extends SavedData {
 
     /** Mensaje de Kein Loree a todos los jugadores del servidor. */
     public static void say(ServerLevel level, String text) {
-        Component msg = Component.literal("<Kein Loree> " + text).withStyle(ChatFormatting.GREEN);
-        for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
-            p.sendSystemMessage(msg);
-        }
+        com.keinloree.story.Lines.say(level, "KEIN", text);
     }
 
     /** Titulo grande en pantalla para todos los jugadores. */
     public static void title(ServerLevel level, String title, String sub) {
-        for (ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
-            p.connection.send(new ClientboundSetTitlesAnimationPacket(10, 70, 20));
-            p.connection.send(new ClientboundSetSubtitleTextPacket(Component.literal(sub)));
-            p.connection.send(new ClientboundSetTitleTextPacket(Component.literal(title)));
-        }
+        com.keinloree.story.TitleCards.sendAll(level, title, sub, 0x4CFF7A, com.keinloree.story.TitleCards.DEFAULT_TICKS);
     }
 }

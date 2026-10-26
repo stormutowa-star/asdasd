@@ -159,20 +159,21 @@ public class DestroyerRenderer extends EntityRenderer<DestroyerEntity> {
                     || state == DestroyerEntity.DESTROYED;
             float power = flying ? Mth.clamp(0.55F + speed * 1.2F, 0.55F, 1.6F) : 0.4F;
             // toberas: brillo emisivo siempre
-            VertexConsumer glow = buffers.getBuffer(ModRenderTypes.glowAdditive(VfxEffect.GLOW));
-            VertexConsumer beam = buffers.getBuffer(ModRenderTypes.beamAdditive());
+            // OJO: en 1.21 pedir otro RenderType al BufferSource cierra el anterior; se pide justo antes de usarlo
             Vector3f t = new Vector3f();
             for (int[] e : ShipDesign.ENGINES) {
                 Vec3 l = ShipTransform.local(e[0], e[1], ShipDesign.L, 0.5D, 0.5D, 1.0D);
                 m.transformPosition((float) l.x, (float) l.y, (float) l.z, t);
                 float pulse = 0.85F + 0.15F * Mth.sin(time * 0.7F + e[0]);
                 float r = e[2] * (0.9F + 0.5F * power) * pulse;
+                VertexConsumer glow = buffers.getBuffer(ModRenderTypes.glowAdditive(VfxEffect.GLOW));
                 quad(glow, t.x, t.y, t.z, r, left, up, 0.25F, 1.0F, 0.55F, 1.1F * power);
                 quad(glow, t.x, t.y, t.z, r * 0.45F, left, up, 0.8F, 1.0F, 0.9F, 1.4F * power);
                 if (flying && state != DestroyerEntity.DESTROYED) {
                     float len = 10.0F + speed * 90.0F + e[2] * 3.0F;
                     Vector3f back = new Vector3f();
                     m.transformDirection(0.0F, 0.0F, 1.0F, back);
+                    VertexConsumer beam = buffers.getBuffer(ModRenderTypes.beamAdditive());
                     streak(beam, t, back, len, r * 0.8F, 0.2F, 1.0F, 0.5F, 0.9F * power);
                     streak(beam, t, back, len * 0.6F, r * 0.35F, 0.8F, 1.0F, 0.9F, 1.2F * power);
                 }
@@ -182,7 +183,7 @@ public class DestroyerRenderer extends EntityRenderer<DestroyerEntity> {
             if (state == DestroyerEntity.HYPERSPACE_IN && ship.tickCount < HYPER_TICKS + 20) {
                 float f = 1.0F - (ship.tickCount + pt) / (HYPER_TICKS + 20.0F);
                 if (f > 0.0F) {
-                    hyperspace(glow, beam, m, left, up, f, ship.tickCount + pt);
+                    hyperspace(buffers, m, left, up, f, ship.tickCount + pt);
                 }
             }
         }
@@ -231,8 +232,9 @@ public class DestroyerRenderer extends EntityRenderer<DestroyerEntity> {
     }
 
     /** Destello grande y haces de luz hacia atras (la nave sale del salto). */
-    private static void hyperspace(VertexConsumer glow, VertexConsumer beam, Matrix4f m, Vector3f left, Vector3f up,
+    private static void hyperspace(MultiBufferSource.BufferSource buffers, Matrix4f m, Vector3f left, Vector3f up,
                                    float f, float age) {
+        VertexConsumer glow = buffers.getBuffer(ModRenderTypes.glowAdditive(VfxEffect.GLOW));
         Vector3f c = new Vector3f();
         Vec3 mid = ShipTransform.local(0, 20, 90, 0.5D, 0.5D, 0.5D);
         m.transformPosition((float) mid.x, (float) mid.y, (float) mid.z, c);
@@ -241,6 +243,7 @@ public class DestroyerRenderer extends EntityRenderer<DestroyerEntity> {
         quad(glow, c.x, c.y, c.z, 28.0F, left, up, 1.0F, 1.0F, 1.0F, 1.8F * k);
         Vector3f back = new Vector3f();
         m.transformDirection(0.0F, 0.0F, 1.0F, back);
+        VertexConsumer beam = buffers.getBuffer(ModRenderTypes.beamAdditive());
         RandomSource rnd = RandomSource.create(1234L);
         Vector3f origin = new Vector3f();
         for (int i = 0; i < 48; i++) {

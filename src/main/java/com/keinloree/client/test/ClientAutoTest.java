@@ -44,6 +44,7 @@ public final class ClientAutoTest {
         ShipPreview.registerScenario();
         ModelPreview.registerScenario("razako");
         ShipScenarios.registerAll();
+        ShipScenarios.registerChars();
     }
 
     private final List<Step> steps;

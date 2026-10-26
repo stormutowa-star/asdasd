@@ -62,7 +62,7 @@ public class KeinLooreEntity extends LooreMob {
     private static final int GB_IMPACT = 44;
     private static final int GB_END = 60;
 
-    private final ServerBossEvent bossBar = new ServerBossEvent(Component.literal("Kein Loree"),
+    private final ServerBossEvent bossBar = new ServerBossEvent(Component.translatable("entity.keinloree.kein_loree"),
             BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.PROGRESS);
     private final Set<Integer> hitIds = new HashSet<>();
 
@@ -75,6 +75,11 @@ public class KeinLooreEntity extends LooreMob {
     private boolean talkUsed;
     private boolean codeuxUsed;
     private boolean choiceOpen;
+    /** La oferta antigua (dar el nucleo en combate) ya no se usa: la oferta va en la historia. */
+    private static final boolean LEGACY_OFFER = false;
+    /** La historia dice que golpe cuenta como "Hora Cero" y que pasa al vencerle. */
+    public static java.util.function.Predicate<DamageSource> HORA_CERO = s -> false;
+    public static java.util.function.Consumer<KeinLooreEntity> ON_DEFEATED = k -> { };
     private int choiceTicks;
     private boolean fieldOn;
     private Vec3 fieldCenter = Vec3.ZERO;
@@ -157,6 +162,21 @@ public class KeinLooreEntity extends LooreMob {
         if (this.isLoreDormant() || this.getSpawnTicks() > 0 || this.ability == AB_CHANGE || this.ability == AB_DESCEND) {
             return false;
         }
+        if (!this.isCopy() && !this.level().isClientSide && this.getHealth() - amount < this.getMaxHealth() * 0.1F) {
+            // Kein no muere por golpes normales: solo la Hora Cero de RareIri le hace caer (la historia decide su final)
+            if (!HORA_CERO.test(source)) {
+                float floor = this.getMaxHealth() * 0.1F;
+                if (this.getHealth() > floor) {
+                    super.hurt(source, this.getHealth() - floor);
+                }
+                return false;
+            }
+            this.setHealth(1.0F);
+            this.setLoreDormant(true);
+            this.setDeltaMovement(Vec3.ZERO);
+            ON_DEFEATED.accept(this);
+            return true;
+        }
         return super.hurt(source, amount);
     }
 
@@ -236,6 +256,8 @@ public class KeinLooreEntity extends LooreMob {
 
     private void bossAi(ServerLevel level) {
         this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
+        // La barra solo se ve en combate (no mientras vigila el puente)
+        this.bossBar.setVisible(!this.isLoreDormant() && this.getTarget() != null);
         if (this.isLoreDormant()) {
             this.setDeltaMovement(Vec3.ZERO);
             return;
@@ -257,7 +279,7 @@ public class KeinLooreEntity extends LooreMob {
         if (target == null) {
             return;
         }
-        if (!this.talkUsed && this.getHealth() <= this.getMaxHealth() * 0.6F) {
+        if (LEGACY_OFFER && !this.talkUsed && this.getHealth() <= this.getMaxHealth() * 0.6F) {
             this.talkUsed = true;
             this.startAbility(AB_TALK);
             return;
@@ -691,7 +713,21 @@ public class KeinLooreEntity extends LooreMob {
     }
 
     private LivingEntity findTarget() {
-        Player p = this.level().getNearestPlayer(this, SIGHT);
-        return p != null && p.isAlive() && !p.isSpectator() && !com.keinloree.story.Cinematics.isActive(p) ? p : null;
+        LivingEntity cur = this.getTarget();
+        if (cur != null && cur.isAlive() && com.keinloree.story.Factions.hostile(this, cur) && cur.distanceToSqr(this) < SIGHT * SIGHT) {
+            return cur;
+        }
+        LivingEntity best = null;
+        double bd = Double.MAX_VALUE;
+        for (LivingEntity e : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(SIGHT),
+                x -> x != this && x.isAlive() && com.keinloree.story.Factions.hostile(this, x))) {
+            // prefiere jugadores
+            double d = e.distanceToSqr(this) * (e instanceof Player ? 0.5D : 1.0D);
+            if (d < bd) {
+                bd = d;
+                best = e;
+            }
+        }
+        return best;
     }
 }

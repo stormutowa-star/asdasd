@@ -75,9 +75,40 @@ public final class ShipCrew {
         for (int i = 0; i < ShipDesign.BRIDGE_GUARDS.length; i++) {
             spawnAt(level, ship, "guard." + i, warlord, Component.translatable("name." + KeinLooreMod.MODID + ".nexo_guard"));
         }
+        assignRanks(level, ship);
         Entity kein = spawnAt(level, ship, "kein", ModEntities.KEIN_LOREE.get(), null);
         if (kein instanceof KeinLooreEntity k) {
             k.setLoreDormant(true);
+        }
+    }
+
+    /** Rangos de la tripulacion segun su puesto. */
+    public static void assignRanks(ServerLevel level, DestroyerEntity ship) {
+        for (var en : ship.crew().entrySet()) {
+            Entity e = level.getEntity(en.getValue());
+            if (!(e instanceof com.keinloree.entity.LooreMob m) || m.getRank() != com.keinloree.entity.Rank.NINGUNO) {
+                continue;
+            }
+            String k = en.getKey();
+            int dot = k.indexOf('.');
+            String zone = dot < 0 ? k : k.substring(0, dot);
+            int i = dot < 0 ? 0 : parse(k.substring(dot + 1));
+            com.keinloree.entity.Rank r = switch (zone) {
+                case "hangar" -> i <= 5 ? com.keinloree.entity.Rank.SOLDADO : i <= 7 ? com.keinloree.entity.Rank.PILOTO
+                        : i == 8 ? com.keinloree.entity.Rank.SARGENTO : com.keinloree.entity.Rank.TECNICO;
+                case "detention" -> i == 1 ? com.keinloree.entity.Rank.TENIENTE : com.keinloree.entity.Rank.SOLDADO;
+                case "reactor" -> i <= 1 ? com.keinloree.entity.Rank.TECNICO : com.keinloree.entity.Rank.SOLDADO;
+                case "barracks" -> i == 4 ? com.keinloree.entity.Rank.TENIENTE : com.keinloree.entity.Rank.SOLDADO;
+                case "orrel" -> com.keinloree.entity.Rank.ALMIRANTE;
+                case "station" -> i % 2 == 0 ? com.keinloree.entity.Rank.COMANDANTE : com.keinloree.entity.Rank.TENIENTE;
+                case "guard" -> com.keinloree.entity.Rank.GUARDIA_NEXO;
+                case "kein" -> com.keinloree.entity.Rank.NINGUNO;
+                default -> zone.startsWith("route") ? (i == 0 ? com.keinloree.entity.Rank.SARGENTO : com.keinloree.entity.Rank.SOLDADO)
+                        : com.keinloree.entity.Rank.SOLDADO;
+            };
+            if (r != com.keinloree.entity.Rank.NINGUNO && !(e instanceof com.keinloree.entity.KeinLooreEntity)) {
+                m.setRank(r);
+            }
         }
     }
 

@@ -25,6 +25,7 @@ public final class KeinLooreClient {
                 e.registerReloadListener((net.minecraft.server.packs.resources.ResourceManagerReloadListener) rm ->
                         com.keinloree.client.ship.ShipMesh.release()));
         com.keinloree.client.ship.ClientShipInput.register(modEventBus);
+        modEventBus.addListener(com.keinloree.client.ship.FighterClient::onLayers);
         ClientAutoTest.init();
     }
 
@@ -32,6 +33,15 @@ public final class KeinLooreClient {
         event.registerLayerDefinition(KeinLooreModel.LAYER, KeinLooreModel::createBodyLayer);
         event.registerLayerDefinition(DroidModel.LAYER, DroidModel::createBodyLayer);
         event.registerLayerDefinition(CargoShipModel.LAYER, CargoShipModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.TurbolaserHeavyModel.LAYER, com.keinloree.client.model.gen.TurbolaserHeavyModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.TurbolaserDefenseModel.LAYER, com.keinloree.client.model.gen.TurbolaserDefenseModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.FighterModel.LAYER, com.keinloree.client.model.gen.FighterModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.RazakoModel.LAYER, com.keinloree.client.model.gen.RazakoModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.AlbaModel.LAYER, com.keinloree.client.model.gen.AlbaModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.CenitModel.LAYER, com.keinloree.client.model.gen.CenitModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.OcasoModel.LAYER, com.keinloree.client.model.gen.OcasoModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.MedianocheModel.LAYER, com.keinloree.client.model.gen.MedianocheModel::createBodyLayer);
+        event.registerLayerDefinition(com.keinloree.client.model.gen.EclipseModel.LAYER, com.keinloree.client.model.gen.EclipseModel::createBodyLayer);
     }
 
     private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -41,5 +51,11 @@ public final class KeinLooreClient {
         event.registerEntityRenderer(ModEntities.DROID.get(), DroidRenderer::new);
         event.registerEntityRenderer(ModEntities.CARGO_SHIP.get(), CargoShipRenderer::new);
         event.registerEntityRenderer(ModEntities.DESTROYER.get(), com.keinloree.client.ship.DestroyerRenderer::new);
+        event.registerEntityRenderer(ModEntities.TURBOLASER.get(), com.keinloree.client.render.TurretRenderer::new);
+        event.registerEntityRenderer(ModEntities.BOLT.get(), com.keinloree.client.render.BoltRenderer::new);
+        event.registerEntityRenderer(ModEntities.FIGHTER.get(), com.keinloree.client.render.FighterRenderer::new);
+        event.registerEntityRenderer(ModEntities.RAZAKO.get(), com.keinloree.client.render.RazakoRenderer::new);
+        event.registerEntityRenderer(ModEntities.CALENDARIO.get(), com.keinloree.client.render.HeroRenderer::new);
+        event.registerEntityRenderer(ModEntities.KEIN_HOLOGRAM.get(), com.keinloree.client.render.HologramRenderer::new);
     }
 }

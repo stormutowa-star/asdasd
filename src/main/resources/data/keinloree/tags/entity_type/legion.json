@@ -6,6 +6,8 @@
     "keinloree:loree_commander",
     "keinloree:loree_warlord",
     "keinloree:cargo_ship",
-    {"id": "keinloree:razako", "required": false}
+    "keinloree:turbolaser",
+    "keinloree:destroyer",
+    "keinloree:razako"
   ]
 }

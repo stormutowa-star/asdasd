@@ -65,6 +65,55 @@ public final class ModEntities {
             .updateInterval(1)
             .build(ID + "destroyer"));
 
+    /** Torreta turbolaser (pesada o de defensa) del destructor y de las bases. */
+    public static final RegistryObject<EntityType<com.keinloree.ship.TurbolaserEntity>> TURBOLASER = ENTITY_TYPES.register("turbolaser", () -> EntityType.Builder
+            .<com.keinloree.ship.TurbolaserEntity>of(com.keinloree.ship.TurbolaserEntity::new, MobCategory.MISC)
+            .sized(2.4F, 2.4F)
+            .fireImmune()
+            .clientTrackingRange(16)
+            .updateInterval(2)
+            .build(ID + "turbolaser"));
+
+    /** Rayo de energia (turbolaser, caza). */
+    public static final RegistryObject<EntityType<com.keinloree.ship.BoltEntity>> BOLT = ENTITY_TYPES.register("bolt", () -> EntityType.Builder
+            .<com.keinloree.ship.BoltEntity>of(com.keinloree.ship.BoltEntity::new, MobCategory.MISC)
+            .sized(0.4F, 0.4F)
+            .fireImmune()
+            .clientTrackingRange(16)
+            .updateInterval(1)
+            .build(ID + "bolt"));
+
+    /** Caza del Nexo. */
+    public static final RegistryObject<EntityType<com.keinloree.ship.FighterEntity>> FIGHTER = ENTITY_TYPES.register("fighter", () -> EntityType.Builder
+            .<com.keinloree.ship.FighterEntity>of(com.keinloree.ship.FighterEntity::new, MobCategory.MISC)
+            .sized(3.5F, 3.2F)
+            .fireImmune()
+            .clientTrackingRange(16)
+            .updateInterval(1)
+            .build(ID + "fighter"));
+
+    /** Razako, el Ejecutor. */
+    public static final RegistryObject<EntityType<com.keinloree.entity.RazakoEntity>> RAZAKO = ENTITY_TYPES.register("razako", () -> EntityType.Builder
+            .<com.keinloree.entity.RazakoEntity>of(com.keinloree.entity.RazakoEntity::new, MobCategory.MISC)
+            .sized(1.4F, 3.0F)
+            .clientTrackingRange(16)
+            .build(ID + "razako"));
+
+    /** Los Cinco Calendarios (una entidad con 5 variantes). */
+    public static final RegistryObject<EntityType<com.keinloree.entity.CalendarioEntity>> CALENDARIO = ENTITY_TYPES.register("calendario", () -> EntityType.Builder
+            .<com.keinloree.entity.CalendarioEntity>of(com.keinloree.entity.CalendarioEntity::new, MobCategory.MISC)
+            .sized(0.8F, 2.25F)
+            .clientTrackingRange(16)
+            .build(ID + "calendario"));
+
+    /** Holograma gigante de Kein. */
+    public static final RegistryObject<EntityType<com.keinloree.entity.KeinHologramEntity>> KEIN_HOLOGRAM = ENTITY_TYPES.register("kein_hologram", () -> EntityType.Builder
+            .<com.keinloree.entity.KeinHologramEntity>of(com.keinloree.entity.KeinHologramEntity::new, MobCategory.MISC)
+            .sized(1.0F, 2.6F)
+            .fireImmune()
+            .clientTrackingRange(20)
+            .build(ID + "kein_hologram"));
+
     /** Camara cinematica: solo existe en el cliente (no se guarda ni se invoca). */
     public static final RegistryObject<EntityType<CameraEntity>> CAMERA = ENTITY_TYPES.register("camera", () -> EntityType.Builder
             .of(CameraEntity::new, MobCategory.MISC)
@@ -88,5 +137,7 @@ public final class ModEntities {
         event.put(LOREE_COMMANDER.get(), LooreCommander.createAttributes().build());
         event.put(LOREE_WARLORD.get(), LooreWarlord.createAttributes().build());
         event.put(CARGO_SHIP.get(), CargoShip.createAttributes().build());
+        event.put(RAZAKO.get(), com.keinloree.entity.RazakoEntity.createAttributes().build());
+        event.put(CALENDARIO.get(), com.keinloree.entity.CalendarioEntity.createAttributes().build());
     }
 }
