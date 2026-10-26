@@ -123,6 +123,11 @@ public final class ClientAutoTest {
             Step step = steps.get(index++);
             try {
                 wait = step.run(mc);
+                if (wait < 0) {
+                    // el paso pide repetirse en el siguiente tick (waitUntil)
+                    index--;
+                    wait = 1;
+                }
             } catch (Exception e) {
                 LOGGER.error("[ClientAutoTest] Fallo en el paso {}", index, e);
             }
@@ -219,6 +224,25 @@ public final class ClientAutoTest {
                 LOGGER.info("[ClientAutoTest] Captura {}.png", shotName);
                 Screenshot.grab(dir, shotName + ".png", mc.getMainRenderTarget(), msg -> { });
                 return 0;
+            });
+            return this;
+        }
+
+        /** Espera hasta que la condicion se cumpla (como mucho maxTicks). */
+        public Script waitUntil(String what, java.util.function.Predicate<Minecraft> cond, int maxTicks) {
+            int[] n = {0};
+            steps.add(mc -> {
+                if (cond.test(mc)) {
+                    LOGGER.info("[ClientAutoTest] Condicion '{}' cumplida tras {} ticks", what, n[0]);
+                    n[0] = 0;
+                    return 0;
+                }
+                if (++n[0] >= maxTicks) {
+                    LOGGER.error("[ClientAutoTest] Condicion '{}' NO cumplida tras {} ticks", what, maxTicks);
+                    n[0] = 0;
+                    return 0;
+                }
+                return -1;
             });
             return this;
         }

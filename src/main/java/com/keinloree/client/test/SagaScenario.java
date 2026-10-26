@@ -67,17 +67,28 @@ final class SagaScenario {
         Campaign.get(l).setCounter(k, v);
     }
 
+    private static String step(Minecraft mc) {
+        var server = mc.getSingleplayerServer();
+        return server == null ? "" : Campaign.get(server).step;
+    }
+
+    private static java.util.function.Predicate<Minecraft> at(String id) {
+        return mc -> id.equals(step(mc));
+    }
+
+    /** Elige en cuanto la eleccion este pendiente. */
+    private static void choose(Minecraft mc, String id, String key) {
+        srv(mc, (l, p) -> com.keinloree.story.Later.repeat(0, 30000, n -> !ScenePlayer.choose(l, id, key)));
+    }
+
     static void register() {
         ClientAutoTest.register("saga", s -> {
             s.wait(200).cmd("gamemode creative").cmd("time set 1000").cmd("gamerule doDaylightCycle false")
                     .cmd("keinloree ship remove").cmd("keinloree story reset")
                     .run(mc -> ScenePlayer.fast = true).wait(20)
                     .cmd("keinloree story goto prologo")
-                    .wait(1400).run(mc -> log(mc, "prologo+1400"))
-                    .wait(1800).run(mc -> log(mc, "llegada")).run(ShipLook::look).wait(2).shot("saga_01_llegada")
-                    .wait(600).run(mc -> log(mc, "transmision"))
-                    // acto I
-                    .cmd("keinloree story goto act1.desembarco").wait(500).run(mc -> log(mc, "desembarco"))
+                    .waitUntil("llegada", at("prologo.llegada"), 2000).wait(300).run(ShipLook::look).wait(2).shot("saga_01_llegada")
+                    .waitUntil("desembarco", at("act1.desembarco"), 4000).run(mc -> log(mc, "desembarco")).wait(300)
                     .cmd("keinloree story goto act1.primer_disparo").wait(600).run(mc -> log(mc, "primer_disparo"))
                     .cmd("keinloree story goto act1.ecos").wait(300).run(mc -> log(mc, "ecos"))
                     .cmd("keinloree story goto act1.ejecutor").wait(200)
@@ -88,37 +99,36 @@ final class SagaScenario {
                         }
                     }))
                     .wait(1500).run(mc -> log(mc, "ejecutor")).shot("saga_02_razako")
-                    .wait(1300).run(mc -> log(mc, "ejecutor+1300"))
-                    .cmd("keinloree story goto act1.calendarios").wait(500).shot("saga_03_calendarios")
-                    .wait(300).cmd("keinloree story choice unirse si").wait(600).run(mc -> log(mc, "tras oferta"));
+                    .waitUntil("calendarios", at("act1.calendarios"), 2500).wait(300).shot("saga_03_calendarios")
+                    .run(mc -> choose(mc, "unirse", "si"))
+                    .waitUntil("aprendiz", at("act2.aprendiz"), 3000).run(mc -> log(mc, "aprendiz"));
             // acto II: tres entrenamientos
             for (int h = 0; h < 3; h++) {
                 int hour = h;
-                s.cmd("keinloree story goto act2.aprendiz").wait(40)
-                        .run(mc -> srv(mc, (l, p) -> {
-                            counter(l, "entreno.mascara", (1 << hour) - 1);
-                            toPillar(l, p, hour, 30);
-                        }))
+                s.run(mc -> srv(mc, (l, p) -> toPillar(l, p, hour, 30)))
                         .wait(200).run(mc -> srv(mc, (l, p) -> toPillar(l, p, hour, 8)))
-                        .wait(600).run(mc -> log(mc, "entreno " + hour)).shot("saga_04_pilar_" + hour)
+                        .waitUntil("entreno " + hour, mc -> mc.getSingleplayerServer() != null
+                                && Campaign.get(mc.getSingleplayerServer()).counter("entreno.activo") == hour + 1, 1500)
+                        .wait(300).run(mc -> log(mc, "entreno " + hour)).shot("saga_04_pilar_" + hour)
                         .run(mc -> srv(mc, (l, p) -> {
                             counter(l, "ecos_muertos", 6);
                             counter(l, "cenit.oleada", 3);
                             counter(l, "cenit.bajas", 8);
                             counter(l, "ocaso.bajas", 3);
                         }))
-                        .wait(400).run(mc -> log(mc, "entreno fin " + hour));
+                        .waitUntil("fin entreno " + hour, mc -> mc.getSingleplayerServer() != null
+                                && Campaign.get(mc.getSingleplayerServer()).counter("entreno.activo") == 0, 1500)
+                        .wait(200).run(mc -> log(mc, "entreno fin " + hour));
             }
-            s.wait(400).run(mc -> log(mc, "pilar_caido?"))
+            s.waitUntil("pilar_caido", at("act2.pilar_caido"), 2000)
                     .run(mc -> srv(mc, (l, p) -> toPillar(l, p, 3, 40)))
-                    .wait(900).shot("saga_05_pilar_cae").run(mc -> log(mc, "pilar cae"))
-                    .wait(400)
+                    .wait(500).shot("saga_05_pilar_cae")
+                    .waitUntil("preparacion", at("act2.preparacion"), 3000).wait(200)
                     .run(mc -> srv(mc, (l, p) -> {
                         FighterEntity f = FighterEntity.spawn(l, p.position().add(3, 1, 0), 0.0F, false);
                         p.startRiding(f, true);
                     }))
-                    .wait(300).run(mc -> log(mc, "preparacion->infiltracion"))
-                    // infiltracion
+                    .waitUntil("infiltracion", at("act2.infiltracion"), 2000).wait(200)
                     .run(mc -> srv(mc, (l, p) -> {
                         Vec3 f = SagaWorld.hangarFloor(l);
                         if (f != null) {
@@ -151,7 +161,7 @@ final class SagaScenario {
                     }))
                     .wait(500).run(mc -> log(mc, "razako hangar")).shot("saga_08_razako_hangar")
                     .run(mc -> srv(mc, (l, p) -> Campaign.get(l).setFlag("razako_arrodillado")))
-                    .wait(300).cmd("keinloree story choice perdon perdonar").wait(400).run(mc -> log(mc, "perdon"))
+                    .run(mc -> choose(mc, "perdon", "perdonar")).wait(600).run(mc -> log(mc, "perdon"))
                     .run(mc -> srv(mc, (l, p) -> {
                         DestroyerEntity d = SagaWorld.ship(l);
                         FighterEntity f = FighterEntity.spawn(l, d.position().add(0, -80, 0), 0.0F, false);
@@ -160,18 +170,20 @@ final class SagaScenario {
                     }))
                     .wait(300).run(mc -> log(mc, "escape"))
                     .run(mc -> srv(mc, (l, p) -> Campaign.get(l).inc("fighters_destroyed", 4)))
-                    .wait(400).run(mc -> log(mc, "huida"))
+                    .waitUntil("aprendiz2", at("act2.aprendiz2"), 2000)
                     .run(mc -> srv(mc, (l, p) -> {
                         p.stopRiding();
                         counter(l, "entreno.mascara", 31);
                         counter(l, "entrenado", 5);
                     }))
-                    .wait(300).run(mc -> log(mc, "revelacion?"))
+                    .waitUntil("revelacion", at("act3.revelacion"), 2000)
                     // acto III
                     .run(mc -> srv(mc, (l, p) -> toPillar(l, p, 4, 6)))
-                    .wait(900).run(mc -> log(mc, "revelacion")).shot("saga_09_revelacion")
-                    .wait(2700).run(mc -> log(mc, "lanzadera"))
-                    .wait(600).run(mc -> srv(mc, (l, p) -> {
+                    .wait(600).run(mc -> log(mc, "revelacion")).shot("saga_09_revelacion")
+                    .waitUntil("oferta", at("act3.oferta"), 3000)
+                    .waitUntil("lanzadera", mc -> mc.getSingleplayerServer() != null
+                            && Campaign.get(mc.getSingleplayerServer()).counter("fase.act3.oferta") >= 2, 5000)
+                    .run(mc -> srv(mc, (l, p) -> {
                         var e = Campaign.get(l).entities.get("lanzadera");
                         var en = e == null ? null : l.getEntity(e);
                         if (en != null) {
@@ -185,25 +197,28 @@ final class SagaScenario {
                             tpTo(p, k.position().add(0, 0, -5));
                         }
                     }))
-                    .wait(500).shot("saga_10_kein").cmd("keinloree story choice oferta saber").wait(400)
-                    .cmd("keinloree story choice oferta2 rechazar").wait(400).run(mc -> log(mc, "rechazo"))
+                    .wait(300).shot("saga_10_kein")
+                    .run(mc -> choose(mc, "oferta", "saber")).run(mc -> choose(mc, "oferta2", "rechazar"))
+                    .waitUntil("escape", at("act3.escape"), 3000)
                     .run(mc -> srv(mc, (l, p) -> toPillar(l, p, 0, 20)))
+                    .waitUntil("bombardeo", at("amanecer.bombardeo"), 1000)
                     .wait(600).run(mc -> log(mc, "bombardeo")).shot("saga_11_bombardeo")
-                    .wait(600).run(mc -> srv(mc, (l, p) -> Campaign.get(l).inc("turrets_heavy_destroyed", 6)))
-                    .wait(500).run(mc -> log(mc, "luces"))
+                    .run(mc -> srv(mc, (l, p) -> Campaign.get(l).inc("turrets_heavy_destroyed", 6)))
+                    .waitUntil("luces", at("amanecer.luces"), 3000)
                     .run(mc -> srv(mc, (l, p) -> counter(l, "luces", 31)))
-                    .wait(800).run(mc -> log(mc, "asalto")).shot("saga_12_asalto")
+                    .waitUntil("asalto", at("amanecer.asalto"), 3000).wait(300).shot("saga_12_asalto")
                     .run(mc -> srv(mc, (l, p) -> {
                         Vec3 b = SagaWorld.bridge(l);
                         if (b != null) {
                             tpTo(p, b.add(0, 0, -4));
                         }
                     }))
-                    .wait(600).run(mc -> log(mc, "hora cero")).shot("saga_13_kein_final")
+                    .waitUntil("hora cero", at("amanecer.hora_cero"), 1500).wait(400).shot("saga_13_kein_final")
                     .run(mc -> srv(mc, (l, p) -> Campaign.get(l).setFlag("kein_vencido")))
-                    .wait(500).cmd("keinloree story choice final devolver").wait(1500).run(mc -> log(mc, "final sexta"))
-                    .shot("saga_14_final")
-                    // ruta del Nexo (con la nave nueva)
+                    .run(mc -> choose(mc, "final", "romper"))
+                    .waitUntil("final", at("final.amanecer"), 3000).wait(300).shot("saga_14_final")
+                    .waitUntil("fin", at("fin"), 4000).run(mc -> log(mc, "fin amanecer"))
+                    // ruta del Nexo con una nave nueva
                     .cmd("keinloree ship arrive").wait(2200)
                     .run(mc -> srv(mc, (l, p) -> {
                         Campaign c = Campaign.get(l);
@@ -218,8 +233,7 @@ final class SagaScenario {
                             tpTo(p, r.position().add(2, 0, 0));
                         }
                     }))
-                    .wait(500).run(mc -> log(mc, "nexo.marca"))
-                    .cmd("keinloree story goto nexo.traicion").wait(300)
+                    .waitUntil("traicion", at("nexo.traicion"), 2500)
                     .run(mc -> srv(mc, (l, p) -> {
                         toPillar(l, p, 1, 10);
                         counter(l, "anclas_rotas.cenit", 3);
@@ -231,7 +245,7 @@ final class SagaScenario {
                             o.setHealth(1.0F);
                         }
                     }))
-                    .wait(500).run(mc -> log(mc, "ultimo pilar"))
+                    .waitUntil("ultimo pilar", at("nexo.ultimo_pilar"), 2500)
                     .run(mc -> srv(mc, (l, p) -> toPillar(l, p, 4, 10)))
                     .wait(800).run(mc -> srv(mc, (l, p) -> {
                         CalendarioEntity e = SagaWorld.hour(l, 4);
@@ -239,7 +253,8 @@ final class SagaScenario {
                             e.setHealth(1.0F);
                         }
                     }))
-                    .wait(1500).run(mc -> log(mc, "final nexo")).shot("saga_16_nexo")
+                    .waitUntil("final nexo", at("final.nexo"), 3000).wait(300).shot("saga_16_nexo")
+                    .waitUntil("fin nexo", at("fin"), 4000).run(mc -> log(mc, "fin nexo"))
                     .run(mc -> ScenePlayer.fast = false).quit();
         });
     }
