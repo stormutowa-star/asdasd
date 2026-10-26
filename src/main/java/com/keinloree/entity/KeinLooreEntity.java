@@ -6,8 +6,9 @@ import com.keinloree.util.Fx;
 import com.keinloree.util.Geo;
 import com.keinloree.util.LooreDamage;
 import com.keinloree.world.LooreStory;
+import com.keinloree.registry.ModParticles;
+import com.keinloree.vfx.Vfx;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -362,10 +363,12 @@ public class KeinLooreEntity extends LooreMob {
             this.setLorePose(POSE_CAST);
             LooreStory.say(level, "Campo digital activo. Aquí no hay a dónde huir.");
             Fx.sound(level, this.position(), SoundEvents.BEACON_ACTIVATE, 1.0F, 1.5F);
+            Vfx.runeCircle(level, this.fieldCenter.add(0.0D, 0.12D, 0.0D), Vfx.GREEN, (float) this.fieldRadius, 400);
         }
-        if (this.abTick % 2 == 0) {
-            Fx.ring(level, this.fieldCenter.add(0.0D, 0.15D, 0.0D), this.fieldRadius, 72, Fx.GREEN,
-                    this.abTick * 0.04D);
+        if (this.abTick % 40 == 0) {
+            Vec3 a = this.randomFieldPoint(level);
+            Vec3 b = this.randomFieldPoint(level);
+            Vfx.lightning(level, a.add(0.0D, 6.0D, 0.0D), b, Vfx.GREEN, 12);
         }
         if (this.abTick > 1 && this.abTick % 60 == 1) {
             Vec3 spot = this.randomFieldPoint(level);
@@ -409,9 +412,14 @@ public class KeinLooreEntity extends LooreMob {
         } else if (t < GB_END) {
             Vec3 c = this.gbGoal;
             this.fieldOn = false;
+            if (t == GB_COLLAPSE + 1) {
+                Vfx.pillar(level, c, 0.0F, 1.6F, Vfx.GREEN, GB_END - GB_COLLAPSE);
+                Vfx.codeRain(level, c, 4.0F, GB_END - GB_COLLAPSE);
+            }
             this.columnFx(level, c, 46.0D, 1.6D);
             if (t == GB_IMPACT) {
                 Fx.burst(level, Fx.BRIGHT, c.add(0.0D, 0.5D, 0.0D), 60, 1.6D, 0.3D);
+                Vfx.shockwave(level, c.add(0.0D, 0.2D, 0.0D), Vfx.GREEN, 9.0F, 24);
                 Fx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.6F);
                 List<LivingEntity> hit = level.getEntitiesOfClass(LivingEntity.class,
                         Geo.box(c.add(0.0D, 2.0D, 0.0D), 2.6D, 3.5D, 2.6D),
@@ -468,6 +476,8 @@ public class KeinLooreEntity extends LooreMob {
         if (this.abTick == 60) {
             this.techno = true;
             this.setLoreForm(1);
+            Vfx.trail(level, this, Vfx.GREEN, 6000);
+            Vfx.shockwave(level, this.position().add(0.0D, 0.2D, 0.0D), Vfx.GREEN, 10.0F, 30);
             this.setNoGravity(true);
             Fx.burst(level, Fx.BRIGHT, c, 90, 1.5D, 0.4D);
             LooreStory.say(level, "Cada copia que destruiste era un fragmento de tu propio núcleo. Tú también eres código, Decodificador.");
@@ -510,6 +520,9 @@ public class KeinLooreEntity extends LooreMob {
         }
     }
 
+    /** La campana puede activarlo: si es true, Codeux Order destruye el terreno que recorre. */
+    public static boolean CODEUX_BREAKS_BLOCKS = false;
+
     /** Codeux Order: sube, junta los brazos, carga energia y lanza una onda verde que arrasa el terreno. */
     private void abCodeux(ServerLevel level, LivingEntity target) {
         int t = this.abTick;
@@ -527,6 +540,9 @@ public class KeinLooreEntity extends LooreMob {
             this.setDeltaMovement(Vec3.ZERO);
             this.setLorePose(POSE_CHARGE);
             Vec3 core = this.position().add(0.0D, 0.6D, 0.0D);
+            if (t == 41) {
+                Vfx.distortion(level, core, Vfx.GREEN, 2.6F, 52);
+            }
             double k = (t - 40) / 50.0D;
             double radius = 3.0D * (1.0D - k) + 0.2D;
             Fx.ring(level, core, radius, 20, Fx.BRIGHT, t * 0.3D);
@@ -541,7 +557,16 @@ public class KeinLooreEntity extends LooreMob {
             Vec3 aimDir = flat(origin, this.groundBelow(level, target.position()));
             int w = t - 90;
             Vec3 front = origin.add(aimDir.scale(w));
-            Fx.carve(level, front, 3.2D, 3, 8);
+            if (CODEUX_BREAKS_BLOCKS) {
+                Fx.carve(level, front, 3.2D, 3, 8);
+            }
+            if (w == 1) {
+                Vfx.shockwave(level, origin.add(0.0D, 0.2D, 0.0D), Vfx.GREEN, 60.0F, 60);
+            }
+            if (t % 6 == 0) {
+                Vfx.codeRain(level, front, 4.5F, 40);
+                Vfx.shockwave(level, front.add(0.0D, 0.2D, 0.0D), Vfx.GREEN, 6.0F, 14);
+            }
             if (t % 2 == 0) {
                 Fx.line(level, this.position().add(0.0D, 1.5D, 0.0D), front.add(0.0D, 1.0D, 0.0D), Fx.BRIGHT, 1.0D);
             }
@@ -596,7 +621,7 @@ public class KeinLooreEntity extends LooreMob {
             double a = this.random.nextDouble() * Math.PI * 2.0D;
             double r = this.random.nextDouble() * radius;
             double y = base.y + this.random.nextDouble() * height;
-            ParticleOptions p = this.random.nextBoolean() ? Fx.CODE : ParticleTypes.END_ROD;
+            ParticleOptions p = this.random.nextBoolean() ? ModParticles.GLYPH.get() : ModParticles.STAR.get();
             level.sendParticles(p, base.x + Math.cos(a) * r, y, base.z + Math.sin(a) * r, 1, 0.0D, 0.0D, 0.0D, 0.0D);
         }
     }

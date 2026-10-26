@@ -3,8 +3,7 @@ package com.keinloree.entity;
 import com.keinloree.util.Fx;
 import com.keinloree.util.Geo;
 import com.keinloree.util.LooreDamage;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import com.keinloree.vfx.Vfx;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -168,11 +167,12 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
      * Rayo verde instantaneo: dibuja la linea y dana al primer ser vivo que toque.
      * Nunca dana a la faccion Loree.
      */
-    protected void laser(ServerLevel level, Vec3 from, Vec3 to, float damage, ParticleOptions color) {
+    protected void laser(ServerLevel level, Vec3 from, Vec3 to, float damage, Fx.Tint color) {
         BlockHitResult block = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE, this));
         Vec3 end = block.getType() != HitResult.Type.MISS ? block.getLocation() : to;
         Fx.line(level, from, end, color, 0.45D);
+        Vfx.muzzle(level, from, end.subtract(from), color.color());
 
         List<LivingEntity> near = level.getEntitiesOfClass(LivingEntity.class, Geo.span(from, end, 1.0D),
                 e -> e != this && e.isAlive() && !(e instanceof LooreMob));
@@ -190,7 +190,7 @@ public abstract class LooreMob extends PathfinderMob implements LooreVisual {
             }
         }
         if (best != null) {
-            Fx.burst(level, ParticleTypes.ELECTRIC_SPARK, best.position().add(0.0D, best.getBbHeight() * 0.5D, 0.0D),
+            Fx.burst(level, Fx.BRIGHT, best.position().add(0.0D, best.getBbHeight() * 0.5D, 0.0D),
                     6, 0.3D, 0.05D);
             LooreDamage.apply(best, this.damageSources().mobAttack(this), damage, flat(from, end), 0.35D);
         }

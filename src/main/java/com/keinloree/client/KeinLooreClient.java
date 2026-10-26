@@ -19,6 +19,7 @@ public final class KeinLooreClient {
         modEventBus.addListener(KeinLooreClient::onRegisterLayers);
         modEventBus.addListener(KeinLooreClient::onRegisterRenderers);
         StoryClient.register(modEventBus);
+        modEventBus.addListener(com.keinloree.client.vfx.VfxParticles::onRegister);
         ClientAutoTest.init();
     }
 

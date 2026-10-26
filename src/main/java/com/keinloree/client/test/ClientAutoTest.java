@@ -40,6 +40,7 @@ public final class ClientAutoTest {
         register("basic", s -> s.wait(200).cmd("time set noon").wait(40).shot("basic").wait(20).quit());
         BbTestRender.registerScenario();
         StoryScenarios.registerAll();
+        com.keinloree.client.vfx.VfxScenario.register();
     }
 
     private final List<Step> steps;

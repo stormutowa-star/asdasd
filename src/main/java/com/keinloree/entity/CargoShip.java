@@ -4,8 +4,8 @@ import com.keinloree.util.Fx;
 import com.keinloree.world.Builds;
 import com.keinloree.world.LooreStory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import com.keinloree.registry.ModParticles;
+import com.keinloree.vfx.Vfx;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -24,7 +24,6 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 /**
  * Nave de carga de Kein Loree. Sale del hangar de la nave nodriza, vuela hasta unas coordenadas,
@@ -61,10 +60,6 @@ public class CargoShip extends Mob {
     private static final EntityDataAccessor<Boolean> BEAM =
             SynchedEntityData.defineId(CargoShip.class, EntityDataSerializers.BOOLEAN);
 
-    private static final DustParticleOptions FLAME =
-            new DustParticleOptions(new Vector3f(0.35F, 1.0F, 0.55F), 1.5F);
-    private static final DustParticleOptions FLAME_CORE =
-            new DustParticleOptions(new Vector3f(0.85F, 1.0F, 0.9F), 1.1F);
 
     /** Distancia al suelo del vientre del casco con las patas desplegadas (en bloques). */
     public static final double BELLY = 1.5D;
@@ -570,9 +565,9 @@ public class CargoShip extends Mob {
             double bz = -Math.cos(yaw) * 0.25D * this.thrust;
             for (int s = -1; s <= 1; s += 2) {
                 Vec3 n = this.local(s * 3.75D, 2.5D, -6.1D);
-                this.level().addParticle(FLAME, n.x, n.y, n.z, bx, 0.0D, bz);
+                this.level().addParticle(ModParticles.EMBER.get(), n.x, n.y, n.z, bx, 0.0D, bz);
                 if (this.thrust > 0.5F && this.random.nextInt(2) == 0) {
-                    this.level().addParticle(FLAME_CORE, n.x, n.y, n.z, bx * 1.4D, 0.0D, bz * 1.4D);
+                    this.level().addParticle(ModParticles.SPARK.get(), n.x, n.y, n.z, bx * 1.4D, 0.0D, bz * 1.4D);
                 }
             }
         }
@@ -580,9 +575,9 @@ public class CargoShip extends Mob {
             double[][] spots = {{3.75D, 1.2D, -2.75D}, {-3.75D, 1.2D, -2.75D}, {0.0D, 1.2D, 4.25D}};
             for (double[] sp : spots) {
                 Vec3 n = this.local(sp[0], sp[1], sp[2]);
-                this.level().addParticle(FLAME, n.x, n.y, n.z, 0.0D, -0.2D * this.lift, 0.0D);
+                this.level().addParticle(ModParticles.EMBER.get(), n.x, n.y, n.z, 0.0D, -0.2D * this.lift, 0.0D);
                 if (this.tickCount % 3 == 0) {
-                    this.level().addParticle(ParticleTypes.CLOUD, n.x, n.y - 0.2D, n.z, 0.0D, -0.08D, 0.0D);
+                    this.level().addParticle(ModParticles.SMOKE.get(), n.x, n.y - 0.2D, n.z, 0.0D, -0.08D, 0.0D);
                 }
             }
         }
@@ -592,6 +587,9 @@ public class CargoShip extends Mob {
     private void beamFx(ServerLevel level) {
         Vec3 from = this.local(0.0D, 1.2D, 4.25D);
         Vec3 to = new Vec3(this.base.getX() + 0.5D, this.base.getY() + 0.5D, this.base.getZ() + 0.5D);
+        if (this.tickCount % 5 == 0) {
+            Vfx.beam(level, from, to, Fx.GREEN.color(), this.fort ? 0.6F : 0.35F, 8);
+        }
         for (int i = 0; i < 14; i++) {
             double t = this.random.nextDouble();
             Vec3 p = from.add(to.subtract(from).scale(t));

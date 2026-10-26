@@ -1,9 +1,9 @@
 package com.keinloree.util;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
+import com.keinloree.registry.ModParticles;
+import com.keinloree.vfx.Vfx;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -14,78 +14,73 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 /** Efectos visuales y de sonido del lado del servidor (las particulas llegan a todos los jugadores cercanos). */
 public final class Fx {
 
-    public static final DustParticleOptions GREEN = new DustParticleOptions(new Vector3f(0.2F, 1.0F, 0.45F), 1.2F);
-    public static final DustParticleOptions DEEP_GREEN = new DustParticleOptions(new Vector3f(0.05F, 0.55F, 0.2F), 1.4F);
-    public static final DustParticleOptions BRIGHT = new DustParticleOptions(new Vector3f(0.85F, 1.0F, 0.9F), 0.9F);
-    /** Particulas que imitan caracteres de codigo cayendo. */
-    public static final DustParticleOptions CODE = new DustParticleOptions(new Vector3f(0.4F, 1.0F, 0.6F), 0.7F);
+    /** Estilo visual: color de los VFX y tipo de particula propia (0 ascua, 1 glifo, 2 chispa). */
+    public record Tint(int color, int kind) {
+        ParticleOptions particle() {
+            return switch (kind) {
+                case 1 -> ModParticles.GLYPH.get();
+                case 2 -> ModParticles.SPARK.get();
+                default -> ModParticles.EMBER.get();
+            };
+        }
+    }
+
+    public static final Tint GREEN = new Tint(0x3CFF7A, 0);
+    public static final Tint DEEP_GREEN = new Tint(0x14B84C, 0);
+    public static final Tint BRIGHT = new Tint(0xE4FFEC, 2);
+    /** Glifos de codigo. */
+    public static final Tint CODE = new Tint(0x66FF99, 1);
 
     private Fx() {
     }
 
-    public static void burst(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {
-        level.sendParticles(particle, at.x, at.y, at.z, count, spread, spread, spread, speed);
+    /** Chispas del estilo dado (particulas propias, con luz completa). */
+    public static void burst(ServerLevel level, Tint tint, Vec3 at, int count, double spread, double speed) {
+        level.sendParticles(tint.particle(), at.x, at.y, at.z, count, spread, spread, spread, speed);
     }
 
-    /** Puntos a lo largo de un segmento (una particula por punto). */
-    public static void line(ServerLevel level, Vec3 a, Vec3 b, ParticleOptions particle, double step) {
-        Vec3 d = b.subtract(a);
-        double len = d.length();
-        int n = Math.max(1, (int) Math.ceil(len / step));
-        for (int i = 0; i <= n; i++) {
-            Vec3 q = a.add(d.scale(i / (double) n));
-            level.sendParticles(particle, q.x, q.y, q.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-        }
+    /** Haz entre dos puntos (VFX BEAM de corta vida). */
+    public static void line(ServerLevel level, Vec3 a, Vec3 b, Tint tint, double step) {
+        Vfx.beam(level, a, b, tint.color(), 0.1F, 6);
     }
 
-    /** Curva cuadratica de Bezier (los rayos que se doblan). */
-    public static void curve(ServerLevel level, Vec3 a, Vec3 control, Vec3 b, ParticleOptions particle, int samples) {
-        for (int i = 0; i <= samples; i++) {
-            double t = i / (double) samples;
+    /** Curva cuadratica de Bezier (los rayos que se doblan): cadena de haces con nucleo blanco. */
+    public static void curve(ServerLevel level, Vec3 a, Vec3 control, Vec3 b, Tint tint, int samples) {
+        int seg = Math.max(4, samples / 3);
+        Vec3 prev = a;
+        for (int i = 1; i <= seg; i++) {
+            double t = i / (double) seg;
             double u = 1.0D - t;
             Vec3 q = a.scale(u * u).add(control.scale(2.0D * u * t)).add(b.scale(t * t));
-            level.sendParticles(particle, q.x, q.y, q.z, 2, 0.04D, 0.04D, 0.04D, 0.0D);
+            Vfx.beam(level, prev, q, tint.color(), 0.14F, 10);
+            prev = q;
         }
     }
 
-    public static void ring(ServerLevel level, Vec3 center, double radius, int points, ParticleOptions particle, double phase) {
-        for (int i = 0; i < points; i++) {
-            double a = phase + Math.PI * 2.0D * i / points;
-            level.sendParticles(particle, center.x + Math.cos(a) * radius, center.y, center.z + Math.sin(a) * radius,
-                    1, 0.0D, 0.0D, 0.0D, 0.0D);
-        }
+    /** Anillo horizontal (VFX RING); la fase ya no se usa. */
+    public static void ring(ServerLevel level, Vec3 center, double radius, int points, Tint tint, double phase) {
+        Vfx.ring(level, center, new Vec3(0.0D, 1.0D, 0.0D), tint.color(), (float) radius, 4);
     }
 
     /** Particulas visibles desde lejos (hasta 512 bloques): para la nave nodriza y las naves de carga. */
-    public static void burstFar(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {
+    public static void burstFar(ServerLevel level, Tint tint, Vec3 at, int count, double spread, double speed) {
         for (ServerPlayer p : level.players()) {
-            level.sendParticles(p, particle, true, at.x, at.y, at.z, count, spread, spread, spread, speed);
+            level.sendParticles(p, tint.particle(), true, at.x, at.y, at.z, count, spread, spread, spread, speed);
         }
     }
 
-    /** Linea de particulas visible desde lejos. */
-    public static void lineFar(ServerLevel level, Vec3 a, Vec3 b, ParticleOptions particle, double step) {
-        Vec3 d = b.subtract(a);
-        double len = d.length();
-        int n = Math.max(1, (int) Math.ceil(len / step));
-        for (int i = 0; i <= n; i++) {
-            Vec3 q = a.add(d.scale(i / (double) n));
-            burstFar(level, particle, q, 1, 0.0D, 0.0D);
-        }
+    /** Haz visible desde lejos. */
+    public static void lineFar(ServerLevel level, Vec3 a, Vec3 b, Tint tint, double step) {
+        Vfx.beam(level, a, b, tint.color(), 0.5F, 8);
     }
 
-    /** Anillo horizontal de particulas visible desde lejos. */
-    public static void ringFar(ServerLevel level, Vec3 center, double radius, int points, ParticleOptions particle, double phase) {
-        for (int i = 0; i < points; i++) {
-            double a = phase + Math.PI * 2.0D * i / points;
-            burstFar(level, particle, new Vec3(center.x + Math.cos(a) * radius, center.y, center.z + Math.sin(a) * radius),
-                    1, 0.0D, 0.0D);
-        }
+    /** Anillo horizontal visible desde lejos. */
+    public static void ringFar(ServerLevel level, Vec3 center, double radius, int points, Tint tint, double phase) {
+        Vfx.ring(level, center, new Vec3(0.0D, 1.0D, 0.0D), tint.color(), (float) radius, 5);
     }
 
     public static void sound(ServerLevel level, Vec3 at, SoundEvent event, float volume, float pitch) {

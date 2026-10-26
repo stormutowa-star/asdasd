@@ -40,6 +40,7 @@ public class KeinLooreMod {
         MinecraftForge.EVENT_BUS.register(new LooreEvents());
         MinecraftForge.EVENT_BUS.register(new StoryEvents());
         AutoTest.init();
+        com.keinloree.vfx.VfxCommand.init();
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             KeinLooreClient.register(modBus);

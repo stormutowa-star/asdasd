@@ -74,6 +74,6 @@ public final class ClientPackets {
 
     /** WP2: efecto del motor de VFX (VfxRenderer). */
     public static void onVfx(VfxS2C msg) {
-        // WP2
+        com.keinloree.client.vfx.VfxRenderer.add(msg);
     }
 }
