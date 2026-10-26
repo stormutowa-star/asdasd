@@ -362,10 +362,13 @@ public class DestroyerEntity extends Entity {
         return true;
     }
 
-    /** Todos de pie (la pose sentada es por vehiculo, no por pasajero; el piloto tambien va de pie). */
+    /** Solo cliente: el renderer lo activa un instante mientras dibuja al piloto (pose sentada forzada). */
+    public static boolean renderPilotSitting;
+
+    /** Todos de pie (la pose sentada es por vehiculo, no por pasajero); el cliente fuerza la del piloto al dibujarlo. */
     @Override
     public boolean shouldRiderSit() {
-        return false;
+        return renderPilotSitting;
     }
 
     @Override

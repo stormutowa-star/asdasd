@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -51,7 +52,7 @@ public final class ModelPreview {
                         "attack_1", RazakoAnims.ATTACK_1, "attack_2", RazakoAnims.ATTACK_2, "attack_3", RazakoAnims.ATTACK_3,
                         "charge", RazakoAnims.CHARGE, "leap", RazakoAnims.LEAP, "roar", RazakoAnims.ROAR,
                         "block", RazakoAnims.BLOCK, "horizon", RazakoAnims.HORIZON, "chain", RazakoAnims.CHAIN,
-                        "kneel", RazakoAnims.KNEEL, "hurt", RazakoAnims.HURT, "pose", RazakoAnims.POSE), 6.5F));
+                        "kneel", RazakoAnims.KNEEL, "hurt", RazakoAnims.HURT, "pose", RazakoAnims.POSE), 5.0F));
     }
 
     private static final boolean PREVIEW_RUN = System.getProperty("keinloree.autotest", "").startsWith("preview_");
@@ -122,6 +123,14 @@ public final class ModelPreview {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.screen instanceof com.keinloree.client.ui.ChoiceScreen) {
             mc.setScreen(null);
+        }
+    }
+
+    /** Impide que la eleccion pendiente se reabra a mitad de las capturas. */
+    @SubscribeEvent
+    public static void onScreenOpening(ScreenEvent.Opening event) {
+        if (PREVIEW_RUN && event.getNewScreen() instanceof com.keinloree.client.ui.ChoiceScreen) {
+            event.setCanceled(true);
         }
     }
 
