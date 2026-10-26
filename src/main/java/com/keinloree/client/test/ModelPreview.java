@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Vector3f;
@@ -53,6 +54,7 @@ public final class ModelPreview {
                         "kneel", RazakoAnims.KNEEL, "hurt", RazakoAnims.HURT, "pose", RazakoAnims.POSE), 6.5F));
     }
 
+    private static final boolean PREVIEW_RUN = System.getProperty("keinloree.autotest", "").startsWith("preview_");
     private static final Vector3f CACHE = new Vector3f();
     private static final Map<String, HierarchicalModel<Entity>> BAKED = new LinkedHashMap<>();
     private static String current;
@@ -106,6 +108,21 @@ public final class ModelPreview {
         yaw = newYaw;
         anim = newAnim;
         animMs = ms;
+    }
+
+    /**
+     * Si el mundo de pruebas tiene una eleccion de la historia pendiente, su pantalla bloquearia el escenario:
+     * durante una vista previa se cierra (no toca el estado guardado de la historia).
+     */
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START || !PREVIEW_RUN) {
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && mc.screen instanceof com.keinloree.client.ui.ChoiceScreen) {
+            mc.setScreen(null);
+        }
     }
 
     @SubscribeEvent
