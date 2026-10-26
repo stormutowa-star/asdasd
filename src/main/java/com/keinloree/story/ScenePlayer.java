@@ -44,6 +44,9 @@ public final class ScenePlayer {
     private ScenePlayer() {}
 
     /** Modo de pruebas sin jugadores: avanza igualmente y elige la primera opcion. */
+    /** Pruebas automaticas: las lineas y esperas duran 2 ticks. */
+    public static volatile boolean fast;
+
     public static void setHeadless(boolean value) {
         headless = value;
     }
@@ -171,6 +174,9 @@ public final class ScenePlayer {
             c.scenePc++;
             c.setDirty();
             int w = exec(level, c, scene, in);
+            if (fast && w > 2) {
+                w = 2;
+            }
             if (w > 0) {
                 wait = w;
                 return;

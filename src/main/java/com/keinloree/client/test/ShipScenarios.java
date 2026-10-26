@@ -42,15 +42,6 @@ final class ShipScenarios {
                 .cmd("summon keinloree:turbolaser 998 151 985 {Kind:1}")
                 .cmd("summon keinloree:fighter 1005 153 984")
                 .cmd("clear @s").wait(60).hideHud(true).wait(2).shot("chars_front")
-                .run(mc -> {
-                    for (net.minecraft.world.entity.Entity e : mc.level.entitiesForRendering()) {
-                        if (e.getType().toString().contains("keinloree")) {
-                            com.mojang.logging.LogUtils.getLogger().info("[chars] {} at {} render={}", e.getType(), e.position(),
-                                    mc.getEntityRenderDispatcher().shouldRender(e, new net.minecraft.client.renderer.culling.Frustum(
-                                            new org.joml.Matrix4f(), new org.joml.Matrix4f()), 0, 0, 0));
-                        }
-                    }
-                })
                 .cmd("tp @s 995 152 990 160 15").wait(30).shot("chars_turret_close")
                 .cmd("tp @s 1000 151 1000 180 0")
                 .cmd("summon keinloree:kein_hologram 1000 151 960 {Scale:10f}")

@@ -1278,11 +1278,14 @@ public final class SagaActions {
                 return List.of();
             }
             Vec3 eye = h.getEyePosition();
-            Vec3 back = flatLook(h).scale(-3.0D);
+            Vec3 to = com.keinloree.ship.ShipTransform.entityPos(d.getAnchor());
+            Vec3 dir = new Vec3(to.x - h.getX(), 0, to.z - h.getZ()).normalize();
+            Vec3 back = dir.scale(-3.0D);
+            Vec3 high = to.add(0, -10, 0);
             return List.of(
-                    Shot.fixed(eye.add(back).add(0, 0.6, 0), 100).lookAtEntity(d.getId()).fov(70, 60),
-                    Shot.track(d.getId(), new Vec3(30, -70, 60), 300).lookAtEntity(d.getId()),
-                    Shot.orbit(h.position(), h.getId(), 9.0F, 3.0F, 0.0F, 120.0F, 200).lookAtEntity(d.getId()));
+                    Shot.fixed(eye.add(back).add(0, 0.6, 0), 120).lookAt(high).fov(70, 60),
+                    Shot.dolly(h.position().add(dir.scale(4)).add(0, 0.3, 0), h.position().add(dir.scale(12)).add(0, 1.5, 0), 280).lookAt(high).fov(80, 70),
+                    Shot.orbit(h.position(), h.getId(), 9.0F, 3.0F, 0.0F, 120.0F, 200).lookAt(high));
         });
         Cinematics.register("transmision", (c, a) -> {
             Entity holo = c.entity("holograma");
@@ -1411,7 +1414,7 @@ public final class SagaActions {
                 Vfx.beam(c.level, p, d.position(), Pillars.color(i), 3.0F, 120);
             }
             Vec3 cam = h.position().add(0, 20, 0);
-            return List.of(Shot.fixed(cam, 260).lookAtEntity(d.getId()).fov(70, 55));
+            return List.of(Shot.fixed(cam, 260).lookAt(d.position()).fov(70, 55));
         });
         Cinematics.register("kein_final", (c, a) -> {
             KeinLooreEntity k = SagaWorld.kein(c.level);

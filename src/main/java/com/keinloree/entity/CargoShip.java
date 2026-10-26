@@ -44,6 +44,10 @@ public class CargoShip extends Mob {
     public static final int PH_DOCKING = 8;
     /** Se aleja hacia el cielo y desaparece (cuando la nave nodriza no esta cargada). */
     public static final int PH_LEAVE = 9;
+    /** Pilotada por un jugador desde la cabina. */
+    public static final int PH_PILOT = 10;
+    /** Aparcada (tras bajarse el piloto): se posa en el suelo y espera. */
+    public static final int PH_PARKED = 11;
 
     private static final EntityDataAccessor<Float> GEAR =
             SynchedEntityData.defineId(CargoShip.class, EntityDataSerializers.FLOAT);
@@ -177,6 +181,103 @@ public class CargoShip extends Mob {
                 CargoShip.this.yHeadRot = CargoShip.this.getYRot();
             }
         };
+    }
+
+    // ------------------------------------------------------------------ pilotaje
+
+    @Override
+    protected net.minecraft.world.InteractionResult mobInteract(net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand) {
+        if (this.isVehicle() || player.isSecondaryUseActive()) {
+            return net.minecraft.world.InteractionResult.PASS;
+        }
+        boolean idle = this.phase == PH_DOCKED || this.phase == PH_UNLOAD || this.phase == PH_PARKED;
+        if (!this.level().isClientSide) {
+            boolean allowed = player.isCreative() || com.keinloree.story.Factions.legionAlly(player)
+                    || com.keinloree.story.Campaign.get(player.getServer()).hasFlag("cargo_unlocked");
+            if (!allowed || !idle) {
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.keinloree.cargo_locked"), true);
+                return net.minecraft.world.InteractionResult.CONSUME;
+            }
+            if (player.startRiding(this)) {
+                this.mission = "player";
+                this.setPhase(PH_PILOT);
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.keinloree.cargo_keys"), true);
+            }
+        }
+        return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide);
+    }
+
+    /** El jugador sentado en la cabina (la nave la mueve el servidor con su entrada). */
+    @javax.annotation.Nullable
+    public net.minecraft.world.entity.player.Player pilot() {
+        return this.getFirstPassenger() instanceof net.minecraft.world.entity.player.Player p ? p : null;
+    }
+
+    @Override
+    protected void positionRider(net.minecraft.world.entity.Entity passenger, net.minecraft.world.entity.Entity.MoveFunction move) {
+        Vec3 seat = this.local(0.0D, 0.9D, 3.2D);
+        move.accept(passenger, seat.x, seat.y, seat.z);
+    }
+
+    @Override
+    public Vec3 getDismountLocationForPassenger(net.minecraft.world.entity.LivingEntity passenger) {
+        return this.local(2.6D, 0.2D, 0.0D);
+    }
+
+    private void tickPilot() {
+        net.minecraft.world.entity.player.Player pilot = this.pilot();
+        if (pilot == null) {
+            this.setPhase(PH_PARKED);
+            return;
+        }
+        float forward = pilot.zza;
+        float strafe = pilot.xxa;
+        double speed = 0.9D;
+        Vec3 look = Vec3.directionFromRotation(pilot.getXRot(), pilot.getYRot());
+        Vec3 side = new Vec3(Math.cos(Math.toRadians(pilot.getYRot())), 0.0D, Math.sin(Math.toRadians(pilot.getYRot())));
+        Vec3 want = look.scale(forward * speed).add(side.scale(strafe * speed * 0.5D));
+        Vec3 dv = want.subtract(this.vel);
+        double dl = dv.length();
+        if (dl > 0.05D) {
+            dv = dv.scale(0.05D / dl);
+        }
+        this.vel = this.vel.add(dv);
+        // choques sencillos: no atraviesa el terreno
+        AABB box = this.getBoundingBox();
+        if (!this.level().noCollision(this, box.move(this.vel.x, 0.0D, 0.0D))) {
+            this.vel = new Vec3(0.0D, this.vel.y, this.vel.z);
+        }
+        if (!this.level().noCollision(this, box.move(0.0D, this.vel.y, 0.0D))) {
+            this.vel = new Vec3(this.vel.x, 0.0D, this.vel.z);
+        }
+        if (!this.level().noCollision(this, box.move(0.0D, 0.0D, this.vel.z))) {
+            this.vel = new Vec3(this.vel.x, this.vel.y, 0.0D);
+        }
+        this.setDeltaMovement(this.vel);
+        float oldYaw = this.getYRot();
+        float turn = Mth.clamp(Mth.wrapDegrees(pilot.getYRot() - oldYaw), -3.5F, 3.5F);
+        this.setYRot(oldYaw + turn);
+        this.yBodyRot = this.getYRot();
+        this.yHeadRot = this.getYRot();
+        this.roll = approach(this.roll, Mth.clamp(-turn * 5.0F, -20.0F, 20.0F), 1.5F);
+        this.thrust = approach(this.thrust, Math.abs(forward), 0.04F);
+        this.lift = approach(this.lift, 0.5F, 0.03F);
+        boolean nearGround = !this.level().noCollision(this, box.move(0.0D, -2.0D, 0.0D));
+        this.gear = approach(this.gear, nearGround ? 1.0F : 0.0F, 0.05F);
+        this.ramp = approach(this.ramp, 0.0F, 0.05F);
+        this.setCargo(false);
+    }
+
+    private void tickParked() {
+        this.thrust = approach(this.thrust, 0.0F, 0.04F);
+        this.gear = approach(this.gear, 1.0F, 0.05F);
+        this.roll = approach(this.roll, 0.0F, 1.5F);
+        boolean onGround = !this.level().noCollision(this, this.getBoundingBox().move(0.0D, -0.2D, 0.0D));
+        this.vel = onGround ? Vec3.ZERO : new Vec3(0.0D, -0.15D, 0.0D);
+        this.setDeltaMovement(this.vel);
+        if (this.pilot() != null) {
+            this.setPhase(PH_PILOT);
+        }
     }
 
     @Override
@@ -346,6 +447,8 @@ public class CargoShip extends Mob {
             case PH_RETURN -> this.tickReturn(level);
             case PH_DOCKING -> this.tickDocking();
             case PH_LEAVE -> this.tickLeave();
+            case PH_PILOT -> this.tickPilot();
+            case PH_PARKED -> this.tickParked();
             default -> this.phase = PH_DOCKED;
         }
         this.entityData.set(GEAR, this.gear);

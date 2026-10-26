@@ -685,7 +685,7 @@ public final class Saga {
             public void tick(StoryCtx c) {
                 ServerPlayer h = hero(c);
                 if (phase(c) == 0) {
-                    if (h.getVehicle() instanceof FighterEntity) {
+                    if (h.getVehicle() instanceof FighterEntity || h.getVehicle() instanceof com.keinloree.entity.CargoShip) {
                         c.scene("act2.despegue");
                         phase(c, 1);
                     } else if (c.ticksInStep() > 15 * MIN && once(c, "sin_nave") && idle(c)) {

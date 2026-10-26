@@ -299,7 +299,12 @@ public final class LegionOps {
                 target = level.getServer().getPlayerList().getPlayer(UUID.fromString(p[3]));
             } catch (RuntimeException ignored) {
             }
-            squad(level, rear, ship.getY(), leader, n, target);
+            List<LooreMob> sq = squad(level, rear, ship.getY(), leader, n, target);
+            if (p.length > 4) {
+                for (LooreMob mob : sq) {
+                    mob.getPersistentData().putBoolean(p[4], true);
+                }
+            }
         } else if (m.equals("razako")) {
             RazakoEntity rz = ModEntities.RAZAKO.get().create(level);
             if (rz != null) {
