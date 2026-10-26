@@ -25,7 +25,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import com.keinloree.ship.FighterEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -448,6 +451,9 @@ public final class Pillars {
         if (t % BEAM_PERIOD == 0) {
             syncBeams(level);
         }
+        if (t % 10 == 0) {
+            defend(level, c);
+        }
         if (t % 80 == 0 && c.hasFlag("pilares_encendidos")) {
             for (ServerPlayer p : level.players()) {
                 for (int h = 0; h < COUNT; h++) {
@@ -456,6 +462,25 @@ public final class Pillars {
                         p.playNotifySound(ModSounds.PILLAR_HUM.get(), SoundSource.AMBIENT, 0.6F, 0.8F + h * 0.08F);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Los pilares en pie destruyen los cazas de la Legion que sobrevuelan su zona (el haz los alcanza). Los cazas
+     * con piloto jugador no son objetivo.
+     */
+    private static void defend(ServerLevel level, Campaign c) {
+        for (int h = 0; h < COUNT; h++) {
+            if (!built(c, h) || fallen(c, h)) {
+                continue;
+            }
+            Vec3 base = center(level, c, h);
+            AABB zone = new AABB(base.x - 22.0D, base.y - 4.0D, base.z - 22.0D, base.x + 22.0D, base.y + 90.0D, base.z + 22.0D);
+            for (FighterEntity f : level.getEntitiesOfClass(FighterEntity.class, zone,
+                    x -> x.isAlive() && x.isLegionCraft() && !(x.getControllingPassenger() instanceof Player))) {
+                Vfx.beam(level, base.add(0.0D, 4.0D, 0.0D), f.position().add(0.0D, 1.0D, 0.0D), color(h), 0.6F, 10);
+                f.hurt(level.damageSources().magic(), 12.0F);
             }
         }
     }
