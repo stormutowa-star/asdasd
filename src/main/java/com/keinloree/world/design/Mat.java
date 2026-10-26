@@ -44,7 +44,16 @@ public final class Mat {
     public static final byte LIME = 39;
     public static final byte SMOOTH = 40;
     public static final byte NETHERITE = 41;
-    public static final byte COUNT = 42;
+    /** Consola del timon del destructor (keinloree:helm, mirando al sur). */
+    public static final byte HELM = 42;
+    /** Barrotes de hierro unidos a lo largo de x. */
+    public static final byte BARS_X = 43;
+    /** Barrotes de hierro unidos a lo largo de z. */
+    public static final byte BARS_Z = 44;
+    /** Puerta de hierro (mitad inferior / superior, mirando al norte). */
+    public static final byte DOOR_LO = 45;
+    public static final byte DOOR_HI = 46;
+    public static final byte COUNT = 47;
 
     private Mat() {
     }

@@ -23,6 +23,61 @@ public final class ShipDesign {
     /** Posiciones locales de las toberas (para el humo de los motores). */
     public static final int[][] ENGINES = {{0, 2, 4}, {-26, 1, 3}, {26, 1, 3}, {-40, 0, 2}, {40, 0, 2}};
 
+    /** Version del diseno: subela si cambia (el cliente reconstruye la malla y la nave se vuelve a colocar). */
+    public static final int VERSION = 2;
+
+    // ---- Timon y puestos del puente (celdas locales; y = celda en la que se pisa) ----
+    /** Celda del bloque del timon (punto de anclaje de toda la nave). La consola mira al sur: el piloto esta detras. */
+    public static final int HELM_X = 0;
+    public static final int HELM_Y = 34;
+    public static final int HELM_Z = 146;
+    public static final int[] HELM = {HELM_X, HELM_Y, HELM_Z};
+    /** Donde se queda de pie el piloto (detras de la consola, mirando al ventanal). */
+    public static final int[] HELM_SEAT = {HELM_X, HELM_Y, HELM_Z + 1};
+    /** Kein Loree, junto al ventanal. */
+    public static final int[] KEIN_POST = {4, 34, 145};
+    /** Almirante Orrel, al otro lado del timon. */
+    public static final int[] ORREL_POST = {-4, 34, 145};
+    /** Cuatro oficiales tras las consolas del ventanal. */
+    public static final int[][] BRIDGE_STATIONS = {{-16, 34, 147}, {-10, 34, 147}, {10, 34, 147}, {16, 34, 147}};
+    /** Dos Guardias del Nexo flanqueando el trono. */
+    public static final int[][] BRIDGE_GUARDS = {{-6, 34, 153}, {6, 34, 153}};
+
+    // ---- Tripulacion por zona ----
+    public static final int[][] CREW_HANGAR = {
+            {-10, -2, 80}, {10, -2, 80}, {-10, -2, 93}, {10, -2, 93}, {-10, -2, 107}, {10, -2, 107},
+            {-10, -2, 120}, {10, -2, 120}, {-4, -2, 75}, {4, -2, 75}, {0, -2, 124}};
+    /** Rutas de patrulla (cada una, una lista de puntos que se recorren en ciclo). */
+    public static final int[][][] CREW_CORRIDOR = {
+            {{0, -2, 41}, {0, -2, 69}},
+            {{-9, 13, 143}, {9, 13, 143}, {9, 13, 158}, {-9, 13, 158}},
+            {{0, -2, 129}, {0, -2, 150}}};
+    public static final int[][] CREW_DETENTION = {{10, -2, 129}, {16, -2, 129}, {22, -2, 129}};
+    public static final int[][] CREW_REACTOR = {{-7, -2, 160}, {7, -2, 160}, {0, -2, 140}, {0, -2, 148}};
+    public static final int[][] CREW_BARRACKS = {{-6, 13, 142}, {6, 13, 142}, {-6, 13, 157}, {6, 13, 157}, {0, 13, 143}};
+    /** Centro de cada una de las 4 celdas del bloque de detencion. */
+    public static final int[][] CELLS = {{17, -2, 125}, {22, -2, 125}, {17, -2, 133}, {22, -2, 133}};
+    /** Seis plazas de caza en el hangar (y = celda sobre el suelo). */
+    public static final int[][] FIGHTER_PARKING = {
+            {-9, -2, 86}, {9, -2, 86}, {-9, -2, 100}, {9, -2, 100}, {-9, -2, 114}, {9, -2, 114}};
+    /** Atraques de las naves de carga (suspendidas dentro de la bahia). */
+    public static final int[][] DOCKS = {{0, DOCK_Y, DOCK_Z[0]}, {0, DOCK_Y, DOCK_Z[1]}, {0, DOCK_Y, DOCK_Z[2]}};
+
+    /** Tipo de torreta de un montaje. */
+    public enum TurretType { HEAVY, DEFENSE }
+
+    /**
+     * Montaje de torreta: (x,y,z) es la celda sobre la plataforma donde apoya la base de la entidad
+     * (si es invertida, la celda justo bajo la plataforma: la torreta cuelga hacia abajo).
+     */
+    public record Mount(int x, int y, int z, TurretType type, boolean inverted) {
+    }
+
+    /** 14 pesadas en el dorso y 8 de defensa (bordes y panza). */
+    public static final java.util.List<Mount> TURRET_MOUNTS = buildMounts();
+
+    private static volatile Grid cache;
+
     private ShipDesign() {
     }
 
@@ -71,6 +126,21 @@ public final class ShipDesign {
     }
 
     // ------------------------------------------------------------------ construccion
+
+    /** Rejilla del diseno, construida una sola vez (es determinista). No la modifiques. */
+    public static Grid grid() {
+        Grid g = cache;
+        if (g == null) {
+            synchronized (ShipDesign.class) {
+                g = cache;
+                if (g == null) {
+                    g = build();
+                    cache = g;
+                }
+            }
+        }
+        return g;
+    }
 
     public static Grid build() {
         Grid g = new Grid(-58, 58, -16, 64, -2, 196);
@@ -223,6 +293,7 @@ public final class ShipDesign {
         hangar(g);
         cargoHolds(g);
         rearCorridor(g);
+        detention(g);
         reactorHall(g);
         crewDeck(g);
         atrium(g);
@@ -350,9 +421,46 @@ public final class ShipDesign {
                     g.set(cx1, 0, z, Mat.TRIM);
                 }
             }
-            for (int z = 84; z <= 116; z += 8) {
+            for (int z = 84; z <= 116; z += 4) {
                 g.set((xa + xb) / 2, 2, z, Mat.GLOW);
             }
+        }
+    }
+
+    /** Bloque de detencion: pasillo al este del pasillo trasero y 4 celdas con barrotes y puerta. */
+    private static void detention(Grid g) {
+        g.room(4, -2, 128, 26, 1, 130, Mat.FLOOR2, Mat.WALL, Mat.WALL2);
+        g.carve(3, -2, 129, 3, 0, 129);
+        g.set(3, 1, 129, Mat.GLOW);
+        for (int x = 6; x <= 24; x += 6) {
+            g.set(x, 2, 129, Mat.GLOW);
+        }
+        for (int x = 4; x <= 26; x++) {
+            g.set(x, -3, 128, Mat.TRIM);
+            g.set(x, -3, 130, Mat.TRIM);
+        }
+        for (int[] c : CELLS) {
+            boolean north = c[2] < 129;
+            int a = c[0] - 1;
+            int z0 = north ? 123 : 132;
+            int z1 = north ? 126 : 135;
+            int front = north ? 127 : 131;
+            g.room(a, -2, z0, a + 2, 1, z1, Mat.FLOOR2, Mat.WALL2, Mat.WALL2);
+            // frente de barrotes con puerta en el centro
+            for (int x = a; x <= a + 2; x++) {
+                for (int y = -2; y <= 1; y++) {
+                    g.set(x, y, front, Mat.BARS_X);
+                }
+            }
+            g.set(a + 1, -2, front, Mat.DOOR_LO);
+            g.set(a + 1, -1, front, Mat.DOOR_HI);
+            g.set(a - 1, 1, front, Mat.GLOW);
+            g.set(a + 3, 1, front, Mat.GLOW);
+            // catre y luz
+            int back = north ? z0 : z1;
+            g.set(a, -2, back, Mat.SLAB_B);
+            g.set(a, -2, north ? back + 1 : back - 1, Mat.SLAB_B);
+            g.set(a + 1, 2, (z0 + z1) / 2, Mat.GLOW);
         }
     }
 
@@ -364,6 +472,8 @@ public final class ShipDesign {
         }
         g.set(0, 2, 129, Mat.GLOW);
         g.set(0, 2, 132, Mat.GLOW);
+        // Reabre la puerta trasera del hangar (la tapaba el muro de este pasillo)
+        g.carve(-2, -2, 126, 2, 1, 126);
     }
 
     private static void reactorHall(Grid g) {
@@ -415,6 +525,20 @@ public final class ShipDesign {
                 }
             }
         }
+        // Luces de suelo del reactor y de la pasarela
+        for (int z = 138; z <= 150; z += 6) {
+            for (int x : new int[]{-8, -3, 3, 8}) {
+                g.set(x, -8, z, Mat.GLOW);
+            }
+        }
+        for (int z : new int[]{156, 164, 169}) {
+            for (int x : new int[]{-9, 9}) {
+                g.set(x, -8, z, Mat.GLOW);
+            }
+        }
+        for (int z = 136; z <= cz - 6; z += 5) {
+            g.set(0, -3, z, Mat.GLOW);
+        }
         // Rama de la pasarela hacia el ascensor
         g.fill(-4, -3, 146, -2, -3, 148, Mat.FLOOR);
         // Nucleo del reactor
@@ -439,12 +563,13 @@ public final class ShipDesign {
                 }
             }
         }
-        // Base del nucleo
+        // Base del nucleo (con luces en el borde)
         for (int dx = -8; dx <= 8; dx++) {
             for (int dz = -8; dz <= 8; dz++) {
                 int d2 = dx * dx + dz * dz;
                 if (d2 <= 64) {
-                    g.set(dx, -7, cz + dz, d2 >= 52 ? Mat.TRIM : Mat.FLOOR);
+                    boolean lamp = d2 >= 52 && (dx == 0 || dz == 0 || Math.abs(dx) == Math.abs(dz) + 3 || Math.abs(dz) == Math.abs(dx) + 3);
+                    g.set(dx, -7, cz + dz, lamp ? Mat.GLOW : d2 >= 52 ? Mat.TRIM : Mat.FLOOR);
                 }
             }
         }
@@ -453,9 +578,9 @@ public final class ShipDesign {
     private static void crewDeck(Grid g) {
         g.room(-12, 13, 140, 12, 16, 160, Mat.FLOOR2, Mat.WALL, Mat.WALL2);
         for (int z = 142; z <= 158; z += 4) {
-            g.set(-9, 17, z, Mat.GLOW);
-            g.set(0, 17, z, Mat.GLOW);
-            g.set(9, 17, z, Mat.GLOW);
+            for (int x : new int[]{-9, -5, 0, 5, 9}) {
+                g.set(x, 17, z, Mat.GLOW);
+            }
         }
         // Literas
         for (int z = 141; z <= 159; z += 3) {
@@ -509,6 +634,10 @@ public final class ShipDesign {
         }
         for (int y = -2; y <= 33; y++) {
             g.set(xa, y, 147, Mat.LADDER_E);
+        }
+        // Luces en la pared del ascensor
+        for (int y = 2; y <= 30; y += 6) {
+            g.set(xa + 1, y, za - 1, Mat.GLOW);
         }
         // Abertura en el piso del puente
         g.carve(xa, 33, za, xb, 33, zb);
@@ -593,6 +722,26 @@ public final class ShipDesign {
         }
         // Despeje sobre el trono
         g.carve(-1, 36, 152, 1, 40, 154);
+        // Timon: consola delante del trono, de cara al piloto (sur); el piloto se sienta tras ella
+        g.set(HELM_X, HELM_Y, HELM_Z, Mat.HELM);
+        g.set(HELM_X - 1, HELM_Y, HELM_Z, Mat.BLACK);
+        g.set(HELM_X + 1, HELM_Y, HELM_Z, Mat.BLACK);
+        g.set(HELM_X - 1, HELM_Y + 1, HELM_Z, Mat.GLASS);
+        g.set(HELM_X + 1, HELM_Y + 1, HELM_Z, Mat.GLASS);
+        g.set(HELM_X, HELM_Y, HELM_Z + 1, Mat.AIR);
+        // Luces de suelo (el techo queda demasiado alto para iluminar el piso)
+        for (int x = -24; x <= 24; x += 6) {
+            if (x != 0) {
+                g.set(x, 33, 148, Mat.GLOW);
+                g.set(x, 33, 154, Mat.GLOW);
+            }
+        }
+        for (int x : new int[]{-27, -2, 2, 27}) {
+            g.set(x, 33, 145, Mat.GLOW);
+        }
+        // Reabre el hueco del ascensor que tapa el suelo del puente
+        g.carve(-7, 33, 146, -5, 33, 148);
+        g.set(-7, 33, 147, Mat.LADDER_E);
     }
 
     private static void sphere(Grid g, int cx, int cy, int cz, double r, byte shell, byte core) {
@@ -790,28 +939,93 @@ public final class ShipDesign {
         }
     }
 
-    private static void turrets(Grid g) {
-        int[][] spots = {
-                {14, 38}, {-14, 38}, {18, 60}, {-18, 60}, {22, 84}, {-22, 84},
-                {20, 118}, {-20, 118}, {28, 144}, {-28, 144}, {32, 172}, {-32, 172}, {16, 172}, {-16, 172}
-        };
-        for (int[] s : spots) {
-            int x = s[0];
-            int z = s[1];
-            int ax = Math.abs(x);
-            int y = topAt(ax, z);
-            if (y == Integer.MIN_VALUE) {
-                continue;
+    private static java.util.List<Mount> buildMounts() {
+        java.util.List<Mount> list = new java.util.ArrayList<>();
+        // pesadas: pares simetricos a lo largo del dorso (x, z)
+        int[][] heavy = {{8, 38}, {12, 60}, {18, 84}, {24, 118}, {28, 144}, {32, 172}, {16, 172}};
+        for (int[] h : heavy) {
+            for (int s : new int[]{-1, 1}) {
+                list.add(mount(s * h[0], h[1], TurretType.HEAVY, false));
             }
-            // base 3x3 y torreta
-            g.fill(x - 1, y + 1, z - 1, x + 1, y + 1, z + 1, Mat.HULL_B);
-            g.fill(x - 1, y + 2, z - 1, x + 1, y + 2, z + 1, Mat.HULL_E);
-            g.set(x, y + 3, z, Mat.HULL_A);
-            g.set(x - 1, y + 3, z - 2, Mat.ROD_N);
-            g.set(x + 1, y + 3, z - 2, Mat.ROD_N);
-            g.set(x - 1, y + 3, z - 1, Mat.HULL_A);
-            g.set(x + 1, y + 3, z - 1, Mat.HULL_A);
-            g.set(x, y + 4, z, Mat.GLOW);
+        }
+        // defensa: bordes del dorso y panza
+        int[][] top = {{40, 168}, {24, 100}, {36, 150}};
+        for (int[] t : top) {
+            for (int s : new int[]{-1, 1}) {
+                list.add(mount(s * t[0], t[1], TurretType.DEFENSE, false));
+            }
+        }
+        int[][] belly = {{18, 135}, {26, 165}};
+        for (int[] t : belly) {
+            for (int s : new int[]{-1, 1}) {
+                list.add(mount(s * t[0], t[1], TurretType.DEFENSE, true));
+            }
+        }
+        return java.util.List.copyOf(list);
+    }
+
+    private static int half(TurretType t) {
+        return t == TurretType.HEAVY ? 2 : 1;
+    }
+
+    /** Calcula la celda de apoyo de una torreta a partir de la altura del casco bajo su huella. */
+    private static Mount mount(int x, int z, TurretType type, boolean inverted) {
+        int h = half(type);
+        if (!inverted) {
+            int top = Integer.MIN_VALUE;
+            for (int dx = -h; dx <= h; dx++) {
+                for (int dz = -h; dz <= h; dz++) {
+                    top = Math.max(top, topAt(Math.abs(x + dx), z + dz));
+                }
+            }
+            return new Mount(x, top + 2, z, type, false);
+        }
+        int bot = Integer.MIN_VALUE;
+        for (int dx = -h; dx <= h; dx++) {
+            for (int dz = -h; dz <= h; dz++) {
+                bot = Math.max(bot, botAt(Math.abs(x + dx), z + dz));
+            }
+        }
+        return new Mount(x, -bot - 2, z, type, true);
+    }
+
+    /** Plataformas planas de montaje (las torretas seran entidades). */
+    private static void turrets(Grid g) {
+        for (Mount m : TURRET_MOUNTS) {
+            int h = half(m.type());
+            int yPlate = m.inverted() ? m.y() + 1 : m.y() - 1;
+            for (int dx = -h; dx <= h; dx++) {
+                for (int dz = -h; dz <= h; dz++) {
+                    int px = m.x() + dx;
+                    int pz = m.z() + dz;
+                    int ax = Math.abs(px);
+                    // soporte hasta el casco
+                    if (!m.inverted()) {
+                        int top = topAt(ax, pz);
+                        for (int y = top + 1; y < yPlate; y++) {
+                            g.set(px, y, pz, Mat.HULL_C);
+                        }
+                    } else {
+                        int bot = -botAt(ax, pz);
+                        for (int y = bot - 1; y > yPlate; y--) {
+                            g.set(px, y, pz, Mat.HULL_C);
+                        }
+                    }
+                    boolean edge = Math.abs(dx) == h || Math.abs(dz) == h;
+                    boolean corner = Math.abs(dx) == h && Math.abs(dz) == h;
+                    g.set(px, yPlate, pz, corner ? Mat.GLOW : edge ? Mat.TRIM : Mat.HULL_E);
+                }
+            }
+            // aire para la torreta
+            int h3 = m.type() == TurretType.HEAVY ? 3 : 2;
+            for (int dx = -h; dx <= h; dx++) {
+                for (int dz = -h; dz <= h; dz++) {
+                    for (int k = 0; k < h3; k++) {
+                        int y = m.inverted() ? m.y() - k : m.y() + k;
+                        g.set(m.x() + dx, y, m.z() + dz, Mat.NONE);
+                    }
+                }
+            }
         }
     }
 

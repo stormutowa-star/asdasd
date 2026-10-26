@@ -8,10 +8,12 @@ const P = {
   armor_black: { color: '#1B1A1F', noise: 4 },
   armor_cracked: { color: '#1B1A1F', noise: 4 },
   armor_crimson: { color: '#6E0F16', noise: 5 },
+  crimson_cracked: { color: '#6E0F16', noise: 5 },
+  horn: { color: '#2A262C', noise: 6 },
   armor_edge: { color: '#3A3640', noise: 5 },
   leather: { color: '#2B1E17', noise: 5 },
   cloth: { color: '#4A0C12', noise: 4, edge: false },
-  iron: { color: '#585B62', noise: 7 },
+  iron: { color: '#4A4D54', noise: 6 },
   blade: { color: '#2E2F35', noise: 5 },
   blade_edge: { color: '#9AA0A6', noise: 9 },
   glow_red: { color: '#FF2A2A', noise: 4, edge: false },
@@ -51,7 +53,7 @@ const LR = (bone, name, from, to, mat, o = {}) => {
 
 // ---- Piernas (muslo en right_leg, pantorrilla y bota en right_shin) ----
 LR('right_leg', 'thigh', [1.5, 10, -4.5], [8.5, 21, 4.5], 'armor_black');
-LR('right_leg', 'tasset', [2, 12.5, -5.6], [8, 21.5, -4.5], 'armor_crimson');
+LR('right_leg', 'tasset', [2.5, 15.5, -5.6], [8.8, 21.5, -4.5], 'armor_crimson', { rotation: [-8, 0, 0] });
 LR('right_leg', 'knee', [2, 8.5, -6.2], [8, 12.5, -4.5], 'armor_edge');
 LR('right_shin', 'shin', [1.5, 3, -4], [8.5, 10, 4], 'armor_black');
 LR('right_shin', 'shin_plate', [2, 3.5, -5], [8, 9.5, -4], 'armor_edge');
@@ -65,11 +67,8 @@ C('body', 'buckle', [-2.5, 21.5, -5.8], [2.5, 25.5, -5], 'armor_crimson');
 C('body', 'tabard', [-2, 11, -6.2], [2, 22, -5.7], 'cloth');
 C('body', 'abdomen', [-6, 24, -3.5], [6, 30, 3.5], 'armor_edge');
 C('body', 'chest', [-9, 29, -5], [9, 40, 5], 'armor_black');
-C('body', 'chest_plate', [-7.5, 30, -6.3], [7.5, 38.5, -5], 'armor_cracked');
+C('body', 'chest_plate', [-7.5, 30, -6.3], [7.5, 38.5, -5], 'crimson_cracked');
 C('body', 'core', [-2, 33, -6.9], [2, 37, -6.3], 'glow_green', { glow: true });
-C('body', 'crack_a', [2.5, 34.5, -6.65], [6.8, 35.4, -6.3], 'glow_green', { glow: true, rotation: [0, 0, 28] });
-C('body', 'crack_b', [-6.8, 31.5, -6.65], [-2.5, 32.4, -6.3], 'glow_green', { glow: true, rotation: [0, 0, -32] });
-C('body', 'crack_c', [-0.4, 27.5, -6.65], [0.4, 33, -6.3], 'glow_green', { glow: true });
 C('body', 'back_plate', [-8, 30, 5], [8, 39, 6.5], 'armor_cracked');
 C('body', 'back_crack', [-1, 31, 6.4], [1, 38, 6.8], 'glow_green', { glow: true, rotation: [0, 0, 8] });
 C('body', 'gorget', [-5.5, 38.5, -5], [5.5, 41, 5], 'armor_edge');
@@ -83,11 +82,11 @@ C('head', 'crest', [-0.8, 48, -4.5], [0.8, 50.5, 4.5], 'armor_crimson');
 C('head', 'neck_guard', [-4, 41, 4.5], [4, 46.5, 5.6], 'armor_edge');
 LR('head', 'cheek', [4.5, 41, -3.5], [5.5, 45.5, 3], 'armor_edge');
 // Cuerno de 5 tramos que sale hacia fuera y se curva hacia atras y arriba
-LR('head', 'horn1', [4.5, 45, -1.5], [8.5, 48.5, 2], 'armor_edge');
-LR('head', 'horn2', [7.5, 46, 1.2], [10.5, 49.2, 5], 'armor_edge');
-LR('head', 'horn3', [9.5, 47.8, 4.2], [12, 50.6, 8], 'armor_crimson');
-LR('head', 'horn4', [10.6, 50, 7], [12.6, 53, 9.8], 'armor_crimson');
-LR('head', 'horn5', [11, 52.4, 8.8], [12.2, 55.5, 11], 'armor_edge');
+LR('head', 'horn1', [4.5, 45, -1.5], [8.5, 48.5, 2], 'horn');
+LR('head', 'horn2', [7.5, 46, 0.8], [10.8, 49.6, 5], 'horn');
+LR('head', 'horn3', [9.3, 47.8, 4], [12.3, 51, 8], 'horn');
+LR('head', 'horn4', [10.4, 50, 6.8], [12.8, 53.4, 9.8], 'horn');
+LR('head', 'horn5', [11, 52.8, 8.8], [12.4, 56, 11], 'armor_crimson');
 
 // ---- Brazos: hombreras enormes, 32 px de ancho total ----
 LR('right_arm', 'pauldron_top', [8, 39.5, -6.5], [16, 42, 6.5], 'armor_crimson');
@@ -99,7 +98,6 @@ LR('right_forearm', 'elbow', [9, 25.5, -4.3], [15, 29.5, 4.3], 'armor_edge');
 LR('right_forearm', 'forearm', [9.5, 17.5, -3.5], [14.5, 26, 3.5], 'leather');
 LR('right_forearm', 'fist', [9.5, 13.5, -3.5], [14.5, 17.5, 3.5], 'leather');
 C('right_forearm', 'vambrace_r', [9, 18, -4.3], [15, 25, 4.3], 'armor_cracked');
-C('right_forearm', 'arm_crack_r', [11.4, 19, -4.65], [12.6, 24, -4.25], 'glow_green', { glow: true, rotation: [0, 0, 12] });
 
 // ---- Cadena enrollada en el antebrazo izquierdo + cola colgante ----
 for (let i = 0; i < 4; i++) {
@@ -137,6 +135,7 @@ C('cape_low', 'cape_low_r', [3, 11, 7.1], [8.5, 24, 8.3], 'cape');
 // IK de las dos manos: la mano izquierda debe agarrar el mango de la espada (6 px por debajo de la derecha).
 // =====================================================================================
 const D = Math.PI / 180;
+const CR = 'catmullrom', LN = 'linear';
 function Rm(r) {
   const [a, b, c] = r.map((v) => v * D);
   const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b), cc = Math.cos(c), sc = Math.sin(c);
@@ -199,30 +198,62 @@ function ikArm(pivot, side, target, seed) {
 }
 let lastR = [10, 0, -20], lastL = [10, 0, 20], lastW = null;
 const gripLog = [];
-// frames: [t, G(H, pitch, yaw, roll), interp]. H = centro de agarre en el espacio del torso; la espada apunta con
-// 'pitch' (negativo = hacia delante), 'yaw' (+ = a su izquierda) y 'roll' (giro sobre su eje; 0 = filo hacia delante).
-// Devuelve las rotaciones de right_arm, weapon y left_arm de modo que ambas manos queden sobre el mango.
-function grip(name, frames) {
-  const out = { right_arm: [], right_forearm: [], weapon: [], left_arm: [], left_forearm: [] };
-  for (const [t, g, i] of frames) {
-    const Rw = mm(Ry(g.yaw), mm(Rx(g.pitch), Ry(g.roll)));
-    const Dv = mv(Rw, [0, 1, 0]);
-    const tR = add(g.H, Dv.map((v) => v * GRIP / 2)), tL = add(g.H, Dv.map((v) => -v * GRIP / 2));
-    const r = ikArm(PIV_R, 1, tR, lastR), l = ikArm(PIV_L, -1, tL, lastL);
-    lastR = r.th; lastL = l.th;
-    if (r.err + r.clamp > 0.8 || l.err + l.clamp > 0.8) gripLog.push(`${name} t=${t}: manos fuera de alcance R=${(r.err + r.clamp).toFixed(1)} L=${(l.err + l.clamp).toFixed(1)}`);
-    const w = eulerOf(mm(tr(mm(Rm(r.th), Rx(r.beta))), Rw), lastW);
-    lastW = w;
-    const f1 = (v) => v.map((x) => +x.toFixed(1));
-    out.right_arm.push([t, f1(r.th), i || 'catmullrom']);
-    out.weapon.push([t, f1(w), i || 'catmullrom']);
-    out.left_arm.push([t, f1(l.th), i || 'catmullrom']);
-    out.right_forearm.push([t, [+r.beta.toFixed(1), 0, 0], i || 'catmullrom']);
-    out.left_forearm.push([t, [+l.beta.toFixed(1), 0, 0], i || 'catmullrom']);
+const f1 = (v) => v.map((x) => +x.toFixed(1));
+// Resuelve un instante. two=true: H = centro de agarre y las dos manos sobre el mango (la derecha hacia la hoja);
+// two=false: H = posicion de la mano derecha (la izquierda queda libre).
+function solveFrame(name, t, g, two) {
+  const Rw = mm(Ry(g.yaw), mm(Rx(g.pitch), Ry(g.roll)));
+  const Dv = mv(Rw, [0, 1, 0]);
+  const tR = two ? add(g.H, Dv.map((v) => (v * GRIP) / 2)) : g.H;
+  const r = ikArm(PIV_R, 1, tR, lastR);
+  lastR = r.th;
+  let l = null;
+  if (two) { l = ikArm(PIV_L, -1, add(g.H, Dv.map((v) => (-v * GRIP) / 2)), lastL); lastL = l.th; }
+  const bad = r.err + r.clamp + (l ? l.err + l.clamp : 0);
+  if (bad > 0.8) gripLog.push(`${name} t=${t.toFixed(2)}: manos fuera de alcance (${bad.toFixed(1)} px)`);
+  const w = eulerOf(mm(tr(mm(Rm(r.th), Rx(r.beta))), Rw), lastW);
+  lastW = w;
+  const o = { right_arm: f1(r.th), right_forearm: [+r.beta.toFixed(1), 0, 0], weapon: f1(w) };
+  if (l) { o.left_arm = f1(l.th); o.left_forearm = [+l.beta.toFixed(1), 0, 0]; }
+  return o;
+}
+// frames: [t, G(H, pitch, yaw, roll), interp]. La espada apunta con 'pitch' (negativo = hacia delante), 'yaw'
+// (+ = a su izquierda) y 'roll' (giro sobre su eje; 0 = filo hacia delante), en el espacio del torso.
+// Entre fotogramas se interpolan H/pitch/yaw/roll (suave o lineal segun el destino) y se resuelve la IK cada 1/25 s:
+// asi las manos no sueltan el mango aunque la espada gire mucho.
+function sampleGrip(name, frames, two) {
+  const out = {};
+  const push = (t, o) => { for (const [k, v] of Object.entries(o)) (out[k] = out[k] || []).push([+t.toFixed(3), v, 'linear']); };
+  lastW = null;
+  const lerp = (a, b, k) => a + (b - a) * k;
+  const lerpG = (a, b, k) => G(a.H.map((v, i) => lerp(v, b.H[i], k)), lerp(a.pitch, b.pitch, k), lerp(a.yaw, b.yaw, k), lerp(a.roll, b.roll, k));
+  push(frames[0][0], solveFrame(name, frames[0][0], frames[0][1], two));
+  for (let n = 1; n < frames.length; n++) {
+    const [t0, g0] = frames[n - 1], [t1, g1, i1] = frames[n];
+    const steps = Math.max(1, Math.round((t1 - t0) / 0.05));
+    for (let k = 1; k <= steps; k++) {
+      let u = k / steps;
+      if ((i1 || CR) !== LN) u = u * u * (3 - 2 * u);
+      const t = t0 + ((t1 - t0) * k) / steps;
+      push(t, solveFrame(name, t, lerpG(g0, g1, u), two));
+    }
+  }
+  // quita fotogramas casi colineales (el Java tiene un limite de 64 KB por inicializador)
+  for (const k of Object.keys(out)) {
+    const a = out[k];
+    const keep = [a[0]];
+    for (let n = 1; n < a.length - 1; n++) {
+      const p0 = keep[keep.length - 1], p2 = a[n + 1], u = (a[n][0] - p0[0]) / (p2[0] - p0[0]);
+      const dev = Math.max(...a[n][1].map((v, i) => Math.abs(v - (p0[1][i] + (p2[1][i] - p0[1][i]) * u))));
+      if (dev > 1.2) keep.push(a[n]);
+    }
+    keep.push(a[a.length - 1]);
+    out[k] = keep;
   }
   return out;
 }
-const CR = 'catmullrom', LN = 'linear';
+const grip = (name, frames) => sampleGrip(name, frames, true);
+const hold = (name, frames) => sampleGrip(name, frames, false);
 // Suma de canales: {hueso:{rotation:[...]}} (los dos primeros argumentos son fusionados por hueso)
 function merge(...parts) {
   const res = {};
@@ -236,14 +267,15 @@ function wrapGrip(g) { const o = {}; for (const k of Object.keys(g)) o[k] = rot(
 const READY = G([2, 28, -10], -35); // guardia, dos manos
 const SWEEP = G([2, 28, -9], -90, 0, 90); // hoja horizontal hacia delante, filo a su izquierda
 const HIGH = G([0, 50, -10], 50); // espada sobre la cabeza, hoja hacia atras
-const STRIKE = G([1.5, 26, -8], -115); // tajo vertical hacia el suelo
+const STRIKE = G([1.5, 26, -8], -102); // tajo vertical hacia el suelo
 
 const animations = [];
 
 // ---------------- idle (2 s, bucle) ----------------
 {
-  const g = grip('idle', [
-    [0, G([2, 28, -10], -35)], [0.5, G([2, 28.6, -10], -34)], [1, G([2, 29.4, -10], -32)], [1.5, G([2, 28.6, -10], -34)], [2, G([2, 28, -10], -35)],
+  // la espada descansa con la punta en el suelo, delante y a su derecha; la izquierda (cadena) cuelga libre
+  const g = hold('idle', [
+    [0, G([13, 22, -8], -118, -15)], [1, G([13, 23, -8.5], -120, -15)], [2, G([13, 22, -8], -118, -15)],
   ]);
   animations.push({
     name: 'idle', loop: true, length: 2,
@@ -257,16 +289,20 @@ const animations = [];
       left_shin: rot([[0, [-8, 0, 0], CR], [2, [-8, 0, 0], CR]]),
       cape: rot([[0, [-5, 0, 0], CR], [0.7, [-10, 0, 1.5], CR], [1.4, [-6, 0, -1.5], CR], [2, [-5, 0, 0], CR]]),
       cape_low: rot([[0, [-3, 0, 0], CR], [0.9, [-14, 0, 2], CR], [1.6, [-5, 0, -2], CR], [2, [-3, 0, 0], CR]]),
+      left_arm: rot([[0, [6, 0, 6], CR], [1, [9, 0, 7], CR], [2, [6, 0, 6], CR]]),
+      left_forearm: rot([[0, [18, 0, 0], CR], [1, [22, 0, 0], CR], [2, [18, 0, 0], CR]]),
       chain: rot([[0, [0, 0, 2], CR], [1, [0, 0, -2], CR], [2, [0, 0, 2], CR]]),
-      chain_tail: rot([[0, [4, 0, 3], CR], [1, [-6, 0, -4], CR], [2, [4, 0, 3], CR]]),
+      chain_tail: rot([[0, [-14, 0, 3], CR], [1, [-22, 0, -4], CR], [2, [-14, 0, 3], CR]]),
     }),
   });
 }
 
 // ---------------- walk (1 s, bucle) ----------------
 {
-  const g = grip('walk', [
-    [0, G([2, 27, -9], -30)], [0.25, G([2, 28.4, -9], -30)], [0.5, G([2, 27, -9], -30)], [0.75, G([2, 28.4, -9], -30)], [1, G([2, 27, -9], -30)],
+  // arrastra la espada por detras, con la punta rozando el suelo
+  const g = hold('walk', [
+    [0, G([13, 22, -3], 112, -10)], [0.25, G([13, 23.5, -3], 110, -10)], [0.5, G([13, 22, -3], 112, -10)],
+    [0.75, G([13, 23.5, -3], 110, -10)], [1, G([13, 22, -3], 112, -10)],
   ]);
   animations.push({
     name: 'walk', loop: true, length: 1,
@@ -280,8 +316,10 @@ const animations = [];
       left_shin: rot([[0, [-10, 0, 0], CR], [0.25, [-42, 0, 0], CR], [0.5, [0, 0, 0], CR], [0.75, [-6, 0, 0], CR], [1, [-10, 0, 0], CR]]),
       cape: rot([[0, [-12, 0, 2], CR], [0.5, [-20, 0, -2], CR], [1, [-12, 0, 2], CR]]),
       cape_low: rot([[0, [-14, 0, 3], CR], [0.35, [-30, 0, -3], CR], [0.85, [-20, 0, 3], CR], [1, [-14, 0, 3], CR]]),
+      left_arm: rot([[0, [-18, 0, 6], CR], [0.5, [20, 0, 6], CR], [1, [-18, 0, 6], CR]]),
+      left_forearm: rot([[0, [12, 0, 0], CR], [0.5, [30, 0, 0], CR], [1, [12, 0, 0], CR]]),
       chain: rot([[0, [0, 0, 4], CR], [0.5, [0, 0, -4], CR], [1, [0, 0, 4], CR]]),
-      chain_tail: rot([[0, [10, 0, 6], CR], [0.5, [-10, 0, -6], CR], [1, [10, 0, 6], CR]]),
+      chain_tail: rot([[0, [10, 0, 6], CR], [0.5, [-30, 0, -6], CR], [1, [10, 0, 6], CR]]),
     }),
   });
 }
@@ -300,8 +338,8 @@ const animations = [];
       right_shin: rot([[0, [-4, 0, 0], CR], [0.15, [-30, 0, 0], CR], [0.3, [-20, 0, 0], CR], [0.45, [-95, 0, 0], CR], [0.6, [-4, 0, 0], CR]]),
       left_shin: rot([[0, [-20, 0, 0], CR], [0.15, [-95, 0, 0], CR], [0.3, [-4, 0, 0], CR], [0.45, [-30, 0, 0], CR], [0.6, [-20, 0, 0], CR]]),
       // espada a un lado, arrastrando la hoja hacia atras
-      right_arm: rot([[0, [-30, 0, -6], CR], [0.3, [-42, 0, -6], CR], [0.6, [-30, 0, -6], CR]]),
-      weapon: rot([[0, [90, 0, 0], CR], [0.6, [90, 0, 0], CR]]),
+      ...wrapGrip(hold('run', [[0, G([14, 24, 2], 105, -12)], [0.3, G([14, 25.5, 3], 102, -12)], [0.6, G([14, 24, 2], 105, -12)]])),
+      left_forearm: rot([[0, [30, 0, 0], CR], [0.3, [60, 0, 0], CR], [0.6, [30, 0, 0], CR]]),
       left_arm: rot([[0, [50, 0, -10], CR], [0.3, [-45, 0, -10], CR], [0.6, [50, 0, -10], CR]]),
       cape: rot([[0, [-42, 0, 3], CR], [0.3, [-52, 0, -3], CR], [0.6, [-42, 0, 3], CR]]),
       cape_low: rot([[0, [-55, 0, 4], CR], [0.2, [-72, 0, -4], CR], [0.45, [-60, 0, 4], CR], [0.6, [-55, 0, 4], CR]]),
@@ -328,8 +366,8 @@ const animations = [];
       left_leg: rot([[0, [8, 0, -3], CR], [0.26, [14, 0, -6], CR], [0.45, [-26, 0, -4], LN], [0.6, [-24, 0, -4], CR], [0.85, [8, 0, -3], CR]]),
       right_shin: rot([[0, [4, 0, 0], CR], [0.26, [-6, 0, 0], CR], [0.45, [-10, 0, 0], LN], [0.85, [4, 0, 0], CR]]),
       left_shin: rot([[0, [-8, 0, 0], CR], [0.26, [-10, 0, 0], CR], [0.45, [-36, 0, 0], LN], [0.6, [-30, 0, 0], CR], [0.85, [-8, 0, 0], CR]]),
-      cape: rot([[0, [-5, 0, 0], CR], [0.26, [-4, 0, 0], CR], [0.45, [-34, 0, 0], LN], [0.62, [-16, 0, 0], CR], [0.85, [-5, 0, 0], CR]]),
-      cape_low: rot([[0, [-3, 0, 0], CR], [0.26, [4, 0, 0], CR], [0.5, [-50, 0, 0], CR], [0.7, [-20, 0, 0], CR], [0.85, [-3, 0, 0], CR]]),
+      cape: rot([[0, [-5, 0, 0], CR], [0.26, [-4, 0, 0], CR], [0.45, [-24, 0, 0], LN], [0.62, [-14, 0, 0], CR], [0.85, [-5, 0, 0], CR]]),
+      cape_low: rot([[0, [-3, 0, 0], CR], [0.26, [4, 0, 0], CR], [0.5, [-26, 0, 0], CR], [0.7, [-12, 0, 0], CR], [0.85, [-3, 0, 0], CR]]),
       chain_tail: rot([[0, [4, 0, 3], CR], [0.26, [-12, 0, 0], CR], [0.5, [30, 0, 0], CR], [0.85, [4, 0, 3], CR]]),
     }),
   });
@@ -377,8 +415,8 @@ const animations = [];
       left_leg: rot([[0, [8, 0, -3], CR], [0.4, [-30, 0, -9], CR], [0.5, [-18, 0, -10], LN], [0.8, [-12, 0, -10], LN], [1.2, [8, 0, -3], CR]]),
       right_shin: rot([[0, [4, 0, 0], CR], [0.4, [-40, 0, 0], CR], [0.8, [-20, 0, 0], LN], [1.2, [4, 0, 0], CR]]),
       left_shin: rot([[0, [-8, 0, 0], CR], [0.4, [-50, 0, 0], CR], [0.8, [-20, 0, 0], LN], [1.2, [-8, 0, 0], CR]]),
-      cape: rot([[0, [-5, 0, 0], CR], [0.4, [-6, 0, 0], CR], [0.55, [-50, 0, 0], LN], [0.85, [-60, 0, 0], LN], [1.2, [-5, 0, 0], CR]]),
-      cape_low: rot([[0, [-3, 0, 0], CR], [0.4, [2, 0, 0], CR], [0.6, [-70, 0, 0], CR], [0.9, [-80, 0, 0], CR], [1.2, [-3, 0, 0], CR]]),
+      cape: rot([[0, [-5, 0, 0], CR], [0.4, [-6, 0, 0], CR], [0.55, [-34, 0, 0], LN], [0.85, [-40, 0, 0], LN], [1.2, [-5, 0, 0], CR]]),
+      cape_low: rot([[0, [-3, 0, 0], CR], [0.4, [2, 0, 0], CR], [0.6, [-30, 0, 0], CR], [0.9, [-36, 0, 0], CR], [1.2, [-3, 0, 0], CR]]),
       chain_tail: rot([[0, [4, 0, 3], CR], [0.5, [60, 0, 0], CR], [0.85, [75, 0, 0], CR], [1.2, [4, 0, 3], CR]]),
     }),
   });
@@ -439,9 +477,9 @@ const animations = [];
       root: pos([[0, [0, 0, 0], CR], [0.45, [0, -2, 0], CR], [0.55, [0, -1, 0], CR], [1.4, [0, -1, 0], CR], [1.6, [0, 0, 0], CR]]),
       body: rot([[0, [0, 0, 0], CR], [0.2, [-8, 0, 0], CR], [0.5, [14, 0, 0], CR], [1.4, [12, 0, 0], CR], [1.6, [0, 0, 0], CR]]),
       head: rot([[0, [0, 0, 0], CR], [0.2, [-12, 0, 0], CR], [0.5, [32, 0, 0], CR], [1.4, [30, 0, 0], CR], [1.6, [0, 0, 0], CR]]),
-      right_arm: rot([[0, [30, 0, -32], CR], [0.2, [10, 0, 0], CR], [0.5, [0, 0, 150], CR], [1.4, [0, 0, 150], CR], [1.6, [30, 0, -32], CR]]),
-      weapon: rot([[0, [-62, 0, 0], CR], [0.2, [-20, 0, 0], CR], [0.5, [0, 0, -150], CR], [1.4, [0, 0, -150], CR], [1.6, [-62, 0, 0], CR]]),
-      left_arm: rot([[0, [30, 0, 20], CR], [0.2, [-10, 0, -10], CR], [0.5, [-10, 0, -105], CR], [1.4, [-10, 0, -105], CR], [1.6, [30, 0, 20], CR]]),
+      ...wrapGrip(hold('roar', [[0, G([13, 22, -8], -118, -15)], [0.2, G([14, 30, -11], -60), CR], [0.5, G([16, 55, -3], 0, 0, 90), CR], [1.4, G([16, 55.5, -3], 2, 0, 90), CR], [1.6, G([13, 22, -8], -118, -15), CR]])),
+      left_arm: rot([[0, [6, 0, 6], CR], [0.2, [-10, 0, -10], CR], [0.5, [-10, 0, -105], CR], [1.4, [-10, 0, -105], CR], [1.6, [6, 0, 6], CR]]),
+      left_forearm: rot([[0, [18, 0, 0], CR], [0.5, [10, 0, 0], CR], [1.4, [10, 0, 0], CR], [1.6, [18, 0, 0], CR]]),
       right_leg: rot([[0, [-6, 0, 3], CR], [0.5, [-4, 0, 14], CR], [1.4, [-4, 0, 14], CR], [1.6, [-6, 0, 3], CR]]),
       left_leg: rot([[0, [8, 0, -3], CR], [0.5, [4, 0, -14], CR], [1.4, [4, 0, -14], CR], [1.6, [8, 0, -3], CR]]),
       right_shin: rot([[0, [4, 0, 0], CR], [0.5, [-8, 0, 0], CR], [1.6, [4, 0, 0], CR]]),
@@ -516,9 +554,9 @@ const animations = [];
       body: rot([[0, [0, 0, 0], CR], [0.3, [4, -34, 0], CR], [0.42, [-8, 32, 0], LN], [0.75, [-4, 20, 0], CR], [1, [0, 0, 0], CR]]),
       head: rot([[0, [0, 0, 0], CR], [0.3, [0, 20, 0], CR], [0.42, [3, -28, 0], LN], [0.75, [0, -16, 0], CR], [1, [0, 0, 0], CR]]),
       // la espada queda sujeta con la derecha
-      right_arm: rot([[0, [30, 0, -32], CR], [0.3, [30, 0, -10], CR], [0.42, [36, 0, -14], CR], [1, [30, 0, -32], CR]]),
-      weapon: rot([[0, [-62, 0, 0], CR], [0.3, [-100, 0, 0], CR], [0.42, [-110, 0, 0], CR], [1, [-62, 0, 0], CR]]),
-      left_arm: rot([[0, [30, 0, 20], CR], [0.12, [-40, 0, -40], CR], [0.3, [-110, 0, -50], CR], [0.42, [90, 0, -6], LN], [0.75, [88, 0, -6], CR], [1, [30, 0, 20], CR]]),
+      ...wrapGrip(hold('chain', [[0, G([13, 22, -8], -118, -15)], [0.3, G([14, 24, -9], -110, -25), CR], [0.42, G([13, 23, -9], -115, -10), CR], [1, G([13, 22, -8], -118, -15), CR]])),
+      left_arm: rot([[0, [6, 0, 6], CR], [0.12, [-40, 0, -40], CR], [0.3, [-110, 0, -50], CR], [0.42, [90, 0, -6], LN], [0.75, [88, 0, -6], CR], [1, [6, 0, 6], CR]]),
+      left_forearm: rot([[0, [18, 0, 0], CR], [0.3, [40, 0, 0], CR], [0.42, [0, 0, 0], LN], [0.75, [0, 0, 0], CR], [1, [18, 0, 0], CR]]),
       chain_tail: {
         rotation: [[0, [4, 0, 3], CR], [0.3, [360, 0, 0], LN], [0.42, [0, 0, 0], LN], [0.8, [0, 0, 0], CR], [1, [4, 0, 3], CR]],
         scale: [[0, [1, 1, 1], LN], [0.3, [1, 1, 1], LN], [0.45, [1, 4.2, 1], LN], [0.75, [1, 4.2, 1], LN], [0.95, [1, 1, 1], LN]],

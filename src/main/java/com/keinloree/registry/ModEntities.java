@@ -7,6 +7,7 @@ import com.keinloree.entity.Droid;
 import com.keinloree.entity.KeinLooreEntity;
 import com.keinloree.entity.LooreCommander;
 import com.keinloree.entity.LooreWarlord;
+import com.keinloree.ship.DestroyerEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -54,6 +55,15 @@ public final class ModEntities {
             .clientTrackingRange(16)
             .updateInterval(1)
             .build(ID + "cargo_ship"));
+
+    /** Destructor "Sentencia": cerebro de la nave (la colision no importa; el render usa la malla del diseno). */
+    public static final RegistryObject<EntityType<DestroyerEntity>> DESTROYER = ENTITY_TYPES.register("destroyer", () -> EntityType.Builder
+            .<DestroyerEntity>of(DestroyerEntity::new, MobCategory.MISC)
+            .sized(2.0F, 2.0F)
+            .fireImmune()
+            .clientTrackingRange(16)
+            .updateInterval(1)
+            .build(ID + "destroyer"));
 
     /** Camara cinematica: solo existe en el cliente (no se guarda ni se invoca). */
     public static final RegistryObject<EntityType<CameraEntity>> CAMERA = ENTITY_TYPES.register("camera", () -> EntityType.Builder

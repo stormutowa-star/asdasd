@@ -71,7 +71,7 @@ for el in model["elements"]:
                     elif mat == "glow_red" and w > 3:
                         put(x, y, (255, 90 + rng.randint(0, 40), 70, 255), True)
             continue
-        if mat in ("armor_black", "armor_cracked", "armor_crimson", "armor_edge") and w >= 4 and h >= 4:
+        if mat in ("armor_black", "armor_cracked", "armor_crimson", "crimson_cracked", "armor_edge", "horn") and w >= 4 and h >= 4:
             base_col = bp[x0 + w // 2, y0 + h // 2]
             # biselado: luz arriba/izquierda, sombra abajo/derecha
             for x in range(x0 + 1, x1 - 1):
@@ -88,15 +88,15 @@ for el in model["elements"]:
                     put(cx, cy + 1, mul(base_col, 0.45))
                     put(cx + 1, cy + 1, mul(base_col, 0.4))
             # arañazos
-            if mat != "armor_crimson" and w >= 6 and h >= 6:
+            if "crimson" not in mat and w >= 6 and h >= 6:
                 for _ in range(max(1, w * h // 90)):
                     sx, sy = rng.randint(x0 + 2, x1 - 3), rng.randint(y0 + 2, y1 - 3)
                     for k in range(rng.randint(2, 4)):
                         put(sx + k, sy + k // 2, mul(base_col, 1.8))
-            if mat == "armor_crimson":  # filo dorado-oxidado en el borde de placa
+            if "crimson" in mat:  # filo dorado-oxidado en el borde de placa
                 for x in range(x0, x1):
                     put(x, y0, mul(base_col, 0.45))
-            if mat == "armor_cracked" and w >= 6 and h >= 6 and fname in ("north", "south", "up", "east", "west"):
+            if mat.endswith("cracked") and w >= 6 and h >= 6 and fname in ("north", "south", "up", "east", "west"):
                 crack(x0, y0, x1, y1, thick=w > 10)
         elif mat == "leather" and w >= 4 and h >= 4:
             col = bp[x0 + w // 2, y0 + h // 2]

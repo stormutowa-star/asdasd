@@ -51,5 +51,15 @@
   "keinloree.compass.n": "N",
   "keinloree.compass.e": "E",
   "keinloree.compass.s": "S",
-  "keinloree.compass.w": "O"
+  "keinloree.compass.w": "O",
+  "entity.keinloree.destroyer": "Destructor Sentencia",
+  "block.keinloree.helm": "Timón del destructor",
+  "message.keinloree.helm_denied": "La consola no reconoce tu código.",
+  "message.keinloree.helm_inactive": "La consola está inactiva.",
+  "message.keinloree.helm_taken": "Tienes el timón. Agáchate para soltarlo y anclar.",
+  "message.keinloree.ship_busy": "La nave no está anclada.",
+  "message.keinloree.ship_obstructed": "Espacio obstruido: cambia de posición o de altura",
+  "message.keinloree.hull_protected": "El casco está protegido por el campo del Nexo.",
+  "name.keinloree.orrel": "Almirante Orrel",
+  "name.keinloree.nexo_guard": "Guardia del Nexo"
 }

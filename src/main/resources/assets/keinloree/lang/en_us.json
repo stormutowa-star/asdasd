@@ -51,5 +51,15 @@
   "keinloree.compass.n": "N",
   "keinloree.compass.e": "E",
   "keinloree.compass.s": "S",
-  "keinloree.compass.w": "W"
+  "keinloree.compass.w": "W",
+  "entity.keinloree.destroyer": "Star Destroyer Sentencia",
+  "block.keinloree.helm": "Destroyer Helm",
+  "message.keinloree.helm_denied": "The console does not recognize your code.",
+  "message.keinloree.helm_inactive": "The console is inactive.",
+  "message.keinloree.helm_taken": "You have the helm. Sneak to release it and anchor.",
+  "message.keinloree.ship_busy": "The ship is not anchored.",
+  "message.keinloree.ship_obstructed": "Space obstructed: change position or altitude",
+  "message.keinloree.hull_protected": "The hull is protected by the Nexus field.",
+  "name.keinloree.orrel": "Admiral Orrel",
+  "name.keinloree.nexo_guard": "Nexus Guard"
 }

@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "keinloree:block/helm_console",
+    "console": "keinloree:block/helm_console",
+    "screen": "keinloree:block/helm_screen"
+  },
+  "elements": [
+    {
+      "from": [4, 0, 4], "to": [12, 8, 12],
+      "faces": {
+        "north": {"uv": [4, 8, 12, 16], "texture": "#console"},
+        "east": {"uv": [4, 8, 12, 16], "texture": "#console"},
+        "south": {"uv": [4, 8, 12, 16], "texture": "#console"},
+        "west": {"uv": [4, 8, 12, 16], "texture": "#console"},
+        "down": {"uv": [4, 4, 12, 12], "texture": "#console", "cullface": "down"}
+      }
+    },
+    {
+      "from": [1, 8, 2], "to": [15, 10, 14],
+      "faces": {
+        "north": {"uv": [1, 6, 15, 8], "texture": "#console"},
+        "east": {"uv": [2, 6, 14, 8], "texture": "#console"},
+        "south": {"uv": [1, 6, 15, 8], "texture": "#console"},
+        "west": {"uv": [2, 6, 14, 8], "texture": "#console"},
+        "up": {"uv": [1, 2, 15, 14], "texture": "#console"},
+        "down": {"uv": [1, 2, 15, 14], "texture": "#console"}
+      }
+    },
+    {
+      "from": [2, 10, 5], "to": [14, 11, 14],
+      "rotation": {"angle": 22.5, "axis": "x", "origin": [8, 10, 14]},
+      "faces": {
+        "north": {"uv": [2, 0, 14, 1], "texture": "#console"},
+        "east": {"uv": [5, 0, 14, 1], "texture": "#console"},
+        "south": {"uv": [2, 0, 14, 1], "texture": "#console"},
+        "west": {"uv": [5, 0, 14, 1], "texture": "#console"},
+        "up": {"uv": [2, 2, 14, 11], "texture": "#screen", "forge_data": {"block_light": 15, "sky_light": 15}},
+        "down": {"uv": [2, 2, 14, 11], "texture": "#console"}
+      }
+    },
+    {
+      "from": [3, 10, 2], "to": [13, 16, 3],
+      "faces": {
+        "north": {"uv": [3, 0, 13, 6], "texture": "#console"},
+        "east": {"uv": [0, 0, 1, 6], "texture": "#console"},
+        "south": {"uv": [3, 3, 13, 9], "texture": "#screen", "forge_data": {"block_light": 15, "sky_light": 15}},
+        "west": {"uv": [0, 0, 1, 6], "texture": "#console"},
+        "up": {"uv": [3, 0, 13, 1], "texture": "#console"}
+      }
+    }
+  ]
+}

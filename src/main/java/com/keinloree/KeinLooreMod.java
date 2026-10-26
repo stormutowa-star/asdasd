@@ -39,6 +39,7 @@ public class KeinLooreMod {
 
         MinecraftForge.EVENT_BUS.register(new LooreEvents());
         MinecraftForge.EVENT_BUS.register(new StoryEvents());
+        com.keinloree.ship.ShipEvents.init();
         AutoTest.init();
         com.keinloree.vfx.VfxCommand.init();
 

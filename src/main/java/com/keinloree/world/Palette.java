@@ -1,10 +1,12 @@
 package com.keinloree.world;
 
+import com.keinloree.registry.ModBlocks;
 import com.keinloree.world.design.Mat;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 
@@ -36,6 +38,12 @@ public final class Palette {
 
     private static BlockState rod(Direction facing) {
         return Blocks.END_ROD.defaultBlockState().setValue(BlockStateProperties.FACING, facing);
+    }
+
+    private static BlockState door(DoubleBlockHalf half) {
+        return Blocks.IRON_DOOR.defaultBlockState()
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, half);
     }
 
     private static BlockState[] build() {
@@ -82,6 +90,13 @@ public final class Palette {
         t[Mat.LIME] = Blocks.LIME_CONCRETE.defaultBlockState();
         t[Mat.SMOOTH] = Blocks.SMOOTH_STONE.defaultBlockState();
         t[Mat.NETHERITE] = Blocks.NETHERITE_BLOCK.defaultBlockState();
+        t[Mat.HELM] = ModBlocks.HELM.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
+        t[Mat.BARS_X] = Blocks.IRON_BARS.defaultBlockState()
+                .setValue(BlockStateProperties.EAST, true).setValue(BlockStateProperties.WEST, true);
+        t[Mat.BARS_Z] = Blocks.IRON_BARS.defaultBlockState()
+                .setValue(BlockStateProperties.NORTH, true).setValue(BlockStateProperties.SOUTH, true);
+        t[Mat.DOOR_LO] = door(DoubleBlockHalf.LOWER);
+        t[Mat.DOOR_HI] = door(DoubleBlockHalf.UPPER);
         return t;
     }
 }

@@ -35,5 +35,6 @@ public final class KeinLooreClient {
         event.registerEntityRenderer(ModEntities.LOREE_WARLORD.get(), ctx -> new LooreRenderer<LooreWarlord>(ctx));
         event.registerEntityRenderer(ModEntities.DROID.get(), DroidRenderer::new);
         event.registerEntityRenderer(ModEntities.CARGO_SHIP.get(), CargoShipRenderer::new);
+        event.registerEntityRenderer(ModEntities.DESTROYER.get(), com.keinloree.client.ship.DestroyerDebugRenderer::new);
     }
 }

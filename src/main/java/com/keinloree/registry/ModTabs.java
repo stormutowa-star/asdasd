@@ -25,6 +25,7 @@ public final class ModTabs {
                 output.accept(ModItems.COMMANDER_EGG.get());
                 output.accept(ModItems.WARLORD_EGG.get());
                 output.accept(ModItems.CARGO_SHIP_EGG.get());
+                output.accept(ModItems.HELM.get());
             })
             .build());
 

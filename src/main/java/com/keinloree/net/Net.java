@@ -53,6 +53,8 @@ public final class Net {
                 .encoder(ChoiceC2S::encode).decoder(ChoiceC2S::decode).consumerMainThread(ChoiceC2S::handle).add();
         CHANNEL.messageBuilder(SkipC2S.class, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(SkipC2S::encode).decoder(SkipC2S::decode).consumerMainThread(SkipC2S::handle).add();
+        CHANNEL.messageBuilder(ShipInputC2S.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ShipInputC2S::encode).decoder(ShipInputC2S::decode).consumerMainThread(ShipInputC2S::handle).add();
         CHANNEL.build();
     }
 

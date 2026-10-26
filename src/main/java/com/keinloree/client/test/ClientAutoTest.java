@@ -42,6 +42,7 @@ public final class ClientAutoTest {
         StoryScenarios.registerAll();
         com.keinloree.client.vfx.VfxScenario.register();
         ShipPreview.registerScenario();
+        ModelPreview.registerScenario("razako");
     }
 
     private final List<Step> steps;
