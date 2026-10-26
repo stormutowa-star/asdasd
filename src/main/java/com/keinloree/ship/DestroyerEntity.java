@@ -285,6 +285,11 @@ public class DestroyerEntity extends Entity {
         return s != ANCHORED;
     }
 
+    /** Alarma de a bordo (luces y sonido) para la historia. */
+    public void setAlarm(boolean on) {
+        setFlag(FLAG_ALARM, on);
+    }
+
     private void setFlag(int f, boolean on) {
         int v = getFlags();
         entityData.set(FLAGS, on ? v | f : v & ~f);

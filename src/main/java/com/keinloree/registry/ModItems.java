@@ -52,6 +52,11 @@ public final class ModItems {
     public static final RegistryObject<Item> HELM = ITEMS.register("helm",
             () -> new BlockItem(ModBlocks.HELM.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> HOUR_ANCHOR = ITEMS.register("hour_anchor",
+            () -> new BlockItem(ModBlocks.HOUR_ANCHOR.get(), new Item.Properties()));
+    public static final RegistryObject<Item> NEXO_GENERATOR = ITEMS.register("nexo_generator",
+            () -> new BlockItem(ModBlocks.NEXO_GENERATOR.get(), new Item.Properties()));
+
     private ModItems() {}
 
     public static void register(IEventBus modBus) {

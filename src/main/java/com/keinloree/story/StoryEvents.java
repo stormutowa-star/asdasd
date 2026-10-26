@@ -1,5 +1,7 @@
 package com.keinloree.story;
 
+import net.minecraft.server.level.ServerLevel;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -19,6 +21,9 @@ public class StoryEvents {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         Script.load();
+        Later.reset();
+        Unease.reset();
+        com.keinloree.world.LegionOps.reset();
         ScenePlayer.reset();
         Cinematics.reset();
         Director.reset();
@@ -40,6 +45,14 @@ public class StoryEvents {
         Cinematics.tick(server);
         ScenePlayer.tick(server.overworld());
         Director.tick(server.overworld());
+        Later.tick();
+        ServerLevel ow = server.overworld();
+        com.keinloree.world.LegionOps.tick(ow);
+        Campaign cp = Campaign.get(ow);
+        if (!cp.disabled && !ow.players().isEmpty()) {
+            com.keinloree.world.Pillars.tick(ow);
+            Unease.tick(new StoryCtx(ow));
+        }
     }
 
     @SubscribeEvent

@@ -126,6 +126,7 @@ public final class StoryCommands {
         ServerLevel lv = level(c);
         ScenePlayer.stopAll(lv);
         Cinematics.stopAll(lv.getServer());
+        Saga.resetWorld(lv);
         Campaign.get(lv).resetRun();
         Atmosphere.set(lv, 0, 0, 0);
         Director.reset();

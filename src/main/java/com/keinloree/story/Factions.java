@@ -24,6 +24,9 @@ public final class Factions {
     private Factions() {}
 
     public static boolean isLegion(Entity e) {
+        if (SagaWorld.isAlly(e)) {
+            return false;
+        }
         return e instanceof LooreMob || e instanceof CargoShip || e.getType().is(LEGION_TAG)
                 || e instanceof com.keinloree.ship.FighterEntity f && f.isLegionCraft() && !(f.getControllingPassenger() instanceof Player);
     }
@@ -64,6 +67,9 @@ public final class Factions {
             return true;
         }
         if (isLegion(a) && isHours(b) || isHours(a) && isLegion(b)) {
+            return true;
+        }
+        if (isLegion(a) && SagaWorld.isAlly(b) || SagaWorld.isAlly(a) && isLegion(b)) {
             return true;
         }
         if (b instanceof Player p && canTarget(p)) {

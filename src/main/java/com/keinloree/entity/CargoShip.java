@@ -2,7 +2,7 @@ package com.keinloree.entity;
 
 import com.keinloree.util.Fx;
 import com.keinloree.world.Builds;
-import com.keinloree.world.LooreStory;
+import com.keinloree.world.LegionOps;
 import net.minecraft.core.BlockPos;
 import com.keinloree.registry.ModParticles;
 import com.keinloree.vfx.Vfx;
@@ -221,6 +221,7 @@ public class CargoShip extends Mob {
         tag.putInt("hold", this.holdTicks);
         tag.putFloat("landYaw", this.landYaw);
         tag.putBoolean("cargo", this.hasCargo());
+        tag.putString("mission", this.mission);
     }
 
     @Override
@@ -243,6 +244,7 @@ public class CargoShip extends Mob {
         this.landYaw = tag.contains("landYaw") ? tag.getFloat("landYaw") : 180.0F;
         this.entityData.set(CARGO, !tag.contains("cargo") || tag.getBoolean("cargo"));
         this.targetYaw = this.getYRot();
+        this.mission = tag.getString("mission");
     }
 
     private static void putVec(CompoundTag tag, String key, Vec3 v) {
@@ -256,6 +258,21 @@ public class CargoShip extends Mob {
     }
 
     // ------------------------------------------------------------------ ordenes de la historia
+
+    /** Mision de la historia ("" = base normal; "patrol:...", "razako", "pickup", "shuttle"): ver LegionOps. */
+    public String mission = "";
+
+    /** Las naves de mision no vuelven a un atraque: se marchan al cielo y desaparecen. */
+    public boolean isTransient() {
+        return !this.mission.isEmpty();
+    }
+
+    /** Pruebas e historia: fuerza el despegue y la marcha (sale de cualquier fase). */
+    public void leaveNow() {
+        this.mission = this.mission.isEmpty() ? "pickup" : this.mission;
+        this.landPos = this.position();
+        this.setPhase(PH_LIFT);
+    }
 
     /** Fija el atraque de origen (donde duerme entre misiones). */
     public void setDock(Vec3 dock) {
@@ -387,7 +404,7 @@ public class CargoShip extends Mob {
         }
         if (this.builder && !this.jobStarted) {
             this.jobStarted = true;
-            this.jobId = LooreStory.onCargoArrived(level, this);
+            this.jobId = LegionOps.onCargoArrived(level, this);
             this.entityData.set(BEAM, true);
             Fx.sound(level, this.position(), SoundEvents.BEACON_POWER_SELECT, 3.0F, 0.7F);
         }
@@ -437,7 +454,7 @@ public class CargoShip extends Mob {
         }
         if (this.phaseTick == 34) {
             Fx.sound(level, this.position(), SoundEvents.IRON_DOOR_OPEN, 2.0F, 0.5F);
-            LooreStory.onCargoLanded(level, this);
+            LegionOps.onCargoLanded(level, this);
         }
         if (this.phaseTick >= 120) {
             this.ramp = approach(this.ramp, 0.0F, 0.04F);
@@ -466,7 +483,7 @@ public class CargoShip extends Mob {
         this.gear = approach(this.gear, 0.0F, 0.05F);
         this.ramp = approach(this.ramp, 0.0F, 0.05F);
         Vec3 approachPoint = this.dockPos.add(0.0D, -22.0D, 0.0D);
-        if (this.phaseTick == 1 && !level.isLoaded(BlockPos.containing(this.dockPos))) {
+        if (this.phaseTick == 1 && (!level.isLoaded(BlockPos.containing(this.dockPos)) || this.isTransient())) {
             this.setPhase(PH_LEAVE);
             return;
         }

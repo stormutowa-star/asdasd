@@ -11,8 +11,11 @@ public final class StoryBootstrap {
             return;
         }
         done = true;
-        Steps.registerBuiltins();
+        Saga.register();
         Cinematics.registerBuiltins();
+        SagaActions.register();
+        SagaEvents.init();
+        com.keinloree.world.Pillars.init();
         // @accion atmosfera <tinte> [niebla] [flags]
         ScriptActions.register("atmosfera", (ctx, a) -> {
             float tint = a.length > 0 ? parse(a[0], 0.0F) : 0.0F;

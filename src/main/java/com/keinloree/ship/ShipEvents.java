@@ -64,6 +64,9 @@ public class ShipEvents {
 
     @SubscribeEvent
     public void onBreak(BlockEvent.BreakEvent event) {
+        if (event.getState().is(com.keinloree.registry.ModBlocks.NEXO_GENERATOR.get())) {
+            return;
+        }
         if (event.getLevel() instanceof ServerLevel sl && !event.getPlayer().isCreative() && protectedAt(sl, event.getPos())) {
             event.setCanceled(true);
             warn(event.getPlayer());

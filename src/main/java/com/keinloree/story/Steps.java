@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 
 /** Registro de pasos de la campana por id. */
 public final class Steps {
-    public static final String START = "prologo.espera";
+    public static final String START = Saga.START;
 
     private static final Map<String, Step> STEPS = new LinkedHashMap<>();
 

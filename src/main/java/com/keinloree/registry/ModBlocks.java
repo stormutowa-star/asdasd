@@ -26,6 +26,24 @@ public final class ModBlocks {
             .lightLevel(s -> 7)
             .pushReaction(PushReaction.BLOCK)));
 
+    /** Ancla de luz de un pilar: solo se rompe cuando la historia lo permite (ver Pillars). */
+    public static final RegistryObject<Block> HOUR_ANCHOR = BLOCKS.register("hour_anchor", () -> new Block(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.GOLD)
+            .strength(4.0F, 1200.0F)
+            .noLootTable()
+            .sound(SoundType.AMETHYST)
+            .lightLevel(s -> 15)
+            .pushReaction(PushReaction.BLOCK)));
+
+    /** Generador de cadenas del bloque de detencion del destructor (se puede romper aunque el casco este protegido). */
+    public static final RegistryObject<Block> NEXO_GENERATOR = BLOCKS.register("nexo_generator", () -> new Block(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_GREEN)
+            .strength(3.0F, 1200.0F)
+            .noLootTable()
+            .sound(SoundType.NETHERITE_BLOCK)
+            .lightLevel(s -> 12)
+            .pushReaction(PushReaction.BLOCK)));
+
     private ModBlocks() {}
 
     public static void register(IEventBus modBus) {

@@ -120,7 +120,7 @@ public class RazakoEntity extends LooreMob implements Animated {
         return clientAnim;
     }
 
-    private void play(int anim) {
+    public void play(int anim) {
         entityData.set(ANIM, anim);
         entityData.set(ANIM_SEQ, animSeq() + 1);
     }
