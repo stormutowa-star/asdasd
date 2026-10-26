@@ -28,10 +28,26 @@ module.exports = build({
     add(box('weapon', 'shaft', at(9), [1.4, 30, 1.4], 'wood', { rotation: rot }));
     add(box('weapon', 'collar', at(0.5), [2.2, 2.2, 2.2], 'armor_light'));
     add(box('weapon', 'collar_top', at(24), [2, 2, 2], 'armor_light'));
-    add(box('weapon', 'blade_1', at(24, 0, -3), [0.8, 2.6, 7], 'blade', { rotation: rot }));
-    add(box('weapon', 'blade_2', at(24, 1.5, -9), [0.8, 2.6, 5], 'blade', { rotation: [A - 90 - 30, 0, 0] }));
-    add(box('weapon', 'blade_3', at(24, 4.5, -11.5), [0.8, 2.2, 3.5], 'blade', { rotation: [A - 90 - 50, 0, 0] }));
-    add(box('weapon', 'edge', at(24, 0.6, -5.5), [0.4, 0.6, 11], 'glow', { glow: true, rotation: rot }));
+    // hoja de guadana: un arco de 12 segmentos que sale de la punta del mango, se curva hacia delante y abajo y
+    // se afina hacia la punta; el filo luminoso va por el lado exterior del arco
+    const dirV = [0, Math.sin(A * Math.PI / 180), -Math.cos(A * Math.PI / 180)];
+    const v = [0, -0.5, -0.866];
+    const R = 7, th0 = 0.1, th1 = 2.35, N = 12;
+    const T = [x, H + dirV[1] * 24, dirV[2] * 24];
+    const P = (th) => [0, 1, 2].map((k) => T[k] + R * (Math.sin(th) * dirV[k] + (1 - Math.cos(th)) * v[k]));
+    for (let i = 0; i < N; i++) {
+      const a0 = th0 + (th1 - th0) * i / N, a1 = th0 + (th1 - th0) * (i + 1) / N;
+      const pa = P(a0), pb = P(a1);
+      const cd = [pb[0] - pa[0], pb[1] - pa[1], pb[2] - pa[2]];
+      const L = Math.hypot(cd[0], cd[1], cd[2]);
+      const c = cd.map((q) => q / L);
+      const mid = [0, 1, 2].map((k) => (pa[k] + pb[k]) / 2);
+      const rx = Math.atan2(-c[1], c[2]) * 180 / Math.PI;
+      const t = (i + 0.5) / N, w = 2.0 * (1 - 0.6 * t);
+      add(box('weapon', `blade_${i}`, [x, mid[1], mid[2]], [w, 0.4, L + 0.15], 'blade', { rotation: [rx, 0, 0] }));
+      const off = [0, c[2] * 0.5, -c[1] * 0.5];
+      add(box('weapon', `edge_${i}`, [x, mid[1] + off[1], mid[2] + off[2]], [0.25, 0.25, L + 0.1], 'glow', { glow: true, rotation: [rx, 0, 0] }));
+    }
     add(ring('halo', 'halo', [0, n + 5, 6], 6, 10, 0.6, 'glow', true));
   },
   specials(list, h) {
