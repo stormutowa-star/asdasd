@@ -94,6 +94,6 @@ public class LooreCommander extends LooreMob implements RangedAttackMob {
         Vec3 aim = target.getEyePosition();
         this.laser(level, from.add(side), aim.add(side.scale(0.4D)), 6.0F, Fx.GREEN);
         this.laser(level, from.subtract(side), aim.subtract(side.scale(0.4D)), 6.0F, Fx.GREEN);
-        this.playSound(SoundEvents.BLAZE_SHOOT, 1.0F, 0.7F);
+        this.playSound(com.keinloree.registry.ModSounds.BLASTER.get(), 1.2F, 0.85F);
     }
 }

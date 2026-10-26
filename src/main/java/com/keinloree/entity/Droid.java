@@ -54,6 +54,6 @@ public class Droid extends LooreMob implements RangedAttackMob {
         Vec3 aim = target.getEyePosition().add(this.random.nextGaussian() * 0.35D, 0.0D,
                 this.random.nextGaussian() * 0.35D);
         this.laser(level, from, aim, 3.0F, Fx.GREEN);
-        this.playSound(SoundEvents.BLAZE_SHOOT, 0.6F, 1.9F);
+        this.playSound(com.keinloree.registry.ModSounds.BLASTER.get(), 0.9F, 1.15F);
     }
 }
