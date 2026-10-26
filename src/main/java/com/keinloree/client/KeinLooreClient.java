@@ -20,6 +20,11 @@ public final class KeinLooreClient {
         modEventBus.addListener(KeinLooreClient::onRegisterRenderers);
         StoryClient.register(modEventBus);
         modEventBus.addListener(com.keinloree.client.vfx.VfxParticles::onRegister);
+        modEventBus.addListener(com.keinloree.client.ship.OverworldFx::register);
+        modEventBus.addListener((net.minecraftforge.client.event.RegisterClientReloadListenersEvent e) ->
+                e.registerReloadListener((net.minecraft.server.packs.resources.ResourceManagerReloadListener) rm ->
+                        com.keinloree.client.ship.ShipMesh.release()));
+        com.keinloree.client.ship.ClientShipInput.register(modEventBus);
         ClientAutoTest.init();
     }
 
@@ -35,6 +40,6 @@ public final class KeinLooreClient {
         event.registerEntityRenderer(ModEntities.LOREE_WARLORD.get(), ctx -> new LooreRenderer<LooreWarlord>(ctx));
         event.registerEntityRenderer(ModEntities.DROID.get(), DroidRenderer::new);
         event.registerEntityRenderer(ModEntities.CARGO_SHIP.get(), CargoShipRenderer::new);
-        event.registerEntityRenderer(ModEntities.DESTROYER.get(), com.keinloree.client.ship.DestroyerDebugRenderer::new);
+        event.registerEntityRenderer(ModEntities.DESTROYER.get(), com.keinloree.client.ship.DestroyerRenderer::new);
     }
 }

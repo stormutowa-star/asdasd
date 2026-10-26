@@ -43,6 +43,7 @@ public final class ClientAutoTest {
         com.keinloree.client.vfx.VfxScenario.register();
         ShipPreview.registerScenario();
         ModelPreview.registerScenario("razako");
+        ShipScenarios.registerAll();
     }
 
     private final List<Step> steps;
@@ -103,7 +104,11 @@ public final class ClientAutoTest {
             enterWorld(mc);
             return;
         }
-        // Dentro del mundo: espera a que cierre la pantalla de carga
+        // Dentro del mundo: una eleccion pendiente de la historia no debe bloquear otros escenarios
+        if (mc.screen instanceof com.keinloree.client.ui.ChoiceScreen && !name.equals("dialogue")) {
+            mc.setScreen(null);
+        }
+        // Espera a que cierre la pantalla de carga
         if (mc.screen != null) {
             return;
         }
