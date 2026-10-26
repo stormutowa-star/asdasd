@@ -102,8 +102,11 @@ function anims(o, d) {
     root: rootFloat(len),
     body: { rotation: kf([[0, [-lean, 0, 0]], [len / 2, [-lean, 0, 0]], [len, [-lean, 0, 0]]]),
             position: kf([[0, [0, 0, 0]], [len / 4, [0, 0.6, 0]], [len / 2, [0, 0, 0]], [len * 0.75, [0, 0.6, 0]], [len, [0, 0, 0]]]) },
-    right_leg: o.float ? legsFloat : { rotation: kf([[0, [legA, 0, 0]], [len / 2, [-legA, 0, 0]], [len, [legA, 0, 0]]]) },
-    left_leg: o.float ? legsFloat : { rotation: kf([[0, [-legA, 0, 0]], [len / 2, [legA, 0, 0]], [len, [-legA, 0, 0]]]) },
+    // los que levitan no dan zancadas: las piernas oscilan poco bajo la tunica y el cuerpo se mece al flotar
+    right_leg: o.float ? { rotation: kf([[0, [12 + legA * 0.3, 0, 0]], [len / 2, [12 - legA * 0.3, 0, 0]], [len, [12 + legA * 0.3, 0, 0]]]) }
+      : { rotation: kf([[0, [legA, 0, 0]], [len / 2, [-legA, 0, 0]], [len, [legA, 0, 0]]]) },
+    left_leg: o.float ? { rotation: kf([[0, [12 - legA * 0.3, 0, 0]], [len / 2, [12 + legA * 0.3, 0, 0]], [len, [12 - legA * 0.3, 0, 0]]]) }
+      : { rotation: kf([[0, [-legA, 0, 0]], [len / 2, [legA, 0, 0]], [len, [-legA, 0, 0]]]) },
     right_arm: { rotation: kf([[0, [R0[0] - armA, 0, R0[2]]], [len / 2, [R0[0] + armA, 0, R0[2]]], [len, [R0[0] - armA, 0, R0[2]]]]) },
     left_arm: { rotation: kf([[0, [L0[0] + armA, 0, L0[2]]], [len / 2, [L0[0] - armA, 0, L0[2]]], [len, [L0[0] + armA, 0, L0[2]]]]) },
     cape: { rotation: kf([[0, [-18 - lean, 0, 0]], [len / 2, [-24 - lean, 0, 0]], [len, [-18 - lean, 0, 0]]]) },

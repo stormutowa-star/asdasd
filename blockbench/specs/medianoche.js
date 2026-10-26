@@ -9,6 +9,7 @@ module.exports = build({
     under: { color: '#1E2457', noise: 5 }, skin: { color: '#D9C2B0', noise: 2, edge: false }, hair: { color: '#C9CED8', noise: 5 },
     robe: { color: '#151A44', noise: 5 }, cape: { color: '#0E1030', noise: 4, edge: false }, glow: { color: '#9FA8FF', noise: 2, edge: false },
     star: { color: '#FFFFFF', noise: 0, edge: false }, eye: { color: '#9FA8FF', noise: 0, edge: false }, wood: { color: '#2A2A3A', noise: 6 },
+    mouth: { color: '#6B4A44', noise: 2, edge: false }, socket: { color: '#2B2F5E', noise: 3, edge: false },
   },
   extraBones: [
     { name: 'ring_1', parent: 'weapon', pivot: [5, 34, 0] },
@@ -20,8 +21,15 @@ module.exports = build({
     add(box('head', 'hair', [0, n + 6.4, 0.8], [8.6, 3.4, 8.6], 'hair'));
     add(box('head', 'hair_long', [0, n - 1, 3.6], [8, 13, 1.6], 'hair'));
     add(box('head', 'hood', [0, n + 7.6, 1.6], [9.2, 2, 7.4], 'robe'));
-    add(box('head', 'eye_r', [1.8, n + 4.2, -4.05], [1.4, 0.8, 0.2], 'eye', { glow: true }));
-    add(box('head', 'eye_l', [-1.8, n + 4.2, -4.05], [1.4, 0.8, 0.2], 'eye', { glow: true }));
+    // rostro: cuencas oscuras, cejas plateadas, nariz y boca serena
+    add(box('head', 'socket_r', [1.8, n + 4.2, -4.02], [2.2, 1.6, 0.2], 'socket'));
+    add(box('head', 'socket_l', [-1.8, n + 4.2, -4.02], [2.2, 1.6, 0.2], 'socket', { mirror: true }));
+    add(box('head', 'brow_r', [1.9, n + 5.7, -4.1], [2.2, 0.5, 0.3], 'hair', { rotation: [0, 0, -8] }));
+    add(box('head', 'brow_l', [-1.9, n + 5.7, -4.1], [2.2, 0.5, 0.3], 'hair', { mirror: true, rotation: [0, 0, 8] }));
+    add(box('head', 'eye_r', [1.8, n + 4.2, -4.12], [1.2, 0.6, 0.2], 'eye', { glow: true }));
+    add(box('head', 'eye_l', [-1.8, n + 4.2, -4.12], [1.2, 0.6, 0.2], 'eye', { glow: true }));
+    add(box('head', 'nose', [0, n + 3.4, -4.3], [0.9, 2, 0.8], 'skin'));
+    add(box('head', 'mouth', [0, n + 1.9, -4.1], [2.2, 0.35, 0.2], 'mouth'));
     add(box('body', 'robe_low', [0, d.hip - 6, 0], [8.4, 12, 5.4], 'robe'));
     add(box('body', 'robe_hem', [0, d.hip - 11.6, 0], [9.4, 1.4, 6.4], 'armor_light'));
     [[-2.5, 4], [2, 7], [-1, 10], [3, 2], [0.5, -4], [-3, -7], [2.5, -9]].forEach(([x, y], i) =>
