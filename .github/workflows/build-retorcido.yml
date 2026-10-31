@@ -29,7 +29,14 @@ jobs:
       - name: Build
         run: |
           chmod +x gradlew
-          ./gradlew build --no-daemon --stacktrace
+          set -o pipefail
+          ./gradlew build --no-daemon --stacktrace 2>&1 | tee build.log
+
+      - name: Resumen de errores (como annotation)
+        if: failure()
+        run: |
+          msg=$(grep -n -E "error:|error\b.*\.java|FAILURE|What went wrong|Caused by|Could not|not found|symbol:|location:" build.log | head -80 | cut -c1-300 | sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')
+          echo "::error title=Gradle errors::$msg"
 
       - name: Listar jars
         run: ls -l build/libs
