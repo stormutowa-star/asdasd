@@ -1,0 +1,59 @@
+name: build-retorcido
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'retorcido/**'
+      - '.github/workflows/build-retorcido.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: retorcido
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon --stacktrace
+
+      - name: Listar jars
+        run: ls -l build/libs
+
+      - name: Seleccionar jar final
+        run: |
+          mkdir -p dist
+          for f in build/libs/*.jar; do
+            case "$f" in
+              *-sources.jar|*-javadoc.jar) ;;
+              *) cp "$f" dist/ ;;
+            esac
+          done
+          ls -l dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: retorcido-jar
+          path: retorcido/dist/*.jar
+          if-no-files-found: error
+
+      - name: Publicar en una Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: retorcido-build-${{ github.run_number }}
+          name: Retorcido build ${{ github.run_number }}
+          files: retorcido/dist/*.jar
