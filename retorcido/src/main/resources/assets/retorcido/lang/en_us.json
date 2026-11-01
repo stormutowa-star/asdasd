@@ -1,5 +1,7 @@
 {
   "entity.retorcido.retorcido": "The Twisted One",
+  "entity.retorcido.amigo": "Amigo",
+  "item.retorcido.amigo_spawn_egg": "Amigo Spawn Egg",
   "item.retorcido.retorcido_spawn_egg": "Twisted One Spawn Egg",
   "itemGroup.retorcido": "The Twisted One"
 }

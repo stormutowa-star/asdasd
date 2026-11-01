@@ -13,6 +13,7 @@ public class RetorcidoCommonEvents {
     @SubscribeEvent
     public static void onAttributes(EntityAttributeCreationEvent event) {
         event.put(RetorcidoMod.RETORCIDO.get(), RetorcidoEntity.createAttributes().build());
+        event.put(RetorcidoMod.AMIGO.get(), com.ricardo.retorcido.amigo.AmigoEntity.createAttributes().build());
     }
 
     @SubscribeEvent

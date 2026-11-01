@@ -29,6 +29,11 @@ public class RetorcidoEntity extends Monster {
         this.xpReward = 20;
     }
 
+    /** Lo redefinira el director de terror: un Retorcido "watcher" solo observa y el amigo no huye de el. */
+    public boolean isWatcher() {
+        return false;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 60.0D)

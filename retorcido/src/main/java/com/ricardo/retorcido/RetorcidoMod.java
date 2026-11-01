@@ -1,5 +1,6 @@
 package com.ricardo.retorcido;
 
+import com.ricardo.retorcido.amigo.AmigoEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -29,6 +30,15 @@ public class RetorcidoMod {
                     .clientTrackingRange(8)
                     .build("retorcido"));
 
+    public static final RegistryObject<EntityType<AmigoEntity>> AMIGO = ENTITY_TYPES.register("amigo", () ->
+            EntityType.Builder.of(AmigoEntity::new, MobCategory.MISC)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(8)
+                    .build("amigo"));
+
+    public static final RegistryObject<Item> AMIGO_SPAWN_EGG = ITEMS.register("amigo_spawn_egg", () ->
+            new ForgeSpawnEggItem(AMIGO, 0x3a7bd5, 0x2b2b2b, new Item.Properties()));
+
     public static final RegistryObject<Item> RETORCIDO_SPAWN_EGG = ITEMS.register("retorcido_spawn_egg", () ->
             new ForgeSpawnEggItem(RETORCIDO, 0x1a0f12, 0x8b0000, new Item.Properties()));
 
@@ -36,7 +46,10 @@ public class RetorcidoMod {
             .title(Component.translatable("itemGroup.retorcido"))
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> RETORCIDO_SPAWN_EGG.get().getDefaultInstance())
-            .displayItems((parameters, output) -> output.accept(RETORCIDO_SPAWN_EGG.get()))
+            .displayItems((parameters, output) -> {
+                output.accept(RETORCIDO_SPAWN_EGG.get());
+                output.accept(AMIGO_SPAWN_EGG.get());
+            })
             .build());
 
     public RetorcidoMod(FMLJavaModLoadingContext context) {

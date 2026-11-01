@@ -16,5 +16,6 @@ public class RetorcidoClientEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(RetorcidoMod.RETORCIDO.get(), RetorcidoRenderer::new);
+        event.registerEntityRenderer(RetorcidoMod.AMIGO.get(), AmigoRenderer::new);
     }
 }
