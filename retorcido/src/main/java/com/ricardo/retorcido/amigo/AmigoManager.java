@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -33,6 +32,8 @@ import java.util.UUID;
 public final class AmigoManager {
     public static final String GIVEN_TAG = "retorcido_amigo_given";
     public static final String ENTITY_TAG = "retorcido_amigo";
+    /** Valor clasico de Player.PERSISTED_NBT_TAG (no existe como constante en Forge 52). */
+    public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
 
     /** Jugadores pendientes de recibir su amigo -> ticks restantes. */
     private static final Map<UUID, Integer> PENDING = new HashMap<>();
@@ -98,7 +99,7 @@ public final class AmigoManager {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        CompoundTag persisted = player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+        CompoundTag persisted = player.getPersistentData().getCompound(PERSISTED_NBT_TAG);
         if (!persisted.getBoolean(GIVEN_TAG)) PENDING.put(player.getUUID(), 40);
     }
 
@@ -118,9 +119,9 @@ public final class AmigoManager {
             if (player == null) continue;
             ensureAmigo(player);
             CompoundTag data = player.getPersistentData();
-            CompoundTag persisted = data.getCompound(Player.PERSISTED_NBT_TAG);
+            CompoundTag persisted = data.getCompound(PERSISTED_NBT_TAG);
             persisted.putBoolean(GIVEN_TAG, true);
-            data.put(Player.PERSISTED_NBT_TAG, persisted);
+            data.put(PERSISTED_NBT_TAG, persisted);
         }
     }
 
