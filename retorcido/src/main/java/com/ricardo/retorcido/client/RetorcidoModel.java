@@ -282,27 +282,27 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         PartDefinition elbow = add(shoulder, "elbow", cubes()
                         .box(UV_B_JOINT, -1, -1, -1, 2, 2, 2, 0.15F)
                         .box(UV_S_ARM_F, -1, 0, -1, 2, lenFore, 2, -0.2F),
-                0, lenUpper, 0, rad(-34), 0, 0);
+                0, lenUpper, 0, rad(-20), 0, 0);
         // hueso del codo que sobresale hacia atras
         add(elbow, "olecranon", cubes().box(UV_B_THIN, -0.5F, -3, -0.5F, 1, 3, 1, -0.1F),
                 0, 0.3F, 0.8F, rad(-70), 0, side * rad(10));
         PartDefinition hand = add(elbow, "hand", cubes()
                         .box(UV_S_HAND, -1.5F, 0, -1, 3, 3, 2, -0.2F),
-                0, lenFore, 0, rad(-14), 0, side * rad(6));
+                0, lenFore, 0, rad(-4), 0, side * rad(6));
         // dedos largos como garras: falange + garra curvada
         for (int f = 0; f < fingers; f++) {
             float fx = (f - (fingers - 1) / 2.0F) * 0.95F;
             int proximal = (f == 1 || f == 2) ? 4 : 3;
             float spread = (f - (fingers - 1) / 2.0F) * 0.22F;
             PartDefinition finger = add(hand, "f" + f, cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, proximal, 1, -0.1F),
-                    fx, 2.6F, 0.1F, rad(-22 - f * 5), 0, spread);
+                    fx, 2.6F, 0.1F, rad(-6 - f * 2), 0, spread);
             add(finger, "t", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 4, 1, -0.2F),
-                    0, proximal - 0.2F, 0, rad(-48 - f * 4), 0, 0);
+                    0, proximal - 0.2F, 0, rad(-12 - f * 2), 0, 0);
         }
         // pulgar
         PartDefinition thumb = add(hand, "thumb", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.1F),
-                side * -1.7F, 1.0F, -0.2F, rad(-35), 0, side * rad(-38));
-        add(thumb, "t", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.2F), 0, 2.8F, 0, rad(-50), 0, 0);
+                side * -1.7F, 1.0F, -0.2F, rad(-12), 0, side * rad(-38));
+        add(thumb, "t", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.2F), 0, 2.8F, 0, rad(-18), 0, 0);
     }
 
     /** Diente fino: hacia abajo desde el hocico (up) o hacia arriba desde la mandibula. */
@@ -624,15 +624,15 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         animLeg(thighL, shinL, footL, walk + Mth.PI, a);
 
         // --- cuatro brazos: oscilan con desfase; los superiores se alzan al atacar ---
-        animArm(arms[0], Mth.PI, 0.55F, -1.15F, attacking, walk, a, t);
-        animArm(arms[1], 0.0F, 0.60F, -1.30F, attacking, walk, a, t);
-        animArm(arms[2], Mth.PI * 0.5F, 0.45F, -0.55F, attacking, walk, a, t);
-        animArm(arms[3], -Mth.PI * 0.5F, 0.50F, -0.70F, attacking, walk, a, t);
+        animArm(arms[0], Mth.PI, 0.45F, -0.80F, attacking, walk, a, t);
+        animArm(arms[1], 0.0F, 0.50F, -0.90F, attacking, walk, a, t);
+        animArm(arms[2], Mth.PI * 0.5F, 0.38F, -0.45F, attacking, walk, a, t);
+        animArm(arms[3], -Mth.PI * 0.5F, 0.42F, -0.50F, attacking, walk, a, t);
 
         // --- dedos: tics al estar quieto, zarpazos al atacar ---
         for (int i = 0; i < fingers.size(); i++) {
             float twitch = attacking
-                    ? Mth.sin(t * 0.6F + i * 0.8F) * 0.28F - 0.15F
+                    ? Mth.sin(t * 0.6F + i * 0.8F) * 0.18F - 0.08F
                     : Mth.sin(t * 0.09F + i * 1.3F) * 0.07F;
             fingers.get(i).rot(twitch, 0.0F, 0.0F);
         }
@@ -651,13 +651,13 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         float swing = Mth.cos(walk + phase) * amp * a;
         float idle = Mth.sin(t * 0.07F + phase * 1.7F) * 0.05F;
         float shoulder = swing + idle;
-        float elbow = -(Mth.cos(walk + phase + 1.2F) * 0.5F + 0.5F) * 0.45F * a - idle * 0.8F;
+        float elbow = -(Mth.cos(walk + phase + 1.2F) * 0.5F + 0.5F) * 0.25F * a - idle * 0.8F;
         float wrist = Mth.sin(t * 0.08F + phase) * 0.06F;
         if (attacking) {
-            float claw = Mth.sin(t * 0.55F + phase) * 0.22F;
+            float claw = Mth.sin(t * 0.55F + phase) * 0.16F;
             shoulder = raise + claw + swing * 0.3F;
-            elbow = -0.45F + claw * 0.8F;
-            wrist = -0.25F + claw * 0.5F;
+            elbow = 0.30F + claw * 0.5F;
+            wrist = 0.0F + claw * 0.3F;
         }
         arm[0].rot(shoulder, 0.0F, 0.0F);
         arm[1].rot(elbow, 0.0F, 0.0F);
