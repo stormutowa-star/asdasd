@@ -1,6 +1,9 @@
 package com.ricardo.retorcido;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,6 +20,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RetorcidoEntity extends Monster {
@@ -44,6 +48,33 @@ public class RetorcidoEntity extends Monster {
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+    }
+
+    /**
+     * Gotas de sangre desde la boca (solo cliente). Posicion de la boca calculada con el port del modelo
+     * (tools de render): en reposo ~1.65 delante y 0.92 de altura; atacando la cabeza baja: ~1.28 y 0.27.
+     */
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (this.level().isClientSide && this.isAlive()) {
+            boolean angry = this.isAggressive();
+            int period = angry ? 2 : 4;
+            if (this.tickCount % period == 0) {
+                float yaw = this.yBodyRot * Mth.DEG_TO_RAD;
+                double fwd = angry ? 1.28D : 1.65D;
+                double h = angry ? 0.27D : 0.92D;
+                int n = angry ? 2 : 1 + this.random.nextInt(2);
+                for (int i = 0; i < n; i++) {
+                    double jitter = (this.random.nextDouble() - 0.5D) * 0.25D;
+                    double x = this.getX() - Mth.sin(yaw) * fwd + Mth.cos(yaw) * jitter;
+                    double y = this.getY() + h;
+                    double z = this.getZ() + Mth.cos(yaw) * fwd + Mth.sin(yaw) * jitter;
+                    this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK,
+                            Blocks.NETHER_WART_BLOCK.defaultBlockState()), x, y, z, 0.0D, 0.0D, 0.0D);
+                }
+            }
+        }
     }
 
     // Sonidos vanilla (Warden), ya graves de por si; ademas bajamos el tono.

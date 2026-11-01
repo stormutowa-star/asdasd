@@ -45,11 +45,9 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
     private static final int[] UV_S_THIGH = {85, 0, 3, 7, 3};
     private static final int[] UV_S_SHIN = {98, 0, 2, 8, 2};
     private static final int[] UV_S_NECK = {107, 0, 3, 6, 3};
-    private static final int[] UV_S_JAW = {0, 13, 3, 2, 7};
     private static final int[] UV_S_SPINE_B = {21, 13, 4, 5, 3};
     private static final int[] UV_S_FOOT = {36, 13, 3, 6, 2};
     private static final int[] UV_S_BELLY = {47, 13, 4, 5, 2};
-    private static final int[] UV_S_SNOUT = {60, 13, 3, 3, 4};
     private static final int[] UV_B_THIN = {75, 13, 1, 6, 1};
     private static final int[] UV_S_TAIL = {80, 13, 2, 2, 4};
     private static final int[] UV_S_LUMP = {93, 13, 3, 3, 3};
@@ -65,6 +63,23 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
     private static final int[] UV_S_BROW = {73, 23, 6, 1, 2};
     private static final int[] UV_E_EYE = {90, 23, 2, 2, 1};
     private static final int[] UV_B_RIB = {97, 23, 5, 1, 1};
+    // --- cara (v >= 34) ---
+    private static final int[] UV_S_JAW = {0, 34, 5, 2, 7};
+    private static final int[] UV_S_SNOUT = {24, 34, 5, 2, 4};
+    private static final int[] UV_M_MOUTH = {42, 34, 5, 1, 7};
+    private static final int[] UV_R_BLOOD = {66, 34, 1, 4, 1};
+    private static final int[] UV_R_CLOT = {70, 34, 2, 2, 2};
+    private static final int[] UV_T_UP = {78, 34, 1, 4, 1};
+    private static final int[] UV_T_LO = {82, 34, 1, 4, 1};
+    private static final int[] UV_T_FANG = {86, 34, 1, 6, 1};
+    private static final int[] UV_T_FANL = {90, 34, 1, 6, 1};
+    private static final int[] UV_L_TONGUE = {94, 34, 2, 1, 4};
+    private static final int[] UV_F_FLESH = {106, 34, 2, 3, 1};
+    private static final int[] UV_S_CHIN = {112, 34, 1, 3, 1};
+    private static final int[] UV_E_EYEB = {0, 44, 3, 3, 2};
+    private static final int[] UV_E_EYES = {10, 44, 2, 2, 2};
+    private static final int[] UV_D_SOCKS = {18, 44, 2, 2, 1};
+    private static final int[] UV_S_BROWH = {24, 44, 4, 2, 2};
     //@UV-END
 
     // ===== COLUMNA CURVA =====
@@ -78,7 +93,7 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
     private static final float PELVIS_Y = 12.0F;
     private static final float PELVIS_Z = 15.0F;
     /** Inclinacion del craneo respecto al mundo (rad): cara mirando adelante y algo hacia abajo. */
-    private static final float HEAD_TILT = rad(38);
+    private static final float HEAD_TILT = rad(26);
 
     /** Costillas: {segmento, numero de pares}. */
     private static final int[][] RIBS = {{1, 1}, {2, 2}, {3, 2}};
@@ -290,7 +305,23 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         add(thumb, "t", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.2F), 0, 2.8F, 0, rad(-50), 0, 0);
     }
 
-    /** Cabeza alargada tipo craneo deforme, con mandibula separada, colmillos y cuencas huecas. */
+    /** Diente fino: hacia abajo desde el hocico (up) o hacia arriba desde la mandibula. */
+    private static void tooth(PartDefinition parent, String name, int[] uv, float h, boolean down,
+                              float x, float z, float rxDeg, float rzDeg) {
+        Cubes c = down
+                ? cubes().box(uv, -0.5F, 0, -0.5F, 1, h, 1, -0.15F)
+                : cubes().box(uv, -0.5F, -h, -0.5F, 1, h, 1, -0.15F);
+        add(parent, name, c, x, 0.0F, z, rad(rxDeg), 0, rad(rzDeg));
+    }
+
+    /** Hilo de sangre: tocon fijo + gota que baja (se anima la posicion Y de la gota). */
+    private static void bloodThread(PartDefinition jaw, String name, float x, float z, float stub, float drop) {
+        PartDefinition t = add(jaw, name, cubes().box(UV_R_BLOOD, -0.5F, 0, -0.5F, 1, stub, 1, -0.1F),
+                x, 1.3F, z, -(HEAD_TILT + rad(4)), 0, 0);
+        add(t, "d", cubes().box(UV_R_BLOOD, -0.5F, 0, -0.5F, 1, drop, 1, -0.2F), 0, 0.4F, 0, 0, 0, 0);
+    }
+
+    /** Cabeza alargada de craneo deforme: boca ancha y abierta llena de dientes torcidos, ojos saltones y sangre. */
     private static void head(PartDefinition pivot) {
         PartDefinition head = add(pivot, "head", cubes(), 0, 0, 0, HEAD_TILT, 0, 0);
 
@@ -299,9 +330,12 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
                         .box(UV_S_CRANIUM, -2.5F, -5.0F, -6.0F, 5, 4, 6)
                         .box(UV_S_BROW, -3.0F, -5.6F, -6.2F, 6, 1, 2),
                 0, 0, 0, rad(-4), rad(3), rad(5));
-        // hocico estrecho que cae hacia delante
-        PartDefinition snout = add(head, "snout", cubes().box(UV_S_SNOUT, -1.5F, -3.0F, -4.0F, 3, 3, 4),
+        // hocico ancho (mandibula superior)
+        PartDefinition snout = add(head, "snout", cubes()
+                        .box(UV_S_SNOUT, -2.5F, -1.5F, -2.5F, 5, 1.5F, 2.5F),
                 0, -1.2F, -5.8F, rad(9), rad(-4), 0);
+        // paladar rojo oscuro bajo el hocico
+        add(snout, "palate", cubes().box(UV_M_MOUTH, -2.2F, 0.0F, -2.2F, 4.4F, 0.5F, 2.2F), 0, 0, 0, 0, 0, 0);
         // bulto deforme en un lado del craneo
         add(head, "lump", cubes().box(UV_S_LUMP, -1.5F, -1.5F, -1.5F, 3, 3, 3, -0.3F),
                 2.4F, -4.4F, -2.6F, rad(25), rad(20), rad(30));
@@ -312,28 +346,73 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         add(head, "hornL", cubes().box(UV_B_THIN, -0.5F, -3, -0.5F, 1, 3, 1, -0.1F),
                 -1.9F, -4.4F, -1.0F, rad(-80), rad(-12), rad(28));
 
-        // cuencas huecas (oscuras) y ojos que sobresalen un poco: el ojo izquierdo es mas pequeño
+        // cuencas hundidas y asimetricas: la derecha 3x3 grande, la izquierda 2x2 mas abajo y torcida
         add(head, "socketR", cubes().box(UV_D_SOCKET, -1.5F, -1.5F, -1.0F, 3, 3, 1),
-                1.3F, -3.4F, -6.3F, rad(4), 0, rad(-14));
-        add(head, "socketL", cubes().box(UV_D_SOCKET, -1.5F, -1.5F, -1.0F, 3, 3, 1, -0.2F),
-                -1.4F, -3.3F, -6.2F, rad(-3), 0, rad(20));
-        add(head, "eyeR", cubes().box(UV_E_EYE, -1, -1, -1, 2, 2, 1, -0.2F), 1.3F, -3.4F, -7.0F, 0, 0, rad(-14));
-        add(head, "eyeL", cubes().box(UV_E_EYE, -1, -1, -1, 2, 2, 1, -0.45F), -1.4F, -3.3F, -6.9F, 0, 0, rad(20));
+                1.8F, -3.7F, -6.3F, rad(4), 0, rad(-14));
+        add(head, "socketL", cubes().box(UV_D_SOCKS, -1.0F, -1.0F, -1.0F, 2, 2, 1),
+                -1.8F, -2.7F, -6.2F, rad(-3), 0, rad(28));
+        // ojos saltones: pupila vertical sobre iris rojo-blanco
+        add(head, "eyeR", cubes().box(UV_E_EYEB, -1.5F, -1.5F, -2.0F, 3, 3, 2), 1.8F, -3.9F, -6.4F, rad(2), 0, rad(-14));
+        add(head, "eyeL", cubes().box(UV_E_EYES, -1.0F, -1.0F, -2.0F, 2, 2, 2), -1.8F, -2.9F, -6.3F, rad(-3), 0, rad(28));
+        // tercer ojo pequeno en la frente
+        add(head, "eye3", cubes().box(UV_E_EYE, -1, -1, -1, 2, 2, 1, -0.2F), 0.1F, -5.4F, -6.3F, rad(-6), 0, rad(8));
+        // cejas pesadas, caidas hacia dentro (mirada de furia)
+        add(head, "browR", cubes().box(UV_S_BROWH, -2.0F, -1.0F, -1.0F, 4, 2, 2), 2.0F, -5.5F, -6.4F, rad(8), rad(-4), rad(-24));
+        add(head, "browL", cubes().box(UV_S_BROWH, -2.0F, -1.0F, -1.0F, 4, 2, 2, -0.2F), -2.0F, -5.0F, -6.3F, rad(10), rad(5), rad(30));
 
-        // colmillos superiores finos, desiguales
-        add(snout, "fang1", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.15F), 1.1F, 0.0F, -3.4F, rad(-8), 0, rad(-10));
-        add(snout, "fang2", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 4, 1, -0.2F), -1.2F, 0.0F, -3.0F, rad(5), 0, rad(14));
-        add(snout, "fang3", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 2, 1, -0.2F), 0.9F, 0.0F, -1.2F, 0, 0, rad(-6));
-        add(snout, "fang4", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 2, 1, -0.2F), -1.0F, 0.0F, -0.8F, rad(6), 0, rad(8));
+        // mejillas hundidas: huecos oscuros, huesos a la vista y piel desgarrada
+        add(head, "cheekHolR", cubes().box(UV_D_SOCKET, -1.5F, -1.5F, -0.5F, 3, 3, 1), 2.45F, -1.9F, -4.2F, 0, rad(90), rad(4));
+        add(head, "cheekHolL", cubes().box(UV_D_SOCKET, -1.5F, -1.5F, -0.5F, 3, 3, 1, -0.2F), -2.45F, -1.8F, -3.9F, 0, rad(90), rad(-4));
+        add(head, "cheekBoneR", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 5, 1, -0.1F), 2.75F, -2.6F, -1.2F, rad(-90), 0, rad(-6));
+        add(head, "cheekBoneL", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.1F), -2.75F, -2.2F, -1.4F, rad(-80), rad(6), rad(8));
+        add(head, "flapR", cubes().box(UV_F_FLESH, -1.0F, 0, -0.5F, 2, 3, 1, -0.1F), 2.7F, -2.2F, -5.2F, rad(12), rad(-30), rad(-24));
+        add(head, "flapL", cubes().box(UV_F_FLESH, -1.0F, 0, -0.5F, 2, 3, 1, -0.2F), -2.7F, -2.0F, -4.6F, rad(-10), rad(40), rad(30));
+
+        // dientes superiores (9): colmillos grandes en las esquinas, el resto torcidos, cruzados o rotos
+        tooth(snout, "uF1", UV_T_FANG, 6.0F, true, -2.2F, -2.2F, -5, -9);
+        tooth(snout, "uF2", UV_T_FANG, 5.0F, true, 2.2F, -2.3F, 4, 12);
+        tooth(snout, "u3", UV_T_UP, 3.0F, true, -1.2F, -2.4F, -10, 6);
+        tooth(snout, "u4", UV_T_UP, 2.0F, true, -0.1F, -2.3F, 6, -4);
+        tooth(snout, "u5", UV_T_UP, 3.0F, true, 1.0F, -2.4F, -4, 24);
+        tooth(snout, "u6", UV_T_UP, 4.0F, true, -2.3F, -1.6F, 0, -14);
+        tooth(snout, "u7", UV_T_UP, 2.0F, true, -2.3F, -0.7F, 0, 5);
+        tooth(snout, "u8", UV_T_UP, 3.0F, true, 2.3F, -1.7F, 8, 16);
+        tooth(snout, "u9", UV_T_UP, 1.5F, true, 2.2F, -0.6F, 0, -12);
 
         // mandibula inferior, separada, gira sobre su bisagra bajo el craneo
         PartDefinition jaw = add(head, "jaw", cubes()
-                        .box(UV_S_JAW, -1.5F, -0.5F, -7.5F, 3, 2, 7, -0.2F),
-                0, -1.3F, -0.6F, rad(4), rad(-3), 0);
-        add(jaw, "chin", cubes().box(UV_B_THIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.2F), 0.2F, 1.4F, -7.0F, rad(-30), 0, rad(6));
-        add(jaw, "lfang1", cubes().box(UV_B_THIN, -0.5F, -3, -0.5F, 1, 3, 1, -0.2F), 1.0F, -0.2F, -6.6F, rad(8), 0, rad(-6));
-        add(jaw, "lfang2", cubes().box(UV_B_THIN, -0.5F, -3, -0.5F, 1, 3, 1, -0.25F), -1.0F, -0.2F, -6.0F, rad(-6), 0, rad(8));
-        add(jaw, "lfang3", cubes().box(UV_B_THIN, -0.5F, -2, -0.5F, 1, 2, 1, -0.2F), 0.9F, -0.2F, -3.6F, 0, 0, rad(-4));
+                        .box(UV_S_JAW, -2.5F, -0.5F, -7.5F, 5, 2, 7, -0.2F),
+                0, -1.3F, -2.6F, rad(4), rad(-3), 0);
+        // suelo de la boca (rojo oscuro / negro)
+        add(jaw, "mouthFloor", cubes().box(UV_M_MOUTH, -2.2F, -0.9F, -7.1F, 4.4F, 0.6F, 6.6F), 0, 0, 0, 0, 0, 0);
+        add(jaw, "chin", cubes().box(UV_S_CHIN, -0.5F, 0, -0.5F, 1, 3, 1, -0.2F), 0.2F, 1.4F, -7.0F, rad(-30), 0, rad(6));
+        add(jaw, "clot", cubes().box(UV_R_CLOT, -1.0F, 0, -1.0F, 2, 2, 2, -0.3F), -0.8F, 1.2F, -6.6F, rad(-10), rad(20), 0);
+
+        // dientes inferiores (9)
+        tooth(jaw, "lF1", UV_T_FANL, 6.0F, false, 2.2F, -7.0F, 6, -10);
+        tooth(jaw, "lF2", UV_T_FANL, 5.0F, false, -2.2F, -7.1F, -6, 8);
+        tooth(jaw, "l3", UV_T_LO, 3.0F, false, -1.0F, -7.3F, 12, -10);
+        tooth(jaw, "l4", UV_T_LO, 4.0F, false, 0.2F, -7.2F, -8, 15);
+        tooth(jaw, "l5", UV_T_LO, 2.0F, false, 1.2F, -7.3F, 0, -25);
+        tooth(jaw, "l6", UV_T_LO, 3.0F, false, -2.3F, -5.6F, 0, 12);
+        tooth(jaw, "l7", UV_T_LO, 4.0F, false, 2.3F, -5.4F, 0, -18);
+        tooth(jaw, "l8", UV_T_LO, 2.0F, false, -2.3F, -4.0F, 0, 8);
+        tooth(jaw, "l9", UV_T_LO, 3.0F, false, 2.3F, -3.6F, 10, -6);
+
+        // lengua larga, fina y torcida que cuelga de la mandibula (3 tramos)
+        PartDefinition tg1 = add(jaw, "tongue1", cubes().box(UV_L_TONGUE, -1.0F, -0.5F, -4.0F, 2, 1, 4, -0.1F),
+                0.4F, -0.7F, -3.0F, rad(-4), rad(-8), 0);
+        PartDefinition tg2 = add(tg1, "tongue2", cubes().box(UV_L_TONGUE, -0.8F, -0.5F, -4.0F, 2, 1, 4, -0.2F),
+                0, 0, -3.8F, rad(55), rad(10), 0);
+        add(tg2, "tongue3", cubes().box(UV_L_TONGUE, -0.7F, -0.5F, -3.5F, 2, 1, 4, -0.3F),
+                0, 0, -3.7F, rad(40), rad(-12), rad(30));
+
+        // hilos de sangre colgando de la mandibula (se animan en setupAnim)
+        bloodThread(jaw, "blood0", -1.4F, -7.0F, 1.5F, 2);
+        bloodThread(jaw, "blood1", 0.6F, -7.2F, 2.5F, 3);
+        bloodThread(jaw, "blood2", 1.9F, -5.6F, 1.5F, 2);
+        bloodThread(jaw, "blood3", -2.1F, -4.6F, 2, 3);
+        bloodThread(jaw, "blood4", 0.2F, -3.0F, 2.5F, 2.5F);
     }
 
     /** Pata digitigrada: muslo adelantado, espinilla invertida hacia atras, pie largo con garras. */
@@ -395,6 +474,13 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
     private final Joint headPivot;
     private final Joint head;
     private final Joint jaw;
+    private final Joint tongue1;
+    private final Joint tongue2;
+    private final Joint tongue3;
+    /** Hilos de sangre: el tocon (se contrarrota para colgar vertical) y la gota que baja. */
+    private final Joint[] bloodStub = new Joint[BLOOD_THREADS];
+    private final Joint[] bloodDrop = new Joint[BLOOD_THREADS];
+    private static final int BLOOD_THREADS = 5;
     private final Joint tail1, tail2, tail3;
     private final Joint thighR, shinR, footR, thighL, shinL, footL;
     /** Brazos: [0]=uArmR [1]=uArmL [2]=lArmR [3]=lArmL; cada uno {hombro, codo, mano}. */
@@ -421,7 +507,16 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         this.headPivot = new Joint(parts[7].getChild("headPivot"));
         ModelPart headPart = parts[7].getChild("headPivot").getChild("head");
         this.head = new Joint(headPart);
-        this.jaw = new Joint(headPart.getChild("jaw"));
+        ModelPart jawPart = headPart.getChild("jaw");
+        this.jaw = new Joint(jawPart);
+        this.tongue1 = new Joint(jawPart.getChild("tongue1"));
+        this.tongue2 = new Joint(jawPart.getChild("tongue1").getChild("tongue2"));
+        this.tongue3 = new Joint(jawPart.getChild("tongue1").getChild("tongue2").getChild("tongue3"));
+        for (int i = 0; i < BLOOD_THREADS; i++) {
+            ModelPart stub = jawPart.getChild("blood" + i);
+            this.bloodStub[i] = new Joint(stub);
+            this.bloodDrop[i] = new Joint(stub.getChild("d"));
+        }
 
         ModelPart t1 = parts[0].getChild("tail1");
         ModelPart t2 = t1.getChild("tail2");
@@ -500,8 +595,24 @@ public class RetorcidoModel extends EntityModel<RetorcidoEntity> {
         // --- mandibula: entreabierta y temblorosa; abierta de par en par al atacar ---
         float open = attacking
                 ? 0.60F + Mth.sin(t * 0.8F) * 0.14F
-                : 0.07F + (breath * 0.5F + 0.5F) * 0.07F;
+                : 0.35F + (breath * 0.5F + 0.5F) * 0.06F;
         jaw.rot(open, 0.0F, 0.0F);
+
+        // --- lengua: se balancea y tiembla; mas al atacar ---
+        float sway = attacking ? 1.8F : 1.0F;
+        tongue1.rot(Mth.sin(t * 0.11F) * 0.05F * sway, Mth.sin(t * 0.07F) * 0.10F * sway, 0.0F);
+        tongue2.rot(Mth.sin(t * 0.13F + 1.0F) * 0.12F * sway, Mth.sin(t * 0.09F + 0.5F) * 0.14F * sway, 0.0F);
+        tongue3.rot(Mth.sin(t * 0.17F + 2.0F) * 0.18F * sway, Mth.sin(t * 0.12F + 1.5F) * 0.20F * sway,
+                Mth.sin(t * 0.10F) * 0.15F * sway);
+
+        // --- sangre: cada hilo cuelga vertical (contrarrota la cabeza) y su gota baja y se reinicia, con desfase ---
+        float counter = -(open + pitch + Mth.sin(t * 0.04F) * 0.04F + lean * 2.0F);
+        float dripSpeed = attacking ? 0.055F : 0.032F;
+        for (int i = 0; i < BLOOD_THREADS; i++) {
+            bloodStub[i].rot(counter, 0.0F, 0.0F);
+            float p = (t * dripSpeed + i * 0.23F) % 1.0F;
+            bloodDrop[i].pos(0.0F, p * p * 4.0F, 0.0F);
+        }
 
         // --- cola ---
         tail1.rot(Mth.sin(t * 0.06F) * 0.05F, Mth.sin(walk) * 0.25F * a + Mth.sin(t * 0.05F) * 0.08F, 0.0F);

@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="retorcido"
-version="1.0.0"
+version="1.1.0"
 displayName="El Retorcido"
 authors="Ricardo"
 description='''El Retorcido: una criatura encorvada de cuatro brazos que acecha en la oscuridad.'''

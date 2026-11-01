@@ -3,7 +3,9 @@
 
 Las regiones UV se leen directamente de RetorcidoModel.java (bloque //@UV-BEGIN .. //@UV-END),
 asi las texOffs del modelo y la textura nunca se desincronizan. El prefijo del nombre de la
-region elige el material: S = piel enferma, B = hueso, D = hueco oscuro, E = ojo.
+region elige el material: S = piel enferma, B = hueso, D = hueco oscuro, E = ojo, M = interior de
+boca, R = sangre, T = diente manchado (T_UP/T_FANG cuelgan del hocico, T_LO/T_FANL suben de la
+mandibula), L = lengua, F = carne desgarrada. Piel de mandibula, barbilla y cuello lleva sangre.
 
 Uso:  python tools/make_textures.py        (necesita: pip install pillow)
 Salida: src/main/resources/assets/retorcido/textures/entity/retorcido.png y retorcido_eyes.png
@@ -99,6 +101,112 @@ BONE_DARK = (150, 136, 108)
 BONE_STAIN = (128, 100, 74)
 
 
+BLOOD_A = (107, 10, 10)        # 0x6b0a0a
+BLOOD_B = (139, 0, 0)          # 0x8b0000
+BLOOD_CLOT = (26, 2, 4)        # coagulos casi negros
+BLOODY_SKIN = ("S_JAW", "S_CHIN", "S_NECK")
+
+
+def blood_px(rng):
+    k = rng.random()
+    if k < 0.12:
+        return BLOOD_CLOT
+    return mix(BLOOD_A, BLOOD_B, rng.random())
+
+
+def paint_blood_overlay(img, r, rng, amount, top_heavy=True):
+    """Manchas y regueros de sangre: nacen arriba de cada cara y bajan con largos distintos."""
+    px = img.load()
+    d, w, h = r["d"], r["w"], r["h"]
+    # caras laterales/frontal/trasera: fila v+d .. v+d+h ; columnas u .. u+W
+    y0, y1 = r["v"] + d, r["v"] + d + h
+    for x in range(r["u"], r["u"] + r["W"]):
+        if rng.random() < amount:
+            ln = rng.randrange(max(1, h // 3), h + 1)
+            for k in range(ln):
+                y = y0 + k
+                if y < y1:
+                    px[x, y] = blood_px(rng) + (255,)
+            if ln < h and rng.random() < 0.7:  # gota gorda al final del reguero
+                px[x, y0 + ln - 1] = BLOOD_CLOT + (255,)
+    # cara superior e inferior (v .. v+d): salpicaduras
+    for y in range(r["v"], r["v"] + d):
+        for x in range(r["u"] + d, r["u"] + d + 2 * w):
+            if rng.random() < amount * 0.8:
+                px[x, y] = blood_px(rng) + (255,)
+    # manchas sueltas
+    for _ in range(int(r["W"] * r["H"] * amount * 0.12)):
+        sx = rng.randrange(r["u"], r["u"] + r["W"])
+        sy = rng.randrange(r["v"], r["v"] + r["H"])
+        px[sx, sy] = blood_px(rng) + (255,)
+
+
+def paint_mouth(img, r, rng):
+    px = img.load()
+    for y in range(r["v"], r["v"] + r["H"]):
+        for x in range(r["u"], r["u"] + r["W"]):
+            n = fbm(x * 0.6, y * 0.6, 91)
+            c = mix((14, 0, 2), (74, 6, 10), n * 1.2 - 0.1)
+            if rng.random() < 0.08:  # brillos humedos
+                c = (120, 24, 28)
+            px[x, y] = c + (255,)
+
+
+def paint_blood(img, r, rng):
+    px = img.load()
+    for y in range(r["v"], r["v"] + r["H"]):
+        for x in range(r["u"], r["u"] + r["W"]):
+            c = blood_px(rng)
+            t = (y - r["v"]) / max(1, r["H"] - 1)
+            if r["name"] == "R_BLOOD":
+                c = shade(c, 1.0 - 0.45 * t)  # la punta de la gota mas oscura
+            if rng.random() < 0.06:
+                c = (170, 20, 20)  # brillo humedo
+            px[x, y] = c + (255,)
+
+
+def paint_tooth(img, r, rng):
+    px = img.load()
+    lower = r["name"] in ("T_LO", "T_FANL")  # raiz abajo (v alto) en los inferiores
+    for y in range(r["v"], r["v"] + r["H"]):
+        for x in range(r["u"], r["u"] + r["W"]):
+            t = (y - r["v"]) / max(1, r["H"] - 1)
+            root = t if lower else 1.0 - t   # 1 en la raiz, 0 en la punta
+            c = mix((214, 200, 160), (150, 128, 84), rng.random() * 0.6)
+            stain = root * (1.25 if lower else 0.9) + (rng.random() - 0.5) * 0.5
+            if stain > 0.55:
+                c = blood_px(rng) if stain > 0.7 else mix(c, BLOOD_B, 0.6)
+            elif rng.random() < 0.15:
+                c = mix(c, BONE_STAIN, 0.7)
+            px[x, y] = c + (255,)
+
+
+def paint_tongue(img, r, rng):
+    px = img.load()
+    for y in range(r["v"], r["v"] + r["H"]):
+        for x in range(r["u"], r["u"] + r["W"]):
+            n = fbm(x * 0.7, y * 0.7, 55)
+            c = mix((150, 52, 78), (92, 20, 44), n)
+            if (x + 2 * y) % 5 == 0:
+                c = shade(c, 0.7)  # surcos
+            if rng.random() < 0.10:
+                c = blood_px(rng)
+            px[x, y] = c + (255,)
+
+
+def paint_flesh(img, r, rng):
+    px = img.load()
+    for y in range(r["v"], r["v"] + r["H"]):
+        for x in range(r["u"], r["u"] + r["W"]):
+            n = fbm(x * 0.8, y * 0.8, 33)
+            c = mix((140, 24, 30), (70, 8, 14), n * 1.3)
+            if rng.random() < 0.12:
+                c = (178, 120, 110)  # tendon / grasa
+            elif rng.random() < 0.10:
+                c = BLOOD_CLOT
+            px[x, y] = c + (255,)
+
+
 def paint_skin(img, r, rng):
     seed = sum(ord(ch) for ch in r["name"]) * 7 + 3
     # variantes por pieza para que no se vea repetido
@@ -182,10 +290,14 @@ def paint_dark(img, r, rng):
 
 
 def paint_eye_base(img, r, rng):
+    """Base del ojo: rojo; en la cara frontal una pupila vertical negra (ranura) en la columna central."""
     px = img.load()
     for y in range(r["v"], r["v"] + r["H"]):
         for x in range(r["u"], r["u"] + r["W"]):
             px[x, y] = (110 + rng.randrange(20), 20, 16, 255)
+    fx, fy, fw, fh = front_face(r)
+    for y in range(fy, fy + fh):
+        px[fx + fw // 2, y] = (0, 0, 0, 255)
 
 
 def front_face(r):
@@ -194,23 +306,26 @@ def front_face(r):
 
 
 def paint_eyes_layer(img, regions):
-    """Capa emisiva: transparente salvo ojos (rojo/blanco) y ojeras debiles alrededor de las cuencas."""
+    """Capa emisiva: transparente salvo ojos (iris rojo-blanco, pupila transparente = negra de la base)
+    y ojeras debiles alrededor de las cuencas."""
     px = img.load()
     for r in regions:
         if r["name"].startswith("E_"):
-            # todas las caras del ojo brillan en rojo; el frente lleva un nucleo blanco
             for y in range(r["v"], r["v"] + r["H"]):
                 for x in range(r["u"], r["u"] + r["W"]):
                     px[x, y] = (255, 36, 24, 255)
             fx, fy, fw, fh = front_face(r)
+            pc = fx + fw // 2
             for y in range(fy, fy + fh):
                 for x in range(fx, fx + fw):
-                    px[x, y] = (255, 70, 50, 255)
-            px[fx, fy] = (255, 235, 210, 255)  # brillo blanco
-            if fw * fh > 1:
-                px[fx + fw - 1, fy + fh - 1] = (255, 150, 120, 255)
+                    if x == pc:
+                        px[x, y] = (0, 0, 0, 0)  # ranura de la pupila: no brilla, se ve la base negra
+                    elif abs(x - pc) == 1 and fw >= 3:
+                        px[x, y] = (255, 84, 60, 255)   # iris blanco-rojizo junto a la pupila
+                    else:
+                        px[x, y] = (255, 70, 50, 255)
+            px[fx, fy] = (255, 240, 225, 255)  # brillo blanco
         elif r["name"].startswith("D_"):
-            # ojeras: aro rojo apagado en la cara frontal de la cuenca
             fx, fy, fw, fh = front_face(r)
             for y in range(fy, fy + fh):
                 for x in range(fx, fx + fw):
@@ -234,12 +349,24 @@ def main():
         kind = r["name"][0]
         if kind == "S":
             paint_skin(tex, r, rng)
+            if r["name"] in BLOODY_SKIN:
+                paint_blood_overlay(tex, r, rng, 0.55 if r["name"] != "S_NECK" else 0.30)
         elif kind == "B":
             paint_bone(tex, r, rng)
         elif kind == "D":
             paint_dark(tex, r, rng)
         elif kind == "E":
             paint_eye_base(tex, r, rng)
+        elif kind == "M":
+            paint_mouth(tex, r, rng)
+        elif kind == "R":
+            paint_blood(tex, r, rng)
+        elif kind == "T":
+            paint_tooth(tex, r, rng)
+        elif kind == "L":
+            paint_tongue(tex, r, rng)
+        elif kind == "F":
+            paint_flesh(tex, r, rng)
         else:
             print("AVISO: material desconocido para", r["name"])
     eyes = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
