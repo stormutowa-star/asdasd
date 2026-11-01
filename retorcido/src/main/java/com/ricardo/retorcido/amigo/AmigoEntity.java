@@ -1,6 +1,7 @@
 package com.ricardo.retorcido.amigo;
 
 import com.ricardo.retorcido.RetorcidoEntity;
+import com.ricardo.retorcido.terror.TerrorLines;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -102,6 +103,8 @@ public class AmigoEntity extends PathfinderMob {
     private int talkCooldown;
     private int eatCooldown;
     private String lastPhrase = "";
+    /** 0 normal, 1 inquieto, 2 posregreso (lo controla el director de terror). */
+    private int mood;
 
     public AmigoEntity(EntityType<? extends AmigoEntity> type, Level level) {
         super(type, level);
@@ -152,6 +155,14 @@ public class AmigoEntity extends PathfinderMob {
     }
 
     // ------------------------------------------------------------------ API para el director
+
+    public int getMood() {
+        return this.mood;
+    }
+
+    public void setMood(int mood) {
+        this.mood = Math.max(0, Math.min(2, mood));
+    }
 
     /** Dueno (jugador conectado) o null si no esta online / no hay dueno. Solo servidor. */
     public ServerPlayer getOwner() {
@@ -249,6 +260,14 @@ public class AmigoEntity extends PathfinderMob {
     }
 
     private String pickPhrase(ServerPlayer owner) {
+        if (this.mood == 2) {
+            this.lastPhrase = TerrorLines.pick(TerrorLines.STRANGE, this.lastPhrase, this.random);
+            return this.lastPhrase;
+        }
+        if (this.mood == 1 && this.random.nextBoolean()) {
+            this.lastPhrase = TerrorLines.pick(TerrorLines.UNEASY, this.lastPhrase, this.random);
+            return this.lastPhrase;
+        }
         List<String[]> urgent = new ArrayList<>();
         if (owner.getHealth() < 8.0F) urgent.add(OWNER_LOW);
         if (this.getHealth() < 8.0F) urgent.add(SELF_LOW);
@@ -300,6 +319,7 @@ public class AmigoEntity extends PathfinderMob {
         super.addAdditionalSaveData(tag);
         if (this.ownerUuid != null) tag.putUUID("OwnerUuid", this.ownerUuid);
         tag.putBoolean("Scripted", this.scripted);
+        tag.putInt("Mood", this.mood);
     }
 
     @Override
@@ -307,5 +327,6 @@ public class AmigoEntity extends PathfinderMob {
         super.readAdditionalSaveData(tag);
         this.ownerUuid = tag.hasUUID("OwnerUuid") ? tag.getUUID("OwnerUuid") : null;
         this.scripted = tag.getBoolean("Scripted");
+        this.mood = tag.getInt("Mood");
     }
 }

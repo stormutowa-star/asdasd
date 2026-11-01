@@ -1,8 +1,14 @@
 package com.ricardo.retorcido;
 
 import net.minecraft.core.BlockPos;
+import com.ricardo.retorcido.terror.TerrorConfig;
+import com.ricardo.retorcido.terror.TerrorEvents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -22,16 +28,81 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.UUID;
 
 public class RetorcidoEntity extends Monster {
     public RetorcidoEntity(EntityType<? extends RetorcidoEntity> type, Level level) {
         super(type, level);
-        this.xpReward = 20;
+        this.xpReward = 30; // experiencia (la loot table solo da objetos)
     }
 
-    /** Lo redefinira el director de terror: un Retorcido "watcher" solo observa y el amigo no huye de el. */
+    /** Jugador al que observa (null = Retorcido normal). Solo servidor, no se guarda. */
+    private UUID watchTarget;
+    private int stareTicks;
+    private boolean discardOnLoad;
+
+    /** Un Retorcido "watcher" solo observa (sin IA, invulnerable, silencioso) y el amigo no huye de el. */
     public boolean isWatcher() {
-        return false;
+        return this.watchTarget != null;
+    }
+
+    /** Lo convierte en observador del jugador dado. */
+    public void makeWatcher(UUID targetPlayer) {
+        this.watchTarget = targetPlayer;
+        this.stareTicks = 0;
+        this.setNoAi(true);
+        this.setInvulnerable(true);
+        this.setSilent(true);
+    }
+
+    private void vanish(boolean seen) {
+        if (this.level() instanceof ServerLevel sl) {
+            sl.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 1.0D, this.getZ(),
+                    25, 0.4D, 0.8D, 0.4D, 0.02D);
+            sl.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENDERMAN_TELEPORT,
+                    SoundSource.HOSTILE, 1.0F, 0.5F);
+        }
+        this.discard();
+    }
+
+    private void watcherTick() {
+        if (this.discardOnLoad) { // cargado del disco como observador: fuera
+            this.discard();
+            return;
+        }
+        ServerPlayer p = this.level().getServer().getPlayerList().getPlayer(this.watchTarget);
+        if (p == null || p.level() != this.level() || !p.isAlive() || this.tickCount > TerrorConfig.WATCHER_MAX_AGE) {
+            this.vanish(false);
+            return;
+        }
+        // Se orienta hacia el jugador.
+        double dx = p.getX() - this.getX();
+        double dz = p.getZ() - this.getZ();
+        float yaw = (float) (Mth.atan2(dz, dx) * (180.0D / Math.PI)) - 90.0F;
+        this.setYRot(yaw);
+        this.setXRot(0.0F);
+        this.yBodyRot = yaw;
+        this.yHeadRot = yaw;
+
+        if (this.distanceTo(p) < TerrorConfig.WATCHER_VANISH_DIST) {
+            this.vanish(false);
+            return;
+        }
+        if (this.tickCount % TerrorConfig.WATCHER_CHECK_INTERVAL == 0) {
+            Vec3 toMob = this.getEyePosition().subtract(p.getEyePosition()).normalize();
+            boolean looking = p.getViewVector(1.0F).dot(toMob) > TerrorConfig.WATCHER_LOOK_DOT && p.hasLineOfSight(this);
+            if (looking) {
+                this.stareTicks += TerrorConfig.WATCHER_CHECK_INTERVAL;
+            } else {
+                this.stareTicks = Math.max(0, this.stareTicks - TerrorConfig.WATCHER_CHECK_INTERVAL);
+            }
+            if (this.stareTicks > TerrorConfig.WATCHER_STARE_LIMIT) {
+                TerrorEvents.onWatcherSeen(p);
+                this.vanish(true);
+            }
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -60,8 +131,15 @@ public class RetorcidoEntity extends Monster {
      * (tools de render): en reposo ~1.65 delante y 0.92 de altura; atacando la cabeza baja: ~1.28 y 0.27.
      */
     @Override
-    public void aiStep() {
-        super.aiStep();
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide && this.isAlive() && (this.watchTarget != null || this.discardOnLoad)) {
+            try {
+                this.watcherTick();
+            } catch (Exception e) {
+                this.discard();
+            }
+        }
         if (this.level().isClientSide && this.isAlive()) {
             boolean angry = this.isAggressive();
             int period = angry ? 2 : 4;
@@ -80,6 +158,18 @@ public class RetorcidoEntity extends Monster {
                 }
             }
         }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        if (this.watchTarget != null) tag.putBoolean("RetorcidoWatcher", true);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (tag.getBoolean("RetorcidoWatcher")) this.discardOnLoad = true;
     }
 
     // Sonidos vanilla (Warden), ya graves de por si; ademas bajamos el tono.

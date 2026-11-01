@@ -72,8 +72,9 @@ public final class AmigoManager {
         return a != null ? a : spawnAmigo(player);
     }
 
-    /** Hook: se llama (solo servidor) cuando un amigo muere. De momento no hace nada; el director puede ampliarlo. */
+    /** Hook: se llama (solo servidor) cuando un amigo muere; lo gestiona el director de terror. */
     public static void onAmigoDied(AmigoEntity amigo, DamageSource source) {
+        com.ricardo.retorcido.terror.TerrorDirector.onAmigoDied(amigo, source);
     }
 
     /** Busca un punto de pie (suelo solido, hueco libre) cerca de {@code center}; si no hay, devuelve center. */
