@@ -2,12 +2,17 @@ package com.ricardo.screentranslator;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.widget.Button;
@@ -20,6 +25,9 @@ import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
+import java.io.File;
+import java.util.Locale;
+
 public class MainActivity extends Activity {
 
     private static final int REQ_PROJECTION = 1;
@@ -27,6 +35,18 @@ public class MainActivity extends Activity {
 
     private Translator translator;
     private TextView status;
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private long downloadStartMs;
+    private boolean polling;
+    private final Runnable poller = new Runnable() {
+        @Override
+        public void run() {
+            if (!polling) return;
+            status.setText(buildDownloadStatus());
+            handler.postDelayed(this, 700);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,16 +106,104 @@ public class MainActivity extends Activity {
             return;
         }
         status.setText("Preparando modelo de traducción...");
+        downloadStartMs = SystemClock.elapsedRealtime();
+        polling = true;
+        handler.removeCallbacks(poller);
+        handler.postDelayed(poller, 700);
         translator.downloadModelIfNeeded(new DownloadConditions.Builder().build())
                 .addOnSuccessListener(v -> {
+                    stopPolling();
                     status.setText("Modelo listo (offline). Acepta la captura de pantalla.");
                     MediaProjectionManager m =
                             (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                     startActivityForResult(m.createScreenCaptureIntent(), REQ_PROJECTION);
                 })
-                .addOnFailureListener(e -> status.setText(
-                        "No se pudo bajar el modelo: " + e.getMessage()
-                                + "\nConéctate a internet una vez y reintenta."));
+                .addOnFailureListener(e -> {
+                    stopPolling();
+                    status.setText(
+                            "No se pudo bajar el modelo: " + e.getMessage()
+                                    + "\nConéctate a internet una vez y reintenta.");
+                });
+    }
+
+    private void stopPolling() {
+        polling = false;
+        handler.removeCallbacks(poller);
+    }
+
+    private static String mb(long bytes) {
+        return String.format(Locale.US, "%.1f", bytes / 1048576.0);
+    }
+
+    private static long dirSize(File f) {
+        try {
+            if (f == null || !f.exists()) return 0;
+            if (f.isFile()) return f.length();
+            File[] kids = f.listFiles();
+            if (kids == null) return 0;
+            long sum = 0;
+            for (File k : kids) sum += dirSize(k);
+            return sum;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private String buildDownloadStatus() {
+        long secs = (SystemClock.elapsedRealtime() - downloadStartMs) / 1000;
+        String disk = " · en disco: "
+                + mb(dirSize(getNoBackupFilesDir()) + dirSize(getFilesDir())) + " MB";
+        try {
+            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            if (dm == null) return "Descargando modelo... · " + secs + " s" + disk;
+            String active = null;
+            String failed = null;
+            Cursor c = dm.query(new DownloadManager.Query());
+            if (c != null) {
+                try {
+                    int iStatus = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                    int iDone = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                    int iTotal = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                    int iReason = c.getColumnIndex(DownloadManager.COLUMN_REASON);
+                    while (c.moveToNext()) {
+                        int st = c.getInt(iStatus);
+                        long done = c.getLong(iDone);
+                        long total = c.getLong(iTotal);
+                        int reason = c.getInt(iReason);
+                        if (st == DownloadManager.STATUS_FAILED) {
+                            if (failed == null) failed = "Falló la descarga (código " + reason + ")";
+                        } else if (active == null && (st == DownloadManager.STATUS_PENDING
+                                || st == DownloadManager.STATUS_RUNNING
+                                || st == DownloadManager.STATUS_PAUSED)) {
+                            StringBuilder sb = new StringBuilder("Descargando modelo... ");
+                            if (total > 0) {
+                                sb.append(done * 100 / total).append("% (")
+                                        .append(mb(done)).append(" / ").append(mb(total))
+                                        .append(" MB)");
+                            } else {
+                                sb.append(mb(done)).append(" MB");
+                            }
+                            if (st == DownloadManager.STATUS_PENDING) {
+                                sb.append(" · en cola");
+                            } else if (st == DownloadManager.STATUS_PAUSED) {
+                                if (reason == 1) sb.append(" · reintentando");
+                                else if (reason == 2) sb.append(" · esperando red (¿sin internet?)");
+                                else if (reason == 3) sb.append(" · esperando wifi");
+                                else sb.append(" · pausada (código ").append(reason).append(")");
+                            }
+                            active = sb.toString();
+                        }
+                    }
+                } finally {
+                    c.close();
+                }
+            }
+            String main = active != null ? active : failed;
+            if (main != null) return main + " · " + secs + " s" + disk;
+        } catch (Exception e) {
+            return "Descargando modelo... · " + secs + " s";
+        }
+        return "Esperando respuesta del servidor... · " + secs + " s" + disk;
     }
 
     @Override
@@ -117,6 +225,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        stopPolling();
         translator.close();
         super.onDestroy();
     }
