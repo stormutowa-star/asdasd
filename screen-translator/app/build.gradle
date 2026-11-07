@@ -1,0 +1,31 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.ricardo.screentranslator'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.ricardo.screentranslator'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // OCR en el dispositivo (modelo incluido en el APK, sin internet)
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
+    // Traducción en el dispositivo (el modelo EN->ES se baja una sola vez)
+    implementation 'com.google.mlkit:translate:17.0.3'
+}
