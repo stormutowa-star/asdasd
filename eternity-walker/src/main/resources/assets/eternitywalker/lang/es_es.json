@@ -1,0 +1,6 @@
+{
+ "item.eternitywalker.eternity_core": "Núcleo del Eternity Walker",
+ "entity.eternitywalker.eternity_walker": "Eternity Walker",
+ "itemGroup.eternitywalker": "Eternity Walker",
+ "eternitywalker.msg.hint": "Sube por la escalera bajo la escotilla. Agáchate en la silla del puente para pilotar."
+}
